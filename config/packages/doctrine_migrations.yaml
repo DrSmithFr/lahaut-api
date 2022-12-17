@@ -1,0 +1,17 @@
+doctrine_migrations:
+    migrations_paths:
+        'App\Migrations': '%kernel.project_dir%/src/App'
+
+    storage:
+        # Default (SQL table) metadata storage configuration
+        table_storage:
+            table_name: 'doctrine_migration_versions'
+            version_column_name: 'version'
+            version_column_length: 192
+            executed_at_column_name: 'executed_at'
+
+    # Adds an extra check in the generated migrations to ensure that is executed on the same database type.
+    check_database_platform: true
+
+    # Whether or not to wrap migrations in a single transaction.
+    transactional: true
