@@ -14,10 +14,10 @@ enum SecurityRoleEnum
     public function role(): string
     {
         return match ($this) {
-            SecurityRoleEnum::USER => 'ROLE_USER',
-            SecurityRoleEnum::MONITOR => 'ROLE_MONITOR',
-            SecurityRoleEnum::ADMIN => 'ROLE_ADMIN',
-            SecurityRoleEnum::SUPER_ADMIN => 'Super ROLE_SUPER_ADMIN',
+            self::USER => 'ROLE_USER',
+            self::MONITOR => 'ROLE_MONITOR',
+            self::ADMIN => 'ROLE_ADMIN',
+            self::SUPER_ADMIN => 'Super ROLE_SUPER_ADMIN',
         };
     }
 }
