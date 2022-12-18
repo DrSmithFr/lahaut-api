@@ -1,21 +1,20 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Controller;
 
-use RuntimeException;
 use App\Model\LoginModel;
-use OpenApi\Annotations as OA;
-use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
-use App\Controller\Traits\SerializerAware;
+use Nelmio\ApiDocBundle\Annotation\Security;
+use OpenApi\Annotations as OA;
+use RuntimeException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * @OA\Tag(name="Authentification")
  */
+#[Security(name: null)]
 class LoginController extends AbstractApiController
 {
     /**

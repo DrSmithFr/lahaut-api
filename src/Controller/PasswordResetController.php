@@ -4,17 +4,15 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Traits\SerializerAware;
 use App\Model\ResetPasswordModel;
 use App\Repository\UserRepository;
 use App\Service\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
-use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Annotations as OA;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,6 +21,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @OA\Tag(name="Password reset")
  */
+#[Security(name: null)]
 class PasswordResetController extends AbstractApiController
 {
     /**

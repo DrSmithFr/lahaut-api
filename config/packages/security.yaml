@@ -2,9 +2,9 @@ security:
     enable_authenticator_manager: true
     password_hashers:
         harsh:
-            algorithm:   auto
+            algorithm: auto
             memory_cost: 4092
-            time_cost:   10
+            time_cost: 10
     providers:
         users:
             entity:
@@ -15,7 +15,7 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         login:
-            pattern:  ^/login$
+            pattern: ^/login$
             stateless: true
             json_login:
                 check_path: /login
@@ -31,6 +31,8 @@ security:
 
     access_control:
         - { path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/password_reset$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/medias/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/,       roles: [ IS_AUTHENTICATED_FULLY, ROLE_USER ] }
 
     role_hierarchy:

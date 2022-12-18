@@ -20,12 +20,10 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted('ROLE_USER')]
 class MediaController extends AbstractApiController
 {
     /**
      * Return BinaryFileResponse according to media mineType (for download and display)
-     *
      * @OA\Parameter(
      *     name="id",
      *     in="path",
@@ -42,11 +40,9 @@ class MediaController extends AbstractApiController
      *     description="Not found"
      * )
      * @OA\Tag(name="Medias")
-     * @Security(name="Bearer")
-     *
      */
+    #[Security(name: null)]
     #[Route(path: 'medias/{uuid}', name: 'medias_by_uuid', requirements: ['id' => '\d+'], methods: ['GET'])]
-    #[Security(name: 'Bearer')]
     public function getByIdAction(
         #[MapEntity(class: Media::class)] Media $media,
         MediaService                            $mediaService
@@ -87,10 +83,8 @@ class MediaController extends AbstractApiController
      *     description="Not found"
      * )
      * @OA\Tag(name="Medias")
-     * @Security(name="Bearer")
-     *
-     *
      */
+    #[Security(name: null)]
     #[Route(path: 'medias/{uuid}/metadata', name: 'medias_metadata', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function getMetadataByIdAction(
         #[MapEntity(class: Media::class)] Media $media
@@ -126,11 +120,10 @@ class MediaController extends AbstractApiController
      * )
      * @OA\Tag(name="Medias")
      * @Security(name="Bearer")
-     *
      * @throws Exception
-     *
-     *
      */
+    #[IsGranted('ROLE_USER')]
+    #[Security(name: 'Bearer')]
     #[Route(path: 'medias', name: 'medias_add', methods: ['POST'])]
     public function newAction(
         Request                $request,

@@ -1,13 +1,12 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Traits\SerializerAware;
 use App\Entity\User;
 use JMS\Serializer\SerializerInterface;
-use App\Controller\Traits\SerializerAware;
-use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 abstract class AbstractApiController extends AbstractController

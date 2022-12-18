@@ -4,19 +4,17 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Traits\SerializerAware;
 use App\Entity\User;
 use App\Enum\SecurityRoleEnum;
 use App\Model\LoginModel;
 use App\Model\RegisterModel;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Annotations as OA;
 use RuntimeException;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -26,6 +24,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 /**
  * @OA\Tag(name="Authentification")
  */
+#[Security(name: null)]
 class RegisterController extends AbstractApiController
 {
     /**
