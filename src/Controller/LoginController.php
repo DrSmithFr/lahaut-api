@@ -13,6 +13,9 @@ use App\Controller\Traits\SerializerAware;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+/**
+ * @OA\Tag(name="Authentification")
+ */
 class LoginController extends AbstractController
 {
     use SerializerAware;
@@ -27,7 +30,6 @@ class LoginController extends AbstractController
 
     /**
      * Initialise sessions with encryption API (Token valid for 30s)
-     * @OA\Tag(name="Authentification")
      * @OA\RequestBody(@Model(type=LoginModel::class))
      * @OA\Response(
      *     response=200,

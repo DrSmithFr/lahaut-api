@@ -7,25 +7,30 @@ namespace App\Model;
 use OpenApi\Attributes as OA;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class LoginModel
+class ResetPasswordModel
 {
     #[Assert\Email]
-    #[OA\Property(description: 'Email of user', type: 'string', example: 'user@gmail.com')]
-    private ?string $username = null;
+    #[OA\Property(description: 'Reset token of user', type: 'string', example: 'user@gmail.com')]
+    private ?string $token = null;
 
     #[Assert\Length(min: 4)]
     #[OA\Property(description: 'Plaintext password', type: 'string', example: 'user-passwd')]
     private ?string $password = null;
 
-    public function getUsername(): ?string
+    /**
+     * @return string|null
+     */
+    public function getToken(): ?string
     {
-        return $this->username;
+        return $this->token;
     }
 
-    public function setUsername(?string $username): self
+    /**
+     * @param string|null $token
+     */
+    public function setToken(?string $token): void
     {
-        $this->username = $username;
-        return $this;
+        $this->token = $token;
     }
 
     public function getPassword(): ?string

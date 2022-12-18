@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Interfaces\SerializableEntity;
 use App\Entity\Traits\BlamableTrait;
+use App\Entity\Traits\EnablableTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimestampableTrait;
 use App\Enum\SecurityRoleEnum;
 use App\Repository\UserRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use InvalidArgumentException;
 use JMS\Serializer\Annotation as JMS;
@@ -21,11 +24,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[JMS\ExclusionPolicy('all')]
 class User implements UserInterface,
     PasswordAuthenticatedUserInterface,
-    PasswordHasherAwareInterface
+    PasswordHasherAwareInterface,
+    SerializableEntity
 {
     use IdTrait;
     use TimestampableTrait;
     use BlamableTrait;
+    use EnablableTrait;
 
     #[ORM\Column(type: 'string', unique: true)]
     #[Assert\Email]
@@ -54,6 +59,12 @@ class User implements UserInterface,
     #[JMS\Type('array<string>')]
     private array $roles = [];
 
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $passwordResetToken = null;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?DateTime $passwordResetAt = null;
+
     public function getUserIdentifier(): string
     {
         return $this->getEmail();
@@ -76,7 +87,7 @@ class User implements UserInterface,
 
     public function addRole(string $role): self
     {
-        if (!SecurityRoleEnum::isValidValue($role)) {
+        if (!SecurityRoleEnum::tryFrom($role)) {
             throw new InvalidArgumentException('invalid role');
         }
 
@@ -89,7 +100,7 @@ class User implements UserInterface,
 
     public function removeRole(string $role): self
     {
-        if (!SecurityRoleEnum::isValidValue($role)) {
+        if (!SecurityRoleEnum::tryFrom($role)) {
             throw new InvalidArgumentException('invalid role');
         }
 
@@ -153,6 +164,33 @@ class User implements UserInterface,
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPasswordResetToken(): ?string
+    {
+        return $this->passwordResetToken;
+    }
+
+    /**
+     * @param string|null $passwordResetToken
+     */
+    public function setPasswordResetToken(?string $passwordResetToken): void
+    {
+        $this->passwordResetToken = $passwordResetToken;
+    }
+
+    public function getPasswordResetAt(): ?DateTime
+    {
+        return $this->passwordResetAt;
+    }
+
+    public function setPasswordResetAt(?DateTime $passwordResetAt): self
+    {
+        $this->passwordResetAt = $passwordResetAt;
         return $this;
     }
 }

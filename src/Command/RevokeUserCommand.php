@@ -54,15 +54,15 @@ class RevokeUserCommand extends Command
         }
 
         if ($input->getOption('user')) {
-            $user->removeRole(SecurityRoleEnum::USER->role());
+            $user->removeRole(SecurityRoleEnum::USER->getRole());
         }
 
         if ($input->getOption('admin')) {
-            $user->removeRole(SecurityRoleEnum::ADMIN->role());
+            $user->removeRole(SecurityRoleEnum::ADMIN->getRole());
         }
 
         if ($input->getOption('super-admin')) {
-            $user->removeRole(SecurityRoleEnum::SUPER_ADMIN->role());
+            $user->removeRole(SecurityRoleEnum::SUPER_ADMIN->getRole());
         }
 
         $this->entityManager->flush();

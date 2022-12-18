@@ -54,15 +54,15 @@ class PromoteUserCommand extends Command
         }
 
         if ($input->getOption('user')) {
-            $user->addRole(SecurityRoleEnum::USER->role());
+            $user->addRole(SecurityRoleEnum::USER->getRole());
         }
 
         if ($input->getOption('admin')) {
-            $user->addRole(SecurityRoleEnum::ADMIN->role());
+            $user->addRole(SecurityRoleEnum::ADMIN->getRole());
         }
 
         if ($input->getOption('super-admin')) {
-            $user->addRole(SecurityRoleEnum::SUPER_ADMIN->role());
+            $user->addRole(SecurityRoleEnum::SUPER_ADMIN->getRole());
         }
 
         $this->entityManager->flush();

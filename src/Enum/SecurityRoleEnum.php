@@ -4,20 +4,15 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-enum SecurityRoleEnum
+enum SecurityRoleEnum: string
 {
-    case USER;
-    case MONITOR;
-    case ADMIN;
-    case SUPER_ADMIN;
+    case USER = 'ROLE_USER';
+    case MONITOR = 'ROLE_MONITOR';
+    case ADMIN = 'ROLE_ADMIN';
+    case SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
 
-    public function role(): string
+    public function getRole(): string
     {
-        return match ($this) {
-            self::USER => 'ROLE_USER',
-            self::MONITOR => 'ROLE_MONITOR',
-            self::ADMIN => 'ROLE_ADMIN',
-            self::SUPER_ADMIN => 'Super ROLE_SUPER_ADMIN',
-        };
+        return $this->value;
     }
 }

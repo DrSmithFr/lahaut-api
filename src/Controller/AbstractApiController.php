@@ -20,11 +20,4 @@ abstract class AbstractApiController extends AbstractController
     {
         $this->setSerializer($serializer);
     }
-
-    public function denyAccessUnlessOwning(User $user): void
-    {
-        if (!($this->isGranted('ROLE_ADMIN') || $user === $this->getUser())) {
-            throw $this->createAccessDeniedException('access denied');
-        }
-    }
 }

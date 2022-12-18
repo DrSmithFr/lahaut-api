@@ -53,7 +53,7 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
     /**
      * @throws NonUniqueResultException
      */
-    public function findOneByEmail($email): ?User
+    public function findOneByEmail(string $email): ?User
     {
         return $this
             ->getEntityManager()
@@ -69,7 +69,7 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
     /**
      * @throws NonUniqueResultException
      */
-    public function findOneActiveByEmail($email): ?User
+    public function findOneActiveByEmail(string $email): ?User
     {
         return $this
             ->getEntityManager()
@@ -80,6 +80,19 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
             ->andWhere('u.deletedAt IS NULL')
             ->andWhere('u.enabled = true')
             ->setParameter('mail', strtolower($email))
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function getUserByPasswordResetToken(string $resetToken)
+    {
+        return $this
+            ->getEntityManager()
+            ->createQueryBuilder()
+            ->select('u')
+            ->from(User::class, 'u')
+            ->where('u.passwordResetToken = :token')
+            ->setParameter('token', $resetToken)
             ->getQuery()
             ->getOneOrNullResult();
     }

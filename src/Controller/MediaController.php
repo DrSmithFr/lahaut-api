@@ -1,24 +1,23 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Controller;
 
-use Exception;
 use App\Entity\Media;
 use App\Form\MediaType;
 use App\Service\MediaService;
-use OpenApi\Annotations as OA;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
+use OpenApi\Annotations as OA;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route(path: '/medias', name: 'medias_')]
 #[IsGranted('ROLE_USER')]
@@ -46,12 +45,13 @@ class MediaController extends AbstractApiController
      * @Security(name="Bearer")
      *
      */
-    #[Route(path: '/{uuid}', name: 'by_id_file', requirements: ['id'=>'\d+'], methods: ['GET'])]
+    #[Route(path: '/{uuid}', name: 'by_id_file', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[Security(name: 'Bearer')]
     public function getByIdAction(
         #[MapEntity(class: Media::class)] Media $media,
-        MediaService $mediaService
-    ): StreamedResponse {
+        MediaService                            $mediaService
+    ): StreamedResponse
+    {
         $response = new StreamedResponse();
         $response->headers->set('Content-Type', $media->getContentType());
 
@@ -91,10 +91,11 @@ class MediaController extends AbstractApiController
      *
      *
      */
-    #[Route(path: '/{uuid}/metadata', name: 'by_id_metadata', requirements: ['id'=>'\d+'], methods: ['GET'])]
+    #[Route(path: '/{uuid}/metadata', name: 'by_id_metadata', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function getMetadataByIdAction(
         #[MapEntity(class: Media::class)] Media $media
-    ): JsonResponse {
+    ): JsonResponse
+    {
         return $this->serializeResponse($media, ['Default']);
     }
 
@@ -132,10 +133,11 @@ class MediaController extends AbstractApiController
      */
     #[Route(path: '', name: 'add', methods: ['POST'])]
     public function newAction(
-        Request $request,
+        Request                $request,
         EntityManagerInterface $entityManager,
-        MediaService $mediaService
-    ): JsonResponse {
+        MediaService           $mediaService
+    ): JsonResponse
+    {
         $media = new Media();
 
         $form = $this

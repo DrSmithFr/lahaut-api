@@ -5,9 +5,27 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\User;
+use DateTime;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
 class UserService
 {
+    private UserPasswordHasherInterface $passwordHasher;
+    private TokenGeneratorInterface $tokenGenerator;
+    private MailerService $mailerService;
+
+    public function __construct(
+        UserPasswordHasherInterface $passwordHasher,
+        TokenGeneratorInterface     $tokenGenerator,
+        MailerService               $mailerService
+    )
+    {
+        $this->passwordHasher = $passwordHasher;
+        $this->tokenGenerator = $tokenGenerator;
+        $this->mailerService  = $mailerService;
+    }
+
     /**
      * @param string $password
      * @param string $email
@@ -26,7 +44,10 @@ class UserService
 
     public function updatePassword(User $user): User
     {
-        $encoded = $this->encodePassword($user->getPlainPassword());
+        $encoded = $this->passwordHasher->hashPassword(
+            $user,
+            $user->getPlainPassword()
+        );
 
         $user->setPassword($encoded);
         $user->setPlainPassword(null);
@@ -34,8 +55,13 @@ class UserService
         return $user;
     }
 
-    private function encodePassword(string $pass): string
+    public function generateResetToken(User $user): User
     {
-        return password_hash($pass, PASSWORD_ARGON2I);
+        $user->setPasswordResetToken($this->tokenGenerator->generateToken());
+        $user->setPasswordResetAt(new DateTime());
+
+        $this->mailerService->sendPasswordResetEmail($user);
+
+        return $user;
     }
 }
