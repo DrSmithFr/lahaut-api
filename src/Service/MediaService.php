@@ -75,6 +75,8 @@ class MediaService
     }
 
     /**
+     * @param Media $media
+     * @return Generator<string>
      * @throws FileNotFoundException
      */
     public function decrypt(Media $media): Generator

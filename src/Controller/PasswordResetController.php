@@ -58,7 +58,7 @@ class PasswordResetController extends AbstractController
      * @return Response | JsonResponse
      * @throws NonUniqueResultException
      */
-    #[Route(path: '/password_reset', name: 'app_password_reset_request', methods: ['post'])]
+    #[Route(path: '/password_reset', name: 'request', methods: ['post'])]
     public function passwordResetRequestAction(
         Request                $request,
         UserRepository         $userRepository,
@@ -79,7 +79,6 @@ class PasswordResetController extends AbstractController
         }
 
         $userService->generateResetToken($user);
-        $userService->sendPasswordResetEmail($user);
 
         $entityManager->flush();
 

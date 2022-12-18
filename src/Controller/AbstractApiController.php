@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\User;
 use JMS\Serializer\SerializerInterface;
 use App\Controller\Traits\SerializerAware;
+use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 abstract class AbstractApiController extends AbstractController
@@ -19,5 +20,16 @@ abstract class AbstractApiController extends AbstractController
     public function __construct(SerializerInterface $serializer)
     {
         $this->setSerializer($serializer);
+    }
+
+    public function getUser(): ?User
+    {
+        $user = parent::getUser();
+
+        if ($user instanceof User) {
+            return $user;
+        }
+
+        return null;
     }
 }

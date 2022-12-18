@@ -15,11 +15,11 @@ use OpenApi\Annotations as OA;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route(path: '/medias', name: 'medias_')]
 #[IsGranted('ROLE_USER')]
 class MediaController extends AbstractApiController
 {
@@ -45,7 +45,7 @@ class MediaController extends AbstractApiController
      * @Security(name="Bearer")
      *
      */
-    #[Route(path: '/{uuid}', name: 'by_id_file', requirements: ['id' => '\d+'], methods: ['GET'])]
+    #[Route(path: 'medias/{uuid}', name: 'medias_by_uuid', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[Security(name: 'Bearer')]
     public function getByIdAction(
         #[MapEntity(class: Media::class)] Media $media,
@@ -91,12 +91,12 @@ class MediaController extends AbstractApiController
      *
      *
      */
-    #[Route(path: '/{uuid}/metadata', name: 'by_id_metadata', requirements: ['id' => '\d+'], methods: ['GET'])]
+    #[Route(path: 'medias/{uuid}/metadata', name: 'medias_metadata', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function getMetadataByIdAction(
         #[MapEntity(class: Media::class)] Media $media
     ): JsonResponse
     {
-        return $this->serializeResponse($media, ['Default']);
+        return $this->serializeResponse($media);
     }
 
     /**
@@ -131,7 +131,7 @@ class MediaController extends AbstractApiController
      *
      *
      */
-    #[Route(path: '', name: 'add', methods: ['POST'])]
+    #[Route(path: 'medias', name: 'medias_add', methods: ['POST'])]
     public function newAction(
         Request                $request,
         EntityManagerInterface $entityManager,
@@ -147,7 +147,7 @@ class MediaController extends AbstractApiController
         if (!$form->isSubmitted()) {
             return $this->messageResponse(
                 'No form submitted',
-                JsonResponse::HTTP_NOT_ACCEPTABLE
+                Response::HTTP_NOT_ACCEPTABLE
             );
         }
 
@@ -164,7 +164,7 @@ class MediaController extends AbstractApiController
             [
                 'uuid' => $media->getUuid(),
             ],
-            JsonResponse::HTTP_ACCEPTED
+            Response::HTTP_ACCEPTED
         );
     }
 }
