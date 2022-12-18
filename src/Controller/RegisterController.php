@@ -26,18 +26,8 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 /**
  * @OA\Tag(name="Authentification")
  */
-class RegisterController extends AbstractController
+class RegisterController extends AbstractApiController
 {
-    use SerializerAware;
-
-    /**
-     * ConnectionController constructor.
-     */
-    public function __construct(SerializerInterface $serializer)
-    {
-        $this->setSerializer($serializer);
-    }
-
     /**
      * Initialise sessions with encryption API (Token valid for 30s)
      * @OA\RequestBody(@Model(type=LoginModel::class))

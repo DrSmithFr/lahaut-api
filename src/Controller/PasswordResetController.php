@@ -23,18 +23,8 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @OA\Tag(name="Password reset")
  */
-class PasswordResetController extends AbstractController
+class PasswordResetController extends AbstractApiController
 {
-    use SerializerAware;
-
-    /**
-     * ConnectionController constructor.
-     */
-    public function __construct(SerializerInterface $serializer)
-    {
-        $this->setSerializer($serializer);
-    }
-
     /**
      * Request a password reset token (by mail).
      * @OA\RequestBody(
@@ -55,7 +45,7 @@ class PasswordResetController extends AbstractController
      * @param UserRepository $userRepository
      * @param UserService $userService
      * @param EntityManagerInterface $entityManager
-     * @return Response | JsonResponse
+     * @return JsonResponse
      * @throws NonUniqueResultException
      */
     #[Route(path: '/password_reset', name: 'request', methods: ['post'])]
@@ -64,7 +54,7 @@ class PasswordResetController extends AbstractController
         UserRepository         $userRepository,
         UserService            $userService,
         EntityManagerInterface $entityManager,
-    )
+    ): JsonResponse
     {
         $username = $request->get('username');
         $user = $userRepository->findOneByEmail($username);

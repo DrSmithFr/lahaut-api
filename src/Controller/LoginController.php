@@ -16,18 +16,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 /**
  * @OA\Tag(name="Authentification")
  */
-class LoginController extends AbstractController
+class LoginController extends AbstractApiController
 {
-    use SerializerAware;
-
-    /**
-     * ConnectionController constructor.
-     */
-    public function __construct(SerializerInterface $serializer)
-    {
-        $this->setSerializer($serializer);
-    }
-
     /**
      * Initialise sessions with encryption API (Token valid for 30s)
      * @OA\RequestBody(@Model(type=LoginModel::class))
