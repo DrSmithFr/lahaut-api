@@ -27,8 +27,8 @@ class UserFixtures extends Fixture
         $this->setReference(self::REFERENCE_ADMIN, $admin);
         $this->setReference(self::REFERENCE_USER, $user);
 
-        $admin->addRole(SecurityRoleEnum::ADMIN);
-        $user->addRole(SecurityRoleEnum::USER);
+        $admin->addRole(SecurityRoleEnum::ADMIN->role());
+        $user->addRole(SecurityRoleEnum::USER->role());
 
         $manager->persist($admin);
         $manager->persist($user);

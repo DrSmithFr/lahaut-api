@@ -47,22 +47,22 @@ class RevokeUserCommand extends Command
 
         $user = $this
             ->repository
-            ->loadUserByEmail($email);
+            ->findOneByEmail($email);
 
         if (!$user) {
             throw new UserNotFoundException('email', $email);
         }
 
         if ($input->getOption('user')) {
-            $user->removeRole(SecurityRoleEnum::USER);
+            $user->removeRole(SecurityRoleEnum::USER->role());
         }
 
         if ($input->getOption('admin')) {
-            $user->removeRole(SecurityRoleEnum::ADMIN);
+            $user->removeRole(SecurityRoleEnum::ADMIN->role());
         }
 
         if ($input->getOption('super-admin')) {
-            $user->removeRole(SecurityRoleEnum::SUPER_ADMIN);
+            $user->removeRole(SecurityRoleEnum::SUPER_ADMIN->role());
         }
 
         $this->entityManager->flush();
