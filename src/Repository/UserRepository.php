@@ -27,20 +27,7 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
      */
     public function loadUserByIdentifier(string $identifier): ?UserInterface
     {
-        return $this->loadUserByUsername($identifier);
-    }
-
-    /**
-     * (authentication)
-     * @throws NonUniqueResultException
-     */
-    public function loadUserByUsername($username): ?User
-    {
-        if (!is_string($username)) {
-            return null;
-        }
-
-        return $this->findOneByUuid(Uuid::fromString($username));
+        return $this->findOneActiveByEmail($identifier);
     }
 
     /**
@@ -66,15 +53,33 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
     /**
      * @throws NonUniqueResultException
      */
-    public function findOneByUuid(UuidInterface $uuid): ?User
+    public function findOneByEmail($email): ?User
     {
         return $this
             ->getEntityManager()
             ->createQueryBuilder()
             ->select('u')
             ->from(User::class, 'u')
-            ->where('u.uuid = :uuid')
-            ->setParameter('uuid', $uuid)
+            ->where('u.email = :mail')
+            ->setParameter('mail', strtolower($email))
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function findOneActiveByEmail($email): ?User
+    {
+        return $this
+            ->getEntityManager()
+            ->createQueryBuilder()
+            ->select('u')
+            ->from(User::class, 'u')
+            ->where('u.email = :mail')
+            ->andWhere('u.deletedAt IS NULL')
+            ->andWhere('u.enabled = true')
+            ->setParameter('mail', strtolower($email))
             ->getQuery()
             ->getOneOrNullResult();
     }

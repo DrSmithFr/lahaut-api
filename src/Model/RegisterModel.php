@@ -7,7 +7,7 @@ namespace App\Model;
 use OpenApi\Attributes as OA;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class LoginModel
+class RegisterModel
 {
     #[Assert\Email]
     #[OA\Property(type: 'string', description: 'Email of user', example: 'john.doe@gmail.com')]

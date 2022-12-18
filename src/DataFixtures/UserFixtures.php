@@ -21,8 +21,8 @@ class UserFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        $admin = $this->userService->createUser('admin-passwd', '766af668-0c19-4624-bcb4-bdb09ce4dada');
-        $user  = $this->userService->createUser('user-passwd', '0b819649-bef4-4fb9-a6b4-7b7b0b69961c');
+        $admin = $this->userService->createUser('admin-passwd', 'admin@gmail.com');
+        $user  = $this->userService->createUser('user-passwd', 'user@gmail.com');
 
         $this->setReference(self::REFERENCE_ADMIN, $admin);
         $this->setReference(self::REFERENCE_USER, $user);

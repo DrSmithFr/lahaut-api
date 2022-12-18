@@ -1,21 +1,21 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
-use InvalidArgumentException;
-use Ramsey\Uuid\UuidInterface;
-use App\Enum\SecurityRoleEnum;
-use App\Entity\Traits\IdTrait;
-use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation as JMS;
 use App\Entity\Traits\BlamableTrait;
+use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimestampableTrait;
+use App\Enum\SecurityRoleEnum;
+use App\Repository\UserRepository;
+use Doctrine\ORM\Mapping as ORM;
+use InvalidArgumentException;
+use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherAwareInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[JMS\ExclusionPolicy('all')]
@@ -27,11 +27,13 @@ class User implements UserInterface,
     use TimestampableTrait;
     use BlamableTrait;
 
-    #[ORM\Column(type: 'uuid', unique: true)]
-    #[JMS\Type('string')]
+    #[ORM\Column(type: 'string', unique: true)]
+    #[Assert\Email]
+
     #[JMS\Expose]
+    #[JMS\Type('string')]
     #[JMS\Groups(['Default', 'Login'])]
-    private ?UuidInterface $uuid = null;
+    private ?string $email = null;
 
     #[ORM\Column]
     #[JMS\Groups(['Default', 'Login'])]
@@ -54,22 +56,12 @@ class User implements UserInterface,
 
     public function getUserIdentifier(): string
     {
-        return $this->getUsername();
+        return $this->getEmail();
     }
 
     public function getPasswordHasherName(): ?string
     {
         return "harsh";
-    }
-
-    /**
-     * Returns the username used to authenticate the user.
-     *
-     * @return string|null The username
-     */
-    public function getUsername(): ?string
-    {
-        return $this->getUuid() ? $this->getUuid()->toString() : null;
     }
 
     /**
@@ -108,14 +100,15 @@ class User implements UserInterface,
         return $this;
     }
 
-    public function getUuid(): ?UuidInterface
+    public function getEmail(): ?string
     {
-        return $this->uuid;
+        return $this->email;
     }
 
-    public function setUuid($uuid): self
+    public function setEmail(string $email): self
     {
-        $this->uuid = $uuid;
+        // ensure email is lowercase
+        $this->email = strtolower($email);
         return $this;
     }
 

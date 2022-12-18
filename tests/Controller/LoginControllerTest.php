@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class LoginControllerTest extends ApiTestCase
 {
-    public function testLoginBadUuid(): void
+    public function testLoginWithUserNotFound(): void
     {
         $client = static::createClient();
 
@@ -21,7 +21,7 @@ class LoginControllerTest extends ApiTestCase
         );
 
         $this->assertEquals(
-            Response::HTTP_INTERNAL_SERVER_ERROR,
+            Response::HTTP_UNAUTHORIZED,
             $client->getResponse()->getStatusCode(),
             'can use a bad Uuid as username'
         );
@@ -37,7 +37,7 @@ class LoginControllerTest extends ApiTestCase
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],
-            '{"username":"766af668-0c19-4624-bcb4-bdb09ce4dada","password":"badpassword"}'
+            '{"username":"admin@gmail.com","password":"badpassword"}'
         );
 
         $this->assertEquals(
@@ -57,7 +57,7 @@ class LoginControllerTest extends ApiTestCase
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],
-            '{"username":"766af668-0c19-4624-bcb4-bdb09ce4dada","password":"admin-passwd"}'
+            '{"username":"admin@gmail.com","password":"admin-passwd"}'
         );
 
         $this->assertEquals(
@@ -77,7 +77,7 @@ class LoginControllerTest extends ApiTestCase
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],
-            '{"username":"0b819649-bef4-4fb9-a6b4-7b7b0b69961c","password":"user-passwd"}'
+            '{"username":"user@gmail.com","password":"user-passwd"}'
         );
 
         $this->assertEquals(

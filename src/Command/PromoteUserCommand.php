@@ -29,7 +29,7 @@ class PromoteUserCommand extends Command
     {
         $this
             ->setName('app:user:promote')
-            ->addArgument('uuid', InputArgument::REQUIRED, 'UUID of user')
+            ->addArgument('email', InputArgument::REQUIRED, 'Email of user')
             ->addOption('user', 'u', InputOption::VALUE_NONE, 'Add role user')
             ->addOption('admin', 'a', InputOption::VALUE_NONE, 'Add role admin')
             ->addOption('super-admin', 's', InputOption::VALUE_NONE, 'Add role super-admin');
@@ -40,17 +40,17 @@ class PromoteUserCommand extends Command
      */
     public function execute(InputInterface $input, OutputInterface $output): void
     {
-        $uuid = $input->getArgument('uuid');
+        $email = $input->getArgument('email');
         $io   = new SymfonyStyle($input, $output);
 
-        $io->title('Promoting ' . $uuid);
+        $io->title('Promoting ' . $email);
 
         $user = $this
             ->repository
-            ->loadUserByUsername($uuid);
+            ->findOneByEmail($email);
 
         if (!$user) {
-            throw new UserNotFoundException('uuid', $input->getArgument('uuid'));
+            throw new UserNotFoundException('email', $email);
         }
 
         if ($input->getOption('user')) {
@@ -70,7 +70,7 @@ class PromoteUserCommand extends Command
         $io->success(
             sprintf(
                 '%s updated with roles : %s',
-                $uuid,
+                $email,
                 implode(', ', $user->getRoles())
             )
         );

@@ -5,19 +5,18 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\User;
-use Ramsey\Uuid\Uuid;
 
 class UserService
 {
     /**
      * @param string $password
-     * @param string|null $uuid
+     * @param string $email
      * @return User
      */
-    public function createUser(string $password, string $uuid = null): User
+    public function createUser(string $password, string $email): User
     {
         $user = (new User())
-            ->setUuid($uuid ? Uuid::fromString($uuid) : Uuid::uuid4())
+            ->setEmail(strtolower($email))
             ->setPlainPassword($password);
 
         $this->updatePassword($user);
