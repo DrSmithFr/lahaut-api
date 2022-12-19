@@ -8,6 +8,7 @@ use App\Model\FormErrorDetailModel;
 use App\Model\FormErrorModel;
 use InvalidArgumentException;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -48,13 +49,11 @@ trait SerializerAware
      */
     protected function toArray(Serializable $data, array $group = ['Default']): array
     {
-        return (array)$this
-            ->getSerializer()
-            ->serialize(
-                $data,
-                'array',
-                $this->getSerializationContext($group)
-            );
+        $builder = SerializerBuilder::create();
+
+        return $builder
+            ->build()
+            ->toArray($data, $this->getSerializationContext($group));
     }
 
     /**
@@ -130,7 +129,7 @@ trait SerializerAware
 
         foreach ($data->all() as $child) {
             if ($child instanceof FormInterface) {
-                $children[$child->getName()] = $this->getFormErrorArray($child);
+                $children[$child->getName()] = $this->getFormErrorDetail($child);
             }
         }
 

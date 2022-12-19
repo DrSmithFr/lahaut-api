@@ -11,9 +11,9 @@ class EncryptionServiceTest extends ApiTestCase
 {
     private ?EncryptionService $service;
 
-    protected function setUp(): void
+    public function setUp(): void
     {
-        self::bootKernel();
+        parent::setUp();
         $this->service = self::getContainer()->get(EncryptionService::class);
     }
 

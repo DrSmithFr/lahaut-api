@@ -23,10 +23,10 @@ class UserFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        $admin = $this->userService->createUser('admin-passwd', 'admin@gmail.com');
-        $user  = $this->userService->createUser('user-passwd', 'user@gmail.com');
-        $monitor  = $this->userService->createUser('monitor-passwd', 'monitor@gmail.com');
-        $disabled  = $this->userService->createUser('disabled-passwd', 'disabled@gmail.com');
+        $admin = $this->userService->createUser('admin@gmail.com', 'admin-password');
+        $user  = $this->userService->createUser('user@gmail.com', 'user-password');
+        $monitor  = $this->userService->createUser('monitor@gmail.com', 'monitor-password');
+        $disabled  = $this->userService->createUser('disabled@gmail.com', 'disabled-password');
 
         $this->setReference(self::REFERENCE_ADMIN, $admin);
         $this->setReference(self::REFERENCE_USER, $user);

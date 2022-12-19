@@ -6,20 +6,19 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Enum\SecurityRoleEnum;
-use App\Model\RegisterModel;
+use App\Form\RegisterType;
 use App\Model\FormErrorModel;
+use App\Model\RegisterModel;
 use App\Repository\UserRepository;
 use App\Service\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Annotations as OA;
-use RuntimeException;
-use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @OA\Tag(name="Authentification")
@@ -43,28 +42,33 @@ class RegisterController extends AbstractApiController
      */
     #[Route(path: '/register', name: 'app_register', methods: ['post'])]
     final public function register(
-        #[MapEntity(class: RegisterModel::class)] $registerForm,
-        ValidatorInterface                        $validator,
-        EntityManagerInterface                    $entityManager,
-        UserRepository                            $userRepository,
-        UserService                               $userService
+        Request                $request,
+        EntityManagerInterface $entityManager,
+        UserRepository         $userRepository,
+        UserService            $userService
     ): JsonResponse
     {
-        $errors = $validator->validate($registerForm);
+        $registerModel = new RegisterModel();
 
-        if (count($errors) > 0) {
-            return $this->formErrorResponse($registerForm, Response::HTTP_BAD_REQUEST);
+        $form = $this->handleJsonFormRequest(
+            $request,
+            RegisterType::class,
+            $registerModel
+        );
+
+        if (!$form->isValid()) {
+            return $this->formErrorResponse($form, Response::HTTP_BAD_REQUEST);
         }
 
-        $user = $userRepository->findOneBy(['email' => strtolower($registerForm->getEmail())]);
+        $user = $userRepository->findOneBy(['email' => strtolower($registerModel->getUsername())]);
 
         if ($user) {
-            throw new RuntimeException('Email already used');
+            return $this->messageResponse('Email already exit', Response::HTTP_FORBIDDEN);
         }
 
         $user = $userService->createUser(
-            $registerForm->getEmail(),
-            $registerForm->getPassword()
+            $registerModel->getUsername(),
+            $registerModel->getPassword()
         );
 
         $user->setRoles([SecurityRoleEnum::USER]);
@@ -72,9 +76,6 @@ class RegisterController extends AbstractApiController
         $entityManager->persist($user);
         $entityManager->flush();
 
-        return new JsonResponse(
-            $this->serialize($user),
-            Response::HTTP_CREATED
-        );
+        return $this->json($user, Response::HTTP_CREATED);
     }
 }

@@ -24,6 +24,15 @@ security:
         documentation:
             pattern: ^/documentation$
             security: false
+        register:
+            pattern: ^/register$
+            security: false
+        password_reset:
+            pattern:  ^/password_reset$
+            security: false
+        public_media:
+            pattern: ^/media/
+            security: false
         main:
             stateless: true
             provider: users

@@ -9,7 +9,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class ResetPasswordModel
 {
-    #[Assert\Email]
+    #[Assert\NotNull]
+    #[Assert\NotBlank]
     #[OA\Property(description: 'Reset token of user', type: 'string', example: 'user@gmail.com')]
     private ?string $token = null;
 

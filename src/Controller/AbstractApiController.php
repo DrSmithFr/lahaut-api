@@ -6,8 +6,12 @@ namespace App\Controller;
 
 use App\Controller\Traits\SerializerAware;
 use App\Entity\User;
+use App\Form\RegisterType;
+use App\Model\RegisterModel;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 abstract class AbstractApiController extends AbstractController
 {
@@ -30,5 +34,18 @@ abstract class AbstractApiController extends AbstractController
         }
 
         return null;
+    }
+
+    /**
+     * Creates and returns a Form instance from the type of the form.
+     */
+    protected function handleJsonFormRequest(Request $request, string $type, mixed $data = null): FormInterface
+    {
+       return $this
+            ->createForm(
+                $type,
+                $data
+            )
+            ->submit($request->request->all());
     }
 }

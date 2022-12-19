@@ -4,58 +4,47 @@ declare(strict_types = 1);
 
 namespace App\Tests;
 
-use LogicException;
-use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializerInterface;
+use LogicException;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
+use Symfony\Component\DomCrawler\Crawler;
 
 abstract class ApiTestCase extends WebTestCase
 {
-    protected function get(
-        string $url,
-        array $parameters = []
-    ): KernelBrowser {
-        $client = static::createClient();
-        $client->enableProfiler();
+    private KernelBrowser $client;
 
-        if (count($parameters)) {
-            $url = sprintf('%s/%s', $url, http_build_query($parameters));
-        }
-
-        $client->request(
-            'GET',
-            $url,
-            [],
-            [],
-            ['CONTENT_TYPE' => 'application/json'],
-            );
-
-        return $client;
+    public function setUp(): void
+    {
+        $this->client = static::createClient();
     }
 
     protected function patch(
         string $url,
         object $object,
-        array $group = ['Default']
-    ): KernelBrowser {
+        array  $group = ['Default']
+    ): Crawler
+    {
         return $this->call('POST', $url, $object, $group);
     }
 
     protected function put(
         string $url,
         object $object,
-        array $group = ['Default']
-    ): KernelBrowser {
+        array  $group = ['Default']
+    ): Crawler
+    {
         return $this->call('POST', $url, $object, $group);
     }
 
     protected function post(
         string $url,
         object $object,
-        array $group = ['Default']
-    ): KernelBrowser {
+        array  $group = ['Default']
+    ): Crawler
+    {
         return $this->call('POST', $url, $object, $group);
     }
 
@@ -65,19 +54,19 @@ abstract class ApiTestCase extends WebTestCase
      * @param mixed  $object
      * @param array  $group
      *
-     * @return KernelBrowser
+     * @return Crawler
      */
     protected function call(
         string $method,
         string $url,
-        $object,
-        array $group = ['Default']
-    ): KernelBrowser {
-        self::bootKernel();
+        mixed  $object,
+        array  $group = ['Default']
+    ): Crawler
+    {
+        $container = self::getContainer();
 
         try {
-            /** @var SerializerInterface $serializer */
-            $serializer = self::$container->get(SerializerInterface::class);
+            $serializer = $container->get(SerializerInterface::class);
         } catch (ServiceNotFoundException $e) {
             throw new LogicException('Serializer not found.');
         }
@@ -86,18 +75,17 @@ abstract class ApiTestCase extends WebTestCase
             ->setSerializeNull(true)
             ->setGroups($group);
 
-        $client = static::createClient();
-        $client->enableProfiler();
+        $json = $serializer->serialize($object, 'json', $context);
 
-        $client->request(
+        $this->client->enableProfiler();
+
+        return $this->client->request(
             $method,
             $url,
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],
-            $serializer->serialize($object, 'json', $context)
+            $json
         );
-
-        return $client;
     }
 }
