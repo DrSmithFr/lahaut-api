@@ -4,6 +4,8 @@ namespace App\Controller\Traits;
 
 use App\Entity\Interfaces\Serializable;
 use App\Entity\Interfaces\SerializableEntity;
+use App\Model\FormErrorDetailModel;
+use App\Model\FormErrorModel;
 use InvalidArgumentException;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
@@ -90,7 +92,6 @@ trait SerializerAware
     {
         return new JsonResponse(
             [
-                'code' => $status,
                 'message' => $message,
             ],
             $status
@@ -102,23 +103,22 @@ trait SerializerAware
      */
     protected function formErrorResponse(
         FormInterface $form,
-        int           $status = Response::HTTP_BAD_REQUEST,
-        bool          $showReason = true
+        int           $status
     ): JsonResponse
     {
+        $formError = (new FormErrorModel())
+            ->setCode($status)
+            ->setReason($this->getFormErrorDetail($form));
         return new JsonResponse(
-            [
-                'code' => $status,
-                'message' => 'Invalid form',
-                'reason' => $showReason ? $this->getFormErrorArray($form) : 'hidden',
-            ],
+            $this->toArray($formError),
             $status
         );
     }
 
-    private function getFormErrorArray(FormInterface $data): array
+    private function getFormErrorDetail(FormInterface $data): FormErrorDetailModel
     {
-        $form = $errors = [];
+        $reason = new FormErrorDetailModel();
+        $errors = $children = [];
 
         foreach ($data->getErrors() as $error) {
             /** @var ConstraintViolation $cause */
@@ -126,22 +126,17 @@ trait SerializerAware
             $errors[$cause->getPropertyPath()] = $error->getMessage();
         }
 
-        if ($errors) {
-            $form['errors'] = $errors;
-        }
+        $reason->setErrors($errors);
 
-        $children = [];
         foreach ($data->all() as $child) {
             if ($child instanceof FormInterface) {
                 $children[$child->getName()] = $this->getFormErrorArray($child);
             }
         }
 
-        if ($children) {
-            $form['children'] = $children;
-        }
+        $reason->setChildren($children);
 
-        return $form;
+        return $reason;
     }
 
     /**
@@ -162,7 +157,7 @@ trait SerializerAware
                 'code' => $status,
                 'message' => $message,
                 'id' => $entity->getIdentifier(),
-                'entity' => $this->serialize($entity),
+                'entity' => $this->toArray($entity),
             ],
             $status
         );

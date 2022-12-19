@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Model\ResetPasswordModel;
 use App\Repository\UserRepository;
+use App\Service\MailerService;
 use App\Service\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
@@ -35,27 +36,14 @@ class PasswordResetController extends AbstractApiController
      *      )
      *    )
      * )
-     * @OA\Response(
-     *     response=200,
-     *     description="User connected",
-     *     @OA\MediaType(
-     *      mediaType="application/json",
-     *      @OA\Schema(type="object", example={"info": "mail sent"})
-     *     )
-     * )
-     * @OA\Response(
-     *     response=403,
-     *     description="User not recognised",
-     *     @OA\MediaType(
-     *      mediaType="application/json",
-     *      @OA\Schema(type="object", example={"error": "User not recognised"})
-     *     )
-     * )
+     * @OA\Response(response=202, description="User connected")
+     * @OA\Response(response=403, description="User not recognised")
      *
      * @param Request                $request
      * @param UserRepository         $userRepository
      * @param UserService            $userService
      * @param EntityManagerInterface $entityManager
+     * @param MailerService          $mailerService
      *
      * @return JsonResponse
      * @throws NonUniqueResultException
@@ -66,51 +54,29 @@ class PasswordResetController extends AbstractApiController
         UserRepository         $userRepository,
         UserService            $userService,
         EntityManagerInterface $entityManager,
+        MailerService          $mailerService
     ): JsonResponse
     {
         $username = $request->get('username');
         $user = $userRepository->findOneByEmail($username);
 
         if (null === $user) {
-            return new JsonResponse(
-                [
-                    'error' => 'User not recognised',
-                ],
-                Response::HTTP_FORBIDDEN
-            );
+            return $this->messageResponse('User not recognised', Response::HTTP_FORBIDDEN);
         }
 
         $userService->generateResetToken($user);
+        $mailerService->sendResetPasswordMail($user);
 
         $entityManager->flush();
 
-        return new JsonResponse(
-            [
-                'info' => 'mail send',
-            ],
-            Response::HTTP_ACCEPTED
-        );
+        return $this->messageResponse('mail sent', Response::HTTP_ACCEPTED);
     }
 
     /**
      * Reset password with token.
      * @OA\RequestBody(@Model(type=ResetPasswordModel::class))
-     * @OA\Response(
-     *     response=200,
-     *     description="Update User password",
-     *     @OA\MediaType(
-     *      mediaType="application/json",
-     *      @OA\Schema(type="object", example={"info": "Password changed"})
-     *     )
-     * )
-     * @OA\Response(
-     *     response=400,
-     *     description="Token not valid",
-     *     @OA\MediaType(
-     *      mediaType="application/json",
-     *      @OA\Schema(type="object", example={"error": "token not valid"})
-     *     )
-     * )
+     * @OA\Response(response=202, description="Update User password")
+     * @OA\Response(response=400, description="Token not valid")
      *
      * @param                        $resetPasswordModel
      * @param UserRepository         $userRepository
@@ -130,12 +96,7 @@ class PasswordResetController extends AbstractApiController
         $user = $userRepository->getUserByPasswordResetToken($resetPasswordModel->getToken());
 
         if (null === $user) {
-            return new JsonResponse(
-                [
-                    'error' => 'token not valid.',
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+            return $this->messageResponse('token not valid', Response::HTTP_BAD_REQUEST);
         }
 
         $user->setPlainPassword($resetPasswordModel->getPassword());
@@ -145,12 +106,8 @@ class PasswordResetController extends AbstractApiController
         $userService->updatePassword($user);
         $entityManager->flush();
 
-        return new JsonResponse(
-            [
-                'info' => 'Password changed',
-            ],
-            Response::HTTP_ACCEPTED
-        );
+        return $this->messageResponse('Password changed', Response::HTTP_ACCEPTED);
+
     }
 
     /**
@@ -161,22 +118,8 @@ class PasswordResetController extends AbstractApiController
      *     @OA\Schema(type="object", example={"token": "xxxxxxxxxxxxxxx"})
      *   )
      * )
-     * @OA\Response(
-     *     response=200,
-     *     description="Update User password",
-     *     @OA\MediaType(
-     *      mediaType="application/json",
-     *      @OA\Schema(type="object", example={"info": "Password changed"})
-     *     )
-     * )
-     * @OA\Response(
-     *     response=400,
-     *     description="Token not valid",
-     *     @OA\MediaType(
-     *      mediaType="application/json",
-     *      @OA\Schema(type="object", example={"error": "token not valid"})
-     *     )
-     * )
+     * @OA\Response(response=202, description="Update User password")
+     * @OA\Response(response=400, description="Token not valid")
      *
      * @param Request        $request
      * @param UserRepository $userRepository
@@ -193,19 +136,9 @@ class PasswordResetController extends AbstractApiController
         $user = $userRepository->getUserByPasswordResetToken($token);
 
         if (null === $user) {
-            return new JsonResponse(
-                [
-                    'error' => 'token not valid.',
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+            return $this->messageResponse('token not valid.', Response::HTTP_BAD_REQUEST);
         }
 
-        return new JsonResponse(
-            [
-                'info' => 'token valid.',
-            ],
-            Response::HTTP_OK
-        );
+        return $this->messageResponse('token valid.', Response::HTTP_ACCEPTED);
     }
 }

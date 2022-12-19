@@ -1,13 +1,15 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Controller;
 
 use App\Entity\User;
 use App\Enum\SecurityRoleEnum;
 use App\Model\RegisterModel;
+use App\Model\FormErrorModel;
 use App\Repository\UserRepository;
+use App\Service\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
@@ -16,7 +18,6 @@ use RuntimeException;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -37,10 +38,7 @@ class RegisterController extends AbstractApiController
      * @OA\Response(
      *     response="400",
      *     description="Bad request",
-     *     @OA\MediaType(
-     *      mediaType="application/json",
-     *      @OA\Schema(type="object", example={"debug": "symfony error message"})
-     *     )
+     *     @Model(type=FormErrorModel::class)
      * )
      */
     #[Route(path: '/register', name: 'app_register', methods: ['post'])]
@@ -49,23 +47,13 @@ class RegisterController extends AbstractApiController
         ValidatorInterface                        $validator,
         EntityManagerInterface                    $entityManager,
         UserRepository                            $userRepository,
-        UserPasswordHasherInterface               $passwordHasher
+        UserService                               $userService
     ): JsonResponse
     {
         $errors = $validator->validate($registerForm);
 
         if (count($errors) > 0) {
-            /*
-             * Uses a __toString method on the $errors variable which is a
-             * ConstraintViolationList object. This gives us a nice string
-             * for debugging.
-             */
-            $errorsString = (string)$errors;
-
-            return new JsonResponse(
-                ['debug' => $errorsString],
-                Response::HTTP_BAD_REQUEST
-            );
+            return $this->formErrorResponse($registerForm, Response::HTTP_BAD_REQUEST);
         }
 
         $user = $userRepository->findOneBy(['email' => strtolower($registerForm->getEmail())]);
@@ -74,12 +62,12 @@ class RegisterController extends AbstractApiController
             throw new RuntimeException('Email already used');
         }
 
-        $user = new User();
+        $user = $userService->createUser(
+            $registerForm->getEmail(),
+            $registerForm->getPassword()
+        );
 
-        $user
-            ->setEmail(strtolower($registerForm->getEmail()))
-            ->setPassword($passwordHasher->hashPassword($user, $registerForm->getPassword()))
-            ->setRoles([SecurityRoleEnum::USER->getRole()]);
+        $user->setRoles([SecurityRoleEnum::USER]);
 
         $entityManager->persist($user);
         $entityManager->flush();

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Controller;
 
@@ -31,14 +31,8 @@ class MediaController extends AbstractApiController
      *     required=true,
      *     @OA\Schema(type="number")
      * )
-     * @OA\Response(
-     *     response=200,
-     *     description="The requested medias"
-     * )
-     * @OA\Response(
-     *     response=404,
-     *     description="Not found"
-     * )
+     * @OA\Response(response=200, description="The requested medias")
+     * @OA\Response(response=404, description="Not found")
      * @OA\Tag(name="Medias")
      */
     #[Security(name: null)]
@@ -78,10 +72,7 @@ class MediaController extends AbstractApiController
      *     description="The requested medias",
      *     @Model(type=Media::class, groups={"id", "Default"})
      * )
-     * @OA\Response(
-     *     response=404,
-     *     description="Not found"
-     * )
+     * @OA\Response(response=404, description="Not found")
      * @OA\Tag(name="Medias")
      */
     #[Security(name: null)]
@@ -103,21 +94,15 @@ class MediaController extends AbstractApiController
      *     @OA\Schema(ref=@Model(type=Media::class, groups={"id", "Default"}))
      * )
      * @OA\Response(
-     *     response=200,
+     *     response=202,
      *     description="The media has been created",
      *     @OA\Schema(
      *        type="object",
      *        example={"uuid": "gjc7834ace3-8525-4814-bf0f-b7146bc9e8ab"}
      *     )
      * )
-     * @OA\Response(
-     *     response=400,
-     *     description="The id submitted in body dont match the one on url"
-     * )
-     * @OA\Response(
-     *     response=406,
-     *     description="No form submitted"
-     * )
+     * @OA\Response(response=400, description="The id submitted in body dont match the one on url")
+     * @OA\Response(response=406, description="No form submitted")
      * @OA\Tag(name="Medias")
      * @Security(name="Bearer")
      * @throws Exception
@@ -145,7 +130,7 @@ class MediaController extends AbstractApiController
         }
 
         if (!$form->isValid()) {
-            return $this->formErrorResponse($form);
+            return $this->formErrorResponse($form, Response::HTTP_BAD_REQUEST);
         }
 
         $mediaService->upload($media);

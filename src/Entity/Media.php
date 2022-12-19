@@ -2,22 +2,23 @@
 
 namespace App\Entity;
 
-use SplFileInfo;
-use Ramsey\Uuid\UuidInterface;
+use App\Entity\Interfaces\Serializable;
+use App\Entity\Traits\BlamableTrait;
 use App\Entity\Traits\IdTrait;
+use App\Entity\Traits\SoftDeletableTrait;
+use App\Entity\Traits\TimestampableTrait;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
-use App\Entity\Traits\BlamableTrait;
-use App\Entity\Traits\TimestampableTrait;
-use App\Entity\Traits\SoftDeletableTrait;
+use Ramsey\Uuid\UuidInterface;
+use SplFileInfo;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Table(name: 'medias')]
 #[ORM\Entity]
 #[JMS\ExclusionPolicy('all')]
-class Media
+class Media implements Serializable
 {
     use IdTrait;
     use BlamableTrait;

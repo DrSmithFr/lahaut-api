@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Service;
 
@@ -11,27 +11,25 @@ use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
 class UserService
 {
-    private UserPasswordHasherInterface $passwordHasher;
+    private UserPasswordHasherInterface $passwordEncoder;
     private TokenGeneratorInterface $tokenGenerator;
-    private MailerService $mailerService;
 
     public function __construct(
-        UserPasswordHasherInterface $passwordHasher,
+        UserPasswordHasherInterface $passwordEncoder,
         TokenGeneratorInterface     $tokenGenerator,
-        MailerService               $mailerService
     )
     {
-        $this->passwordHasher = $passwordHasher;
+        $this->passwordEncoder = $passwordEncoder;
         $this->tokenGenerator = $tokenGenerator;
-        $this->mailerService  = $mailerService;
     }
 
     /**
      * @param string $password
      * @param string $email
+     *
      * @return User
      */
-    public function createUser(string $password, string $email): User
+    public function createUser(string $email, string $password): User
     {
         $user = (new User())
             ->setEmail(strtolower($email))
@@ -44,7 +42,7 @@ class UserService
 
     public function updatePassword(User $user): User
     {
-        $encoded = $this->passwordHasher->hashPassword(
+        $encoded = $this->passwordEncoder->hashPassword(
             $user,
             $user->getPlainPassword()
         );
@@ -59,8 +57,6 @@ class UserService
     {
         $user->setPasswordResetToken($this->tokenGenerator->generateToken());
         $user->setPasswordResetAt(new DateTime());
-
-        $this->mailerService->sendPasswordResetEmail($user);
 
         return $user;
     }

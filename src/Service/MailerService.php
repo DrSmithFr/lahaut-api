@@ -29,7 +29,7 @@ class MailerService
         $this->mailer = new Swift_Mailer($transport);
     }
 
-    public function sendPasswordResetEmail(User $user): void
+    public function sendResetPasswordMail(User $user): void
     {
         $message = (new Swift_Message('Reset your password'))
             ->setFrom(self::EMAIL_FROM)
