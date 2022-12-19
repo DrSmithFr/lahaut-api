@@ -6,7 +6,6 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Enum\SecurityRoleEnum;
-use App\Model\LoginModel;
 use App\Model\RegisterModel;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -29,13 +28,18 @@ class RegisterController extends AbstractApiController
 {
     /**
      * Initialise sessions with encryption API (Token valid for 30s)
-     * @OA\RequestBody(@Model(type=LoginModel::class))
+     * @OA\RequestBody(@Model(type=RegisterModel::class))
      * @OA\Response(
-     *     response=200,
-     *     description="User connected",
-     *     @OA\Schema(
-     *        type="object",
-     *        example={"token": "gjc7834ace3-8525-4814-bf0f-b7146bc9e8ab"}
+     *     response=201,
+     *     description="User created",
+     *     @Model(type=User::class)
+     * )
+     * @OA\Response(
+     *     response="400",
+     *     description="Bad request",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      @OA\Schema(type="object", example={"debug": "symfony error message"})
      *     )
      * )
      */

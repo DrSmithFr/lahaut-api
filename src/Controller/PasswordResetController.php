@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Controller;
 
@@ -27,23 +27,36 @@ class PasswordResetController extends AbstractApiController
     /**
      * Request a password reset token (by mail).
      * @OA\RequestBody(
-     *     @OA\Schema(
-     *        type="object",
-     *        example={"username": "user@gmail.com"}
-     *     )
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      @OA\Schema(
+     *         type="object",
+     *         example={"username": "user@gmail.com"}
+     *      )
+     *    )
      * )
      * @OA\Response(
      *     response=200,
      *     description="User connected",
-     *     @OA\Schema(
-     *        type="object",
-     *        example={"info": "mail sent"}
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      @OA\Schema(type="object", example={"info": "mail sent"})
      *     )
      * )
-     * @param Request $request
-     * @param UserRepository $userRepository
-     * @param UserService $userService
+     * @OA\Response(
+     *     response=403,
+     *     description="User not recognised",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      @OA\Schema(type="object", example={"error": "User not recognised"})
+     *     )
+     * )
+     *
+     * @param Request                $request
+     * @param UserRepository         $userRepository
+     * @param UserService            $userService
      * @param EntityManagerInterface $entityManager
+     *
      * @return JsonResponse
      * @throws NonUniqueResultException
      */
@@ -85,15 +98,25 @@ class PasswordResetController extends AbstractApiController
      * @OA\Response(
      *     response=200,
      *     description="Update User password",
-     *     @OA\Schema(
-     *        type="object",
-     *        example={"info": "Password changed"}
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      @OA\Schema(type="object", example={"info": "Password changed"})
      *     )
      * )
-     * @param $resetPasswordModel
-     * @param UserRepository $userRepository
-     * @param UserService $userService
+     * @OA\Response(
+     *     response=400,
+     *     description="Token not valid",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      @OA\Schema(type="object", example={"error": "token not valid"})
+     *     )
+     * )
+     *
+     * @param                        $resetPasswordModel
+     * @param UserRepository         $userRepository
+     * @param UserService            $userService
      * @param EntityManagerInterface $entityManager
+     *
      * @return JsonResponse
      */
     #[Route(path: '/password_reset', name: 'app_password_reset', methods: ['patch'])]
@@ -133,21 +156,31 @@ class PasswordResetController extends AbstractApiController
     /**
      * Check if reset password token is valid.
      * @OA\RequestBody(
-     *     @OA\Schema(
-     *        type="object",
-     *        example={"token": "xxxxxxxxxxxxxxx"}
-     *     )
+     *   @OA\MediaType(
+     *     mediaType="application/json",
+     *     @OA\Schema(type="object", example={"token": "xxxxxxxxxxxxxxx"})
+     *   )
      * )
      * @OA\Response(
      *     response=200,
      *     description="Update User password",
-     *     @OA\Schema(
-     *        type="object",
-     *        example={"info": "Password changed"}
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      @OA\Schema(type="object", example={"info": "Password changed"})
      *     )
      * )
-     * @param Request $request
+     * @OA\Response(
+     *     response=400,
+     *     description="Token not valid",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      @OA\Schema(type="object", example={"error": "token not valid"})
+     *     )
+     * )
+     *
+     * @param Request        $request
      * @param UserRepository $userRepository
+     *
      * @return JsonResponse
      */
     #[Route(path: '/password_reset', name: 'app_password_reset_token_validity', methods: ['get'])]

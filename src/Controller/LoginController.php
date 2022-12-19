@@ -23,10 +23,14 @@ class LoginController extends AbstractApiController
      * @OA\Response(
      *     response=200,
      *     description="User connected",
-     *     @OA\Schema(
-     *        type="object",
-     *        example={"token": "gjc7834ace3-8525-4814-bf0f-b7146bc9e8ab"}
-     *     )
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      @OA\Schema(type="object", example={"token": "gjc7834ace3-8525-4814-bf0f-b7146bc9e8ab"})
+     *    )
+     * )
+     * @OA\Response(
+     *     response="401",
+     *     description="Cannot connect user"
      * )
      */
     #[Route(path: '/login', name: 'app_login', methods: ['post'])]

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Entity\Interfaces\SerializableEntity;
+use App\Entity\Interfaces\Serializable;
 use App\Entity\Traits\BlamableTrait;
 use App\Entity\Traits\EnablableTrait;
 use App\Entity\Traits\IdTrait;
@@ -23,9 +23,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[JMS\ExclusionPolicy('all')]
 class User implements UserInterface,
-    PasswordAuthenticatedUserInterface,
-    PasswordHasherAwareInterface,
-    SerializableEntity
+                      PasswordAuthenticatedUserInterface,
+                      PasswordHasherAwareInterface,
+                      Serializable
 {
     use IdTrait;
     use TimestampableTrait;

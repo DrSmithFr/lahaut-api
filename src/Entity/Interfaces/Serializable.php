@@ -5,7 +5,7 @@ namespace App\Entity\Interfaces;
 /**
  * Explicitly mark entities that can be serialized.
  */
-interface SerializableEntity extends Serializable
+interface Serializable
 {
-    public function getIdentifier(): string;
+
 }

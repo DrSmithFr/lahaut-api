@@ -2,15 +2,14 @@
 
 namespace App\Controller\Traits;
 
-use App\Controller\AbstractApiController;
-use App\Controller\LoginController;
-use InvalidArgumentException;
-use JMS\Serializer\SerializerInterface;
-use JMS\Serializer\SerializationContext;
-use Symfony\Component\Form\FormInterface;
+use App\Entity\Interfaces\Serializable;
 use App\Entity\Interfaces\SerializableEntity;
-use Symfony\Component\HttpFoundation\Response;
+use InvalidArgumentException;
+use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializerInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\ConstraintViolation;
 
 trait SerializerAware
@@ -18,16 +17,16 @@ trait SerializerAware
     /**
      * @var SerializerInterface|null
      */
-    private $serializer;
+    private ?SerializerInterface $serializer;
 
-    /**
-     * @param SerializerInterface $serializer
-     * @return self
-     */
-    private function setSerializer(SerializerInterface $serializer): self
+    private function setSerializer(SerializerInterface $serializer): void
     {
         $this->serializer = $serializer;
-        return $this;
+    }
+
+    private function getSerializer(): SerializerInterface
+    {
+        return $this->serializer;
     }
 
     /**
@@ -42,16 +41,24 @@ trait SerializerAware
         return $context;
     }
 
-    private function getSerializer(): SerializerInterface
+    /**
+     * Return the array version of the data, serialize for specifics groups
+     */
+    protected function toArray(Serializable $data, array $group = ['Default']): array
     {
-        return $this->serializer;
+        return (array)$this
+            ->getSerializer()
+            ->serialize(
+                $data,
+                'array',
+                $this->getSerializationContext($group)
+            );
     }
 
     /**
      * Return the json string of the data, serialize for specifics groups
-     * @param SerializableEntity $data
      */
-    protected function serialize($data, array $group = ['Default']): string
+    protected function serialize(Serializable $data, array $group = ['Default']): string
     {
         return $this
             ->getSerializer()
@@ -65,41 +72,47 @@ trait SerializerAware
     /**
      * Return the JsonResponse of the data, serialize for specifics groups
      */
-    protected function serializeResponse(mixed $data, array $group = ['Default']): JsonResponse
+    protected function serializeResponse(
+        Serializable $data,
+        array        $group = ['Default'],
+        int          $status = Response::HTTP_OK
+    ): JsonResponse
     {
-        $response = new JsonResponse([], JsonResponse::HTTP_OK);
-        $json     = $this->serialize($data, $group);
+        $response = new JsonResponse([], $status);
+        $json = $this->serialize($data, $group);
         return $response->setJson($json);
     }
 
     /**
      * Simple JsonResponse use to transmit a message
      */
-    protected function messageResponse(string $message, int $code = JsonResponse::HTTP_OK): JsonResponse
+    protected function messageResponse(string $message, int $status = Response::HTTP_OK): JsonResponse
     {
-        $response = new JsonResponse(
+        return new JsonResponse(
             [
-                'code'    => $code,
+                'code' => $status,
                 'message' => $message,
             ],
-            $code
+            $status
         );
-
-        return $response;
     }
 
     /**
      * Simple JsonResponse use to transmit a message
      */
-    protected function formErrorResponse(FormInterface $form, bool $showReason = true): JsonResponse
+    protected function formErrorResponse(
+        FormInterface $form,
+        int           $status = Response::HTTP_BAD_REQUEST,
+        bool          $showReason = true
+    ): JsonResponse
     {
         return new JsonResponse(
             [
-                'code'    => Response::HTTP_NOT_ACCEPTABLE,
+                'code' => $status,
                 'message' => 'Invalid form',
-                'reason'  => $showReason ? $this->getFormErrorArray($form) : 'hidden',
+                'reason' => $showReason ? $this->getFormErrorArray($form) : 'hidden',
             ],
-            Response::HTTP_NOT_ACCEPTABLE
+            $status
         );
     }
 
@@ -132,10 +145,13 @@ trait SerializerAware
     }
 
     /**
-     * Simple JsonResponse use to transmit the new id of the created entity
-     * @param mixed  $entity
+     * Simple JsonResponse use to transmit the new identifier of the created entity
      */
-    protected function createResponse(SerializableEntity $entity, string $message): JsonResponse
+    protected function createResponse(
+        SerializableEntity $entity,
+        string             $message,
+        int                $status = Response::HTTP_CREATED
+    ): JsonResponse
     {
         if (!method_exists($entity, 'getId')) {
             throw new InvalidArgumentException('Entity must have a getId() method');
@@ -143,12 +159,12 @@ trait SerializerAware
 
         return new JsonResponse(
             [
-                'code'    => JsonResponse::HTTP_CREATED,
+                'code' => $status,
                 'message' => $message,
-                'id'      => $entity->getIdentifier(),
-                'entity'  => $this->serialize($entity),
+                'id' => $entity->getIdentifier(),
+                'entity' => $this->serialize($entity),
             ],
-            JsonResponse::HTTP_CREATED
+            $status
         );
     }
 }
