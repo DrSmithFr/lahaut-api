@@ -36,8 +36,8 @@ git_hooks:
 	chmod +x hooks/syntax-checkup.sh
 	rm -f .git/hooks/pre-commit
 	rm -f .git/hooks/pre-push
-	ln -s hooks/syntax-checkup.sh .git/hooks/pre-commit
-	ln -s hooks/syntax-checkup.sh .git/hooks/pre-push
+	ln -s -f ../../hooks/syntax-checkup.sh .git/hooks/pre-commit
+	ln -s -f ../../hooks/syntax-checkup.sh .git/hooks/pre-push
 
 jwt:
 	mkdir -p config/jwt
