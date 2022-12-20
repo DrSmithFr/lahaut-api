@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Exception;
 
@@ -10,5 +10,5 @@ class UserNotFoundException extends Exception
 {
     protected $message = 'user not found';
 
-    protected $code    = 404;
+    protected $code = 404;
 }

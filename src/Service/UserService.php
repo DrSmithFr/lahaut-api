@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Service;
 
@@ -16,9 +16,8 @@ class UserService
 
     public function __construct(
         UserPasswordHasherInterface $passwordEncoder,
-        TokenGeneratorInterface     $tokenGenerator,
-    )
-    {
+        TokenGeneratorInterface $tokenGenerator,
+    ) {
         $this->passwordEncoder = $passwordEncoder;
         $this->tokenGenerator = $tokenGenerator;
     }

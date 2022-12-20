@@ -3,8 +3,8 @@
 namespace App\Doctrine;
 
 use Doctrine\Common\EventSubscriber;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * Prefix all table with "app" to prevent name collision
@@ -35,7 +35,7 @@ class AppPrefix implements EventSubscriber
                     $mappedTableName = $classMetadata->associationMappings[$fieldName]['joinTable']['name'];
 
                     // Do not re-apply the prefix when the association is already prefixed
-                    if (str_contains((string) $mappedTableName, $this->prefix)) {
+                    if (str_contains((string)$mappedTableName, $this->prefix)) {
                         continue;
                     }
 

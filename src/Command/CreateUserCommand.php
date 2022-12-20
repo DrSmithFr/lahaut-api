@@ -1,17 +1,14 @@
 <?php
 
-
 namespace App\Command;
 
-
-use Exception;
 use App\Service\UserService;
-use Doctrine\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 class CreateUserCommand extends Command
 {
@@ -37,7 +34,7 @@ class CreateUserCommand extends Command
         $io->title('Generating new user');
 
         $password = $this->generatePassword();
-        $user     = $this->userService->createUser($password);
+        $user = $this->userService->createUser($password);
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
@@ -57,12 +54,12 @@ class CreateUserCommand extends Command
     private function generatePassword(int $length = 32): string
     {
         $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz' .
-                 '0123456789-=~!@#$%^&*()_+,.<>?;:[]{}';
+            '0123456789-=~!@#$%^&*()_+,.<>?;:[]{}';
 
         $password = '';
-        $max      = strlen($chars) - 1;
+        $max = strlen($chars) - 1;
 
-        for ($index = 0; $index < $length; $index ++) {
+        for ($index = 0; $index < $length; $index++) {
             $password .= $chars[random_int(0, $max)];
         }
 

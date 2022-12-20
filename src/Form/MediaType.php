@@ -1,15 +1,15 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Form;
 
 use App\Entity\Media;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints\NotNull;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 class MediaType extends AbstractType
 {
@@ -21,7 +21,7 @@ class MediaType extends AbstractType
                 FileType::class,
                 [
                     'by_reference' => false,
-                    'constraints'  => [
+                    'constraints' => [
                         new NotNull(),
                     ],
                 ]
@@ -31,7 +31,7 @@ class MediaType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class'      => Media::class,
+            'data_class' => Media::class,
             'csrf_protection' => false,
         ]);
     }

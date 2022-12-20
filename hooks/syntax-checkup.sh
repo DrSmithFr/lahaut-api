@@ -42,7 +42,7 @@ then
     display phpmd
 
     for file in $(echo "$PHPs"); do
-        symfony php vendor/bin/phpmd $file
+        symfony php vendor/bin/phpmd $file ansi ruleset.xml
         SUBMD=$?
 
         if [[ $PHPMD -eq 0 ]]

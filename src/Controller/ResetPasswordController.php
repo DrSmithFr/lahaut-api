@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Controller;
 
@@ -53,13 +53,12 @@ class ResetPasswordController extends AbstractApiController
      */
     #[Route(path: '/reset_password', name: 'request', methods: ['post'])]
     public function passwordResetRequestAction(
-        Request                $request,
-        UserRepository         $userRepository,
-        UserService            $userService,
+        Request $request,
+        UserRepository $userRepository,
+        UserService $userService,
         EntityManagerInterface $entityManager,
-        MailerService          $mailerService
-    ): JsonResponse
-    {
+        MailerService $mailerService
+    ): JsonResponse {
         $username = $request->get('username');
         $user = $userRepository->findOneByEmail($username);
 
@@ -92,12 +91,11 @@ class ResetPasswordController extends AbstractApiController
      */
     #[Route(path: '/reset_password', name: 'app_reset_password', methods: ['patch'])]
     public function passwordResetAction(
-        Request                $request,
-        UserRepository         $userRepository,
-        UserService            $userService,
+        Request $request,
+        UserRepository $userRepository,
+        UserService $userService,
         EntityManagerInterface $entityManager
-    ): JsonResponse
-    {
+    ): JsonResponse {
         $data = new ResetPasswordModel();
 
         $form = $this->handleJsonFormRequest(
@@ -129,7 +127,6 @@ class ResetPasswordController extends AbstractApiController
         $entityManager->flush();
 
         return $this->messageResponse('Password changed', Response::HTTP_ACCEPTED);
-
     }
 
     /**
@@ -150,10 +147,9 @@ class ResetPasswordController extends AbstractApiController
      */
     #[Route(path: '/reset_password/validity', name: 'app_reset_password_token_validity', methods: ['post'])]
     public function isPasswordResetTokenValidAction(
-        Request        $request,
+        Request $request,
         UserRepository $userRepository
-    ): JsonResponse
-    {
+    ): JsonResponse {
         $token = $request->get('token');
         $user = $userRepository->getUserByPasswordResetToken($token);
 

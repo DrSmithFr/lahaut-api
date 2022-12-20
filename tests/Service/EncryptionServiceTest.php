@@ -1,11 +1,11 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Tests\Service;
 
-use App\Tests\ApiTestCase;
 use App\Service\EncryptionService;
+use App\Tests\ApiTestCase;
 
 class EncryptionServiceTest extends ApiTestCase
 {

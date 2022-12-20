@@ -6,7 +6,7 @@ namespace App\Entity;
 
 use App\Entity\Interfaces\Serializable;
 use App\Entity\Traits\BlamableTrait;
-use App\Entity\Traits\EnablableTrait;
+use App\Entity\Traits\EnableTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimestampableTrait;
 use App\Enum\SecurityRoleEnum;
@@ -22,19 +22,19 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[JMS\ExclusionPolicy('all')]
-class User implements UserInterface,
-                      PasswordAuthenticatedUserInterface,
-                      PasswordHasherAwareInterface,
-                      Serializable
+class User implements
+    UserInterface,
+    PasswordAuthenticatedUserInterface,
+    PasswordHasherAwareInterface,
+    Serializable
 {
     use IdTrait;
     use TimestampableTrait;
     use BlamableTrait;
-    use EnablableTrait;
+    use EnableTrait;
 
     #[ORM\Column(type: 'string', unique: true)]
     #[Assert\Email]
-
     #[JMS\Expose]
     #[JMS\Type('string')]
     #[JMS\Groups(['Default', 'Login'])]
@@ -104,7 +104,9 @@ class User implements UserInterface,
             throw new InvalidArgumentException('invalid role');
         }
 
-        if (($key = array_search($role, $this->roles, true)) !== false) {
+        $key = array_search($role, $this->roles, true);
+
+        if ($key !== false) {
             array_splice($this->roles, $key, 1);
         }
 

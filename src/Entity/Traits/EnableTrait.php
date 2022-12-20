@@ -2,11 +2,10 @@
 
 namespace App\Entity\Traits;
 
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 
-trait EnablableTrait
+trait EnableTrait
 {
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
     #[JMS\Exclude]

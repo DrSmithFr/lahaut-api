@@ -15,16 +15,15 @@ use Symfony\Component\HttpFoundation\File\File;
 
 class MediaService
 {
-    final const SECRET_KEY_LENGHT = 256;
+    public final const SECRET_KEY_LENGHT = 256;
 
     private readonly Filesystem $filesystem;
 
     public function __construct(
-        private readonly EncryptionService     $encryptionService,
+        private readonly EncryptionService $encryptionService,
         private readonly FileEncryptionService $fileEncryption,
-        private readonly string                $mediaFolder
-    )
-    {
+        private readonly string $mediaFolder
+    ) {
         $this->filesystem = new Filesystem();
     }
 
@@ -76,6 +75,7 @@ class MediaService
 
     /**
      * @param Media $media
+     *
      * @return Generator<string>
      * @throws FileNotFoundException
      */

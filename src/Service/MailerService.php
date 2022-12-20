@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Service;
 
@@ -11,7 +11,7 @@ use Symfony\Component\Mailer\MailerInterface;
 
 class MailerService
 {
-    const EMAIL_FROM = 'noreply@lahaut.fr';
+    private const EMAIL_FROM = 'noreply@lahaut.fr';
 
     private MailerInterface $mailer;
 

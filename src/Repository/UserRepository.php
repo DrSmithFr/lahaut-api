@@ -8,8 +8,6 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
-use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\UuidInterface;
 use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -22,6 +20,7 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
 
     /***
      * @param string $identifier
+     *
      * @return UserInterface|null
      * @throws NonUniqueResultException
      */

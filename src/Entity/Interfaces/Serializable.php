@@ -7,5 +7,4 @@ namespace App\Entity\Interfaces;
  */
 interface Serializable
 {
-
 }

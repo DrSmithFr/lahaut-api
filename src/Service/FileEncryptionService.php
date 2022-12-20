@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Service;
 
@@ -21,26 +21,30 @@ class FileEncryptionService
     public function encryptFile(File $file, string $key, string $destination): File
     {
         $key = substr(sha1($key, true), 0, 16);
-        $iv  = openssl_random_pseudo_bytes(16);
+        $iv = openssl_random_pseudo_bytes(16);
 
         if ($iv === false) {
             throw new RuntimeException('cannot create initialisation vector');
         }
 
-        if (!$encrypted = fopen($destination, 'wb')) {
+        $encrypted = fopen($destination, 'wb');
+
+        if (!$encrypted) {
             throw new RuntimeException('cannot create destination file');
         }
 
         // Put the initialization vector to the beginning of the file
         fwrite($encrypted, $iv);
 
-        if (!$uploaded = fopen($file->getRealPath(), 'rb')) {
+        $uploaded = fopen($file->getRealPath(), 'rb');
+
+        if (!$uploaded) {
             throw new RuntimeException('cannot open uploaded file');
         }
 
         while (!feof($uploaded)) {
             $plaintext = fread($uploaded, 16 * self::FILE_CHUNK_SIZE);
-            $cipher    = openssl_encrypt($plaintext, 'AES-128-CBC', $key, OPENSSL_RAW_DATA, $iv);
+            $cipher = openssl_encrypt($plaintext, 'AES-128-CBC', $key, OPENSSL_RAW_DATA, $iv);
 
             // Use the first 16 bytes of the cipher as the next initialization vector
             $iv = substr($cipher, 0, 16);
@@ -57,7 +61,9 @@ class FileEncryptionService
     {
         $key = substr(sha1($key, true), 0, 16);
 
-        if (!$fpIn = fopen($source->getRealPath(), 'rb')) {
+        $fpIn = fopen($source->getRealPath(), 'rb');
+
+        if (!$fpIn) {
             throw new RuntimeException('cannot open source file');
         }
 
@@ -67,7 +73,7 @@ class FileEncryptionService
         while (!feof($fpIn)) {
             // we have to read one block more for decrypting than for encrypting
             $cipher = fread($fpIn, 16 * (self::FILE_CHUNK_SIZE + 1));
-            $plaintext  = openssl_decrypt($cipher, 'AES-128-CBC', $key, OPENSSL_RAW_DATA, $iv);
+            $plaintext = openssl_decrypt($cipher, 'AES-128-CBC', $key, OPENSSL_RAW_DATA, $iv);
 
             // Use the first 16 bytes of the cipher as the next initialization vector
             $iv = substr($cipher, 0, 16);

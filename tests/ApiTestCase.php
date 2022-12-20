@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Tests;
 
@@ -25,28 +25,25 @@ abstract class ApiTestCase extends WebTestCase
 
     protected function patch(
         string $url,
-        mixed  $object,
-        array  $group = ['Default']
-    ): Crawler
-    {
+        mixed $object,
+        array $group = ['Default']
+    ): Crawler {
         return $this->call('PATCH', $url, $object, $group);
     }
 
     protected function put(
         string $url,
-        mixed  $object,
-        array  $group = ['Default']
-    ): Crawler
-    {
+        mixed $object,
+        array $group = ['Default']
+    ): Crawler {
         return $this->call('PUT', $url, $object, $group);
     }
 
     protected function post(
         string $url,
-        mixed  $object,
-        array  $group = ['Default']
-    ): Crawler
-    {
+        mixed $object,
+        array $group = ['Default']
+    ): Crawler {
         return $this->call('POST', $url, $object, $group);
     }
 
@@ -62,10 +59,9 @@ abstract class ApiTestCase extends WebTestCase
     protected function call(
         string $method,
         string $url,
-        mixed  $object,
-        array  $group = ['Default']
-    ): Crawler
-    {
+        mixed $object,
+        array $group = ['Default']
+    ): Crawler {
         $container = self::getContainer();
 
         try {

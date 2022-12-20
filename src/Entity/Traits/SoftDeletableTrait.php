@@ -4,7 +4,6 @@ namespace App\Entity\Traits;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Exception;
 use JMS\Serializer\Annotation as JMS;
 
 trait SoftDeletableTrait
@@ -15,7 +14,6 @@ trait SoftDeletableTrait
 
     /**
      * Sets deletedAt.
-     * @return $this
      */
     public function setDeletedAt(?DateTime $deletedAt): self
     {

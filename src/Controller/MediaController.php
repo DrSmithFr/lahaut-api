@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Controller;
 
@@ -39,9 +39,8 @@ class MediaController extends AbstractApiController
     #[Route(path: 'medias/{uuid}', name: 'medias_by_uuid', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function getByIdAction(
         #[MapEntity(class: Media::class)] Media $media,
-        MediaService                            $mediaService
-    ): StreamedResponse
-    {
+        MediaService $mediaService
+    ): StreamedResponse {
         $response = new StreamedResponse();
         $response->headers->set('Content-Type', $media->getContentType());
 
@@ -79,8 +78,7 @@ class MediaController extends AbstractApiController
     #[Route(path: 'medias/{uuid}/metadata', name: 'medias_metadata', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function getMetadataByIdAction(
         #[MapEntity(class: Media::class)] Media $media
-    ): JsonResponse
-    {
+    ): JsonResponse {
         return $this->serializeResponse($media);
     }
 
@@ -111,11 +109,10 @@ class MediaController extends AbstractApiController
     #[Security(name: 'Bearer')]
     #[Route(path: 'medias', name: 'medias_add', methods: ['POST'])]
     public function newAction(
-        Request                $request,
+        Request $request,
         EntityManagerInterface $entityManager,
-        MediaService           $mediaService
-    ): JsonResponse
-    {
+        MediaService $mediaService
+    ): JsonResponse {
         $media = new Media();
 
         $form = $this

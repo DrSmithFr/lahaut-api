@@ -1,14 +1,14 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Enum;
 
-use ReflectionClass;
-use RuntimeException;
-use ReflectionException;
 use App\Exception\InvalidEnumNameException;
 use App\Exception\InvalidEnumValueException;
+use ReflectionClass;
+use ReflectionException;
+use RuntimeException;
 
 abstract class Enum
 {

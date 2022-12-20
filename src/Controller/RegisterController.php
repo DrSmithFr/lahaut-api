@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Controller;
 
@@ -42,12 +42,11 @@ class RegisterController extends AbstractApiController
      */
     #[Route(path: '/register', name: 'app_register', methods: ['post'])]
     final public function register(
-        Request                $request,
+        Request $request,
         EntityManagerInterface $entityManager,
-        UserRepository         $userRepository,
-        UserService            $userService
-    ): JsonResponse
-    {
+        UserRepository $userRepository,
+        UserService $userService
+    ): JsonResponse {
         $data = new RegisterModel();
 
         $form = $this->handleJsonFormRequest(

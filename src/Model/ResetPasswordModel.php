@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Model;
 
@@ -14,7 +14,8 @@ class ResetPasswordModel
     #[OA\Property(
         description: 'Reset token of user',
         type: 'string',
-        example: '9E4PrHk1sHLCs4ruM3k7v-mgGNWdecm9yhi1RLZ491k')
+        example: '9E4PrHk1sHLCs4ruM3k7v-mgGNWdecm9yhi1RLZ491k'
+    )
     ]
     private ?string $token = null;
 
