@@ -3,4 +3,4 @@ twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
     globals:
-        front_url: 'https://localhost:4200'
+        front_url: '%env(FRONT_URL)%'

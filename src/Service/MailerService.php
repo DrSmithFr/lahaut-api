@@ -1,47 +1,56 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Service;
 
 use App\Entity\User;
-use Swift_Mailer;
-use Swift_Message;
-use Swift_SmtpTransport;
-use Twig\Environment;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\MailerInterface;
 
 class MailerService
 {
     const EMAIL_FROM = 'noreply@lahaut.fr';
-    private Environment $twigRendererEngine;
-    private Swift_Mailer $mailer;
 
-    public function __construct(
-        Environment $twigRendererEngine,
-    )
+    private MailerInterface $mailer;
+
+    public function __construct(MailerInterface $mailer)
     {
-        $this->twigRendererEngine = $twigRendererEngine;
-
-        $transport = (new Swift_SmtpTransport('smtp.example.org', 25))
-            ->setUsername('your username')
-            ->setPassword('your password');
-
-        $this->mailer = new Swift_Mailer($transport);
+        $this->mailer = $mailer;
     }
 
+    private function getNoReplyTemplateEmail(): TemplatedEmail
+    {
+        $email = (new TemplatedEmail())
+            ->from(self::EMAIL_FROM);
+
+        // this non-standard header tells compliant autoresponders ("email holiday mode") to not
+        // reply to this message because it's an automated email
+        $email
+            ->getHeaders()
+            ->addTextHeader('X-Auto-Response-Suppress', 'OOF, DR, RN, NRN, AutoReply');
+
+        return $email;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return void
+     * @throws TransportExceptionInterface
+     */
     public function sendResetPasswordMail(User $user): void
     {
-        $message = (new Swift_Message('Reset your password'))
-            ->setFrom(self::EMAIL_FROM)
-            ->setTo($user->getEmail())
-            ->setBody(
-                $this->twigRendererEngine->render(
-                    'emails/password_reset.html.twig',
-                    ['user' => $user]
-                ),
-                'text/html'
-            );
+        $email = $this
+            ->getNoReplyTemplateEmail()
+            ->to($user->getEmail())
+            ->subject('Reset your password')
+            ->htmlTemplate('emails/reset_password.html.twig')
+            ->context([
+                'user' => $user
+            ]);
 
-        $this->mailer->send($message);
+        $this->mailer->send($email);
     }
 }

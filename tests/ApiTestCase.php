@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace App\Tests;
 
+use Exception;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
 use LogicException;
@@ -23,7 +24,7 @@ abstract class ApiTestCase extends WebTestCase
 
     protected function patch(
         string $url,
-        object $object,
+        mixed $object,
         array  $group = ['Default']
     ): Crawler
     {
@@ -32,7 +33,7 @@ abstract class ApiTestCase extends WebTestCase
 
     protected function put(
         string $url,
-        object $object,
+        mixed $object,
         array  $group = ['Default']
     ): Crawler
     {
@@ -41,7 +42,7 @@ abstract class ApiTestCase extends WebTestCase
 
     protected function post(
         string $url,
-        object $object,
+        mixed $object,
         array  $group = ['Default']
     ): Crawler
     {
@@ -55,6 +56,7 @@ abstract class ApiTestCase extends WebTestCase
      * @param array  $group
      *
      * @return Crawler
+     * @throws Exception
      */
     protected function call(
         string $method,
