@@ -48,27 +48,27 @@ class RegisterController extends AbstractApiController
         UserService            $userService
     ): JsonResponse
     {
-        $registerModel = new RegisterModel();
+        $data = new RegisterModel();
 
         $form = $this->handleJsonFormRequest(
             $request,
             RegisterType::class,
-            $registerModel
+            $data
         );
 
         if (!$form->isValid()) {
             return $this->formErrorResponse($form, Response::HTTP_BAD_REQUEST);
         }
 
-        $user = $userRepository->findOneBy(['email' => strtolower($registerModel->getUsername())]);
+        $user = $userRepository->findOneBy(['email' => strtolower($data->getUsername())]);
 
         if ($user) {
             return $this->messageResponse('Email already exit', Response::HTTP_FORBIDDEN);
         }
 
         $user = $userService->createUser(
-            $registerModel->getUsername(),
-            $registerModel->getPassword()
+            $data->getUsername(),
+            $data->getPassword()
         );
 
         $user->setRoles([SecurityRoleEnum::USER]);

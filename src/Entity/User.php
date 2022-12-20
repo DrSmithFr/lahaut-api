@@ -63,7 +63,7 @@ class User implements UserInterface,
     private ?string $passwordResetToken = null;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
-    private ?DateTime $passwordResetAt = null;
+    private ?DateTime $passwordResetTokenValidUntil = null;
 
     public function getUserIdentifier(): string
     {
@@ -183,14 +183,14 @@ class User implements UserInterface,
         $this->passwordResetToken = $passwordResetToken;
     }
 
-    public function getPasswordResetAt(): ?DateTime
+    public function getPasswordResetTokenValidUntil(): ?DateTime
     {
-        return $this->passwordResetAt;
+        return $this->passwordResetTokenValidUntil;
     }
 
-    public function setPasswordResetAt(?DateTime $passwordResetAt): self
+    public function setPasswordResetTokenValidUntil(?DateTime $passwordResetTokenValidUntil): self
     {
-        $this->passwordResetAt = $passwordResetAt;
+        $this->passwordResetTokenValidUntil = $passwordResetTokenValidUntil;
         return $this;
     }
 }

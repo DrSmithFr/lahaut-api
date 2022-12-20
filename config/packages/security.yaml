@@ -27,8 +27,11 @@ security:
         register:
             pattern: ^/register$
             security: false
-        password_reset:
-            pattern:  ^/password_reset$
+        reset_password:
+            pattern:  ^/reset_password$
+            security: false
+        reset_password_validity:
+            pattern:  ^/reset_password/validity$
             security: false
         public_media:
             pattern: ^/media/
@@ -40,7 +43,7 @@ security:
 
     access_control:
         - { path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/password_reset$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/reset_password$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/medias/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/,       roles: [ IS_AUTHENTICATED_FULLY, ROLE_USER ] }
 

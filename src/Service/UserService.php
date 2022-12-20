@@ -56,8 +56,20 @@ class UserService
     public function generateResetToken(User $user): User
     {
         $user->setPasswordResetToken($this->tokenGenerator->generateToken());
-        $user->setPasswordResetAt(new DateTime());
+        $user->setPasswordResetTokenValidUntil(new DateTime('+1 hour'));
 
         return $user;
+    }
+
+    public function isTokenValid(User $user, $getToken): bool
+    {
+        return $user->getPasswordResetToken() === $getToken
+            && $user->getPasswordResetTokenValidUntil() > new DateTime();
+    }
+
+    public function clearPasswordResetToken(User $user): void
+    {
+        $user->setPasswordResetToken(null);
+        $user->setPasswordResetTokenValidUntil(null);
     }
 }

@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace App\Controller;
 
+use App\Entity\User;
+use App\Form\ResetPasswordType;
 use App\Model\ResetPasswordModel;
 use App\Repository\UserRepository;
 use App\Service\MailerService;
@@ -13,17 +15,17 @@ use Doctrine\ORM\NonUniqueResultException;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Annotations as OA;
-use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @OA\Tag(name="Password reset")
  */
 #[Security(name: null)]
-class PasswordResetController extends AbstractApiController
+class ResetPasswordController extends AbstractApiController
 {
     /**
      * Request a password reset token (by mail).
@@ -37,7 +39,7 @@ class PasswordResetController extends AbstractApiController
      *    )
      * )
      * @OA\Response(response=202, description="User connected")
-     * @OA\Response(response=403, description="User not recognised")
+     * @OA\Response(response=404, description="User not found")
      *
      * @param Request                $request
      * @param UserRepository         $userRepository
@@ -47,8 +49,9 @@ class PasswordResetController extends AbstractApiController
      *
      * @return JsonResponse
      * @throws NonUniqueResultException
+     * @throws TransportExceptionInterface
      */
-    #[Route(path: '/password_reset', name: 'request', methods: ['post'])]
+    #[Route(path: '/reset_password', name: 'request', methods: ['post'])]
     public function passwordResetRequestAction(
         Request                $request,
         UserRepository         $userRepository,
@@ -61,7 +64,7 @@ class PasswordResetController extends AbstractApiController
         $user = $userRepository->findOneByEmail($username);
 
         if (null === $user) {
-            return $this->messageResponse('User not recognised', Response::HTTP_FORBIDDEN);
+            return $this->messageResponse('User not recognised', Response::HTTP_NOT_FOUND);
         }
 
         $userService->generateResetToken($user);
@@ -76,34 +79,53 @@ class PasswordResetController extends AbstractApiController
      * Reset password with token.
      * @OA\RequestBody(@Model(type=ResetPasswordModel::class))
      * @OA\Response(response=202, description="Update User password")
-     * @OA\Response(response=400, description="Token not valid")
+     * @OA\Response(response=400, description="New password not valid")
+     * @OA\Response(response=404, description="Token not found")
+     * @OA\Response(response=406, description="Token expired")
      *
-     * @param                        $resetPasswordModel
+     * @param Request                $request
      * @param UserRepository         $userRepository
      * @param UserService            $userService
      * @param EntityManagerInterface $entityManager
      *
      * @return JsonResponse
      */
-    #[Route(path: '/password_reset', name: 'app_password_reset', methods: ['patch'])]
+    #[Route(path: '/reset_password', name: 'app_reset_password', methods: ['patch'])]
     public function passwordResetAction(
-        #[MapEntity(class: ResetPasswordModel::class)] $resetPasswordModel,
-        UserRepository                                 $userRepository,
-        UserService                                    $userService,
-        EntityManagerInterface                         $entityManager
+        Request                $request,
+        UserRepository         $userRepository,
+        UserService            $userService,
+        EntityManagerInterface $entityManager
     ): JsonResponse
     {
-        $user = $userRepository->getUserByPasswordResetToken($resetPasswordModel->getToken());
+        $data = new ResetPasswordModel();
 
-        if (null === $user) {
-            return $this->messageResponse('token not valid', Response::HTTP_BAD_REQUEST);
+        $form = $this->handleJsonFormRequest(
+            $request,
+            ResetPasswordType::class,
+            $data
+        );
+
+        if (!$form->isValid()) {
+            return $this->formErrorResponse($form, Response::HTTP_BAD_REQUEST);
         }
 
-        $user->setPlainPassword($resetPasswordModel->getPassword());
-        $user->setPasswordRequestedAt(null);
-        $user->setConfirmationToken(null);
+        /** @var User $user */
+        $user = $userRepository->getUserByPasswordResetToken($data->getToken());
+
+        if (null === $user) {
+            return $this->messageResponse('token not found', Response::HTTP_NOT_FOUND);
+        }
+
+        if (!$userService->isTokenValid($user, $data->getToken())) {
+            return $this->messageResponse('token expired', Response::HTTP_NOT_ACCEPTABLE);
+        }
+
+        $user->setPlainPassword($data->getPassword());
 
         $userService->updatePassword($user);
+        $userService->clearPasswordResetToken($user);
+
         $entityManager->flush();
 
         return $this->messageResponse('Password changed', Response::HTTP_ACCEPTED);
@@ -115,18 +137,18 @@ class PasswordResetController extends AbstractApiController
      * @OA\RequestBody(
      *   @OA\MediaType(
      *     mediaType="application/json",
-     *     @OA\Schema(type="object", example={"token": "xxxxxxxxxxxxxxx"})
+     *     @OA\Schema(type="object", example={"token": "9E4PrHk1sHLCs4ruM3k7v-mgGNWdecm9yhi1RLZ491k"})
      *   )
      * )
      * @OA\Response(response=202, description="Update User password")
-     * @OA\Response(response=400, description="Token not valid")
+     * @OA\Response(response=404, description="Token not valid")
      *
      * @param Request        $request
      * @param UserRepository $userRepository
      *
      * @return JsonResponse
      */
-    #[Route(path: '/password_reset', name: 'app_password_reset_token_validity', methods: ['get'])]
+    #[Route(path: '/reset_password/validity', name: 'app_reset_password_token_validity', methods: ['post'])]
     public function isPasswordResetTokenValidAction(
         Request        $request,
         UserRepository $userRepository
@@ -136,7 +158,7 @@ class PasswordResetController extends AbstractApiController
         $user = $userRepository->getUserByPasswordResetToken($token);
 
         if (null === $user) {
-            return $this->messageResponse('token not valid.', Response::HTTP_BAD_REQUEST);
+            return $this->messageResponse('token not valid.', Response::HTTP_NOT_FOUND);
         }
 
         return $this->messageResponse('token valid.', Response::HTTP_ACCEPTED);

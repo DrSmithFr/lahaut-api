@@ -12,10 +12,11 @@ use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpFoundation\Response;
 
 abstract class ApiTestCase extends WebTestCase
 {
-    private KernelBrowser $client;
+    protected KernelBrowser $client;
 
     public function setUp(): void
     {
@@ -24,25 +25,25 @@ abstract class ApiTestCase extends WebTestCase
 
     protected function patch(
         string $url,
-        mixed $object,
+        mixed  $object,
         array  $group = ['Default']
     ): Crawler
     {
-        return $this->call('POST', $url, $object, $group);
+        return $this->call('PATCH', $url, $object, $group);
     }
 
     protected function put(
         string $url,
-        mixed $object,
+        mixed  $object,
         array  $group = ['Default']
     ): Crawler
     {
-        return $this->call('POST', $url, $object, $group);
+        return $this->call('PUT', $url, $object, $group);
     }
 
     protected function post(
         string $url,
-        mixed $object,
+        mixed  $object,
         array  $group = ['Default']
     ): Crawler
     {
@@ -89,5 +90,10 @@ abstract class ApiTestCase extends WebTestCase
             ['CONTENT_TYPE' => 'application/json'],
             $json
         );
+    }
+
+    protected function getResponse(): Response
+    {
+        return $this->client->getResponse();
     }
 }
