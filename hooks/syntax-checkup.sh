@@ -68,7 +68,9 @@ then
 fi
 
 # Unit Tests running
-make test
+symfony console doctrine:schema:update --force --env=test
+symfony console doctrine:fixtures:load -n --env=test
+symfony php bin/phpunit
 
 # Post checkup validation
 display final && \
