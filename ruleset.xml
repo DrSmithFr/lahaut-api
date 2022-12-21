@@ -22,6 +22,7 @@
                     \DateTime,
                     \DateInterval,
                     \DateTimeZone,
+                    \JMS\Serializer\SerializerBuilder,
                     \JMS\Serializer\SerializationContext,
                     \Ramsey\Uuid\Uuid,
                     \App\Enum\SecurityRoleEnum

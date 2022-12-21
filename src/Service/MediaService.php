@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\File\File;
 
 class MediaService
 {
-    public final const SECRET_KEY_LENGHT = 256;
+    public final const SECRET_KEY_LENGTH = 256;
 
     private readonly Filesystem $filesystem;
 
@@ -38,7 +38,7 @@ class MediaService
             return null;
         }
 
-        $password = $this->generatePassword(self::SECRET_KEY_LENGHT);
+        $password = $this->generatePassword();
         $encryptedPassword = $this->encryptionService->encryptData($password);
 
         $media
@@ -102,7 +102,7 @@ class MediaService
         );
     }
 
-    private function generatePassword(int $length): string
+    private function generatePassword(): string
     {
         $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz' .
             '0123456789-=~!@#$%^&*()_+,.<>?;:[]{}';
@@ -110,7 +110,7 @@ class MediaService
         $password = '';
         $max = strlen($chars) - 1;
 
-        for ($index = 0; $index < $length; $index++) {
+        for ($index = 0; $index < self::SECRET_KEY_LENGTH; $index++) {
             $password .= $chars[random_int(0, $max)];
         }
 

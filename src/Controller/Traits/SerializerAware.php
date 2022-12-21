@@ -75,10 +75,9 @@ trait SerializerAware
      */
     protected function serializeResponse(
         Serializable $data,
-        array        $group = ['Default'],
-        int          $status = Response::HTTP_OK
-    ): JsonResponse
-    {
+        array $group = ['Default'],
+        int $status = Response::HTTP_OK
+    ): JsonResponse {
         $response = new JsonResponse([], $status);
         $json = $this->serialize($data, $group);
         return $response->setJson($json);
@@ -102,9 +101,8 @@ trait SerializerAware
      */
     protected function formErrorResponse(
         FormInterface $form,
-        int           $status
-    ): JsonResponse
-    {
+        int $status
+    ): JsonResponse {
         $formError = (new FormErrorModel())
             ->setCode($status)
             ->setReason($this->getFormErrorDetail($form));
@@ -143,10 +141,9 @@ trait SerializerAware
      */
     protected function createResponse(
         SerializableEntity $entity,
-        string             $message,
-        int                $status = Response::HTTP_CREATED
-    ): JsonResponse
-    {
+        string $message,
+        int $status = Response::HTTP_CREATED
+    ): JsonResponse {
         if (!method_exists($entity, 'getId')) {
             throw new InvalidArgumentException('Entity must have a getId() method');
         }

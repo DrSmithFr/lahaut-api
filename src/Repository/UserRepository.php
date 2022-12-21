@@ -77,13 +77,15 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
             ->from(User::class, 'u')
             ->where('u.email = :mail')
             ->andWhere('u.deletedAt IS NULL')
-            ->andWhere('u.enabled = true')
             ->setParameter('mail', strtolower($email))
             ->getQuery()
             ->getOneOrNullResult();
     }
 
-    public function getUserByPasswordResetToken(string $resetToken)
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function getUserByPasswordResetToken(string $resetToken): ?User
     {
         return $this
             ->getEntityManager()

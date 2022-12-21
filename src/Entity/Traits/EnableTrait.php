@@ -11,19 +11,14 @@ trait EnableTrait
     #[JMS\Exclude]
     protected ?bool $enable = false;
 
-    /**
-     * @return bool|null
-     */
     public function getEnable(): ?bool
     {
         return $this->enable;
     }
 
-    /**
-     * @param bool|null $enable
-     */
-    public function setEnable(?bool $enable): void
+    public function setEnable(?bool $enable): self
     {
         $this->enable = $enable;
+        return $this;
     }
 }

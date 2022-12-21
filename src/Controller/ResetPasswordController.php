@@ -41,13 +41,6 @@ class ResetPasswordController extends AbstractApiController
      * @OA\Response(response=202, description="User connected")
      * @OA\Response(response=404, description="User not found")
      *
-     * @param Request                $request
-     * @param UserRepository         $userRepository
-     * @param UserService            $userService
-     * @param EntityManagerInterface $entityManager
-     * @param MailerService          $mailerService
-     *
-     * @return JsonResponse
      * @throws NonUniqueResultException
      * @throws TransportExceptionInterface
      */
@@ -81,13 +74,6 @@ class ResetPasswordController extends AbstractApiController
      * @OA\Response(response=400, description="New password not valid")
      * @OA\Response(response=404, description="Token not found")
      * @OA\Response(response=406, description="Token expired")
-     *
-     * @param Request                $request
-     * @param UserRepository         $userRepository
-     * @param UserService            $userService
-     * @param EntityManagerInterface $entityManager
-     *
-     * @return JsonResponse
      */
     #[Route(path: '/reset_password', name: 'app_reset_password', methods: ['patch'])]
     public function passwordResetAction(
@@ -139,11 +125,6 @@ class ResetPasswordController extends AbstractApiController
      * )
      * @OA\Response(response=202, description="Update User password")
      * @OA\Response(response=404, description="Token not valid")
-     *
-     * @param Request        $request
-     * @param UserRepository $userRepository
-     *
-     * @return JsonResponse
      */
     #[Route(path: '/reset_password/validity', name: 'app_reset_password_token_validity', methods: ['post'])]
     public function isPasswordResetTokenValidAction(

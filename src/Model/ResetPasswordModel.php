@@ -23,17 +23,11 @@ class ResetPasswordModel
     #[OA\Property(description: 'Plaintext password', type: 'string', example: 'user-passwd')]
     private ?string $password = null;
 
-    /**
-     * @return string|null
-     */
     public function getToken(): ?string
     {
         return $this->token;
     }
 
-    /**
-     * @param string|null $token
-     */
     public function setToken(?string $token): void
     {
         $this->token = $token;

@@ -33,19 +33,11 @@ class FormErrorModel implements Serializable
         return $this;
     }
 
-    /**
-     * @return FormErrorDetailModel
-     */
     public function getReason(): FormErrorDetailModel
     {
         return $this->reason;
     }
 
-    /**
-     * @param FormErrorDetailModel $reason
-     *
-     * @return FormErrorModel
-     */
     public function setReason(FormErrorDetailModel $reason): self
     {
         $this->reason = $reason;

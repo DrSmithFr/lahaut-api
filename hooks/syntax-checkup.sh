@@ -61,16 +61,18 @@ then
 
 fi
 
-if [[ $((${MERGE_FOUND} + ${DUMP_FOUND} + ${CONSOLE_LOG_FOUND} + ${PHPCS} + ${PHPMD})) -ne 0 ]]
+# Unit Tests running
+PHPUNIT=0
+symfony console doctrine:schema:update --force --env=test
+symfony console doctrine:fixtures:load -n --env=test
+symfony php bin/phpunit
+PHPUNIT=$?
+
+if [[ $((${MERGE_FOUND} + ${DUMP_FOUND} + ${CONSOLE_LOG_FOUND} + ${PHPCS} + ${PHPMD} + ${PHPUNIT})) -ne 0 ]]
 then
     echo "Your code need to be checked"
     exit 1
 fi
-
-# Unit Tests running
-symfony console doctrine:schema:update --force --env=test
-symfony console doctrine:fixtures:load -n --env=test
-symfony php bin/phpunit
 
 # Post checkup validation
 display final && \

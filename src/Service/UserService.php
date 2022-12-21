@@ -22,17 +22,12 @@ class UserService
         $this->tokenGenerator = $tokenGenerator;
     }
 
-    /**
-     * @param string $password
-     * @param string $email
-     *
-     * @return User
-     */
     public function createUser(string $email, string $password): User
     {
         $user = (new User())
             ->setEmail(strtolower($email))
-            ->setPlainPassword($password);
+            ->setPlainPassword($password)
+            ->setEnable(true);
 
         $this->updatePassword($user);
 

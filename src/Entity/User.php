@@ -8,6 +8,7 @@ use App\Entity\Interfaces\Serializable;
 use App\Entity\Traits\BlamableTrait;
 use App\Entity\Traits\EnableTrait;
 use App\Entity\Traits\IdTrait;
+use App\Entity\Traits\SoftDeletableTrait;
 use App\Entity\Traits\TimestampableTrait;
 use App\Enum\SecurityRoleEnum;
 use App\Repository\UserRepository;
@@ -31,6 +32,7 @@ class User implements
     use IdTrait;
     use TimestampableTrait;
     use BlamableTrait;
+    use SoftDeletableTrait;
     use EnableTrait;
 
     #[ORM\Column(type: 'string', unique: true)]
@@ -169,17 +171,11 @@ class User implements
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getPasswordResetToken(): ?string
     {
         return $this->passwordResetToken;
     }
 
-    /**
-     * @param string|null $passwordResetToken
-     */
     public function setPasswordResetToken(?string $passwordResetToken): void
     {
         $this->passwordResetToken = $passwordResetToken;
