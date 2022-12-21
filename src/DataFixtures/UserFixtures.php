@@ -23,7 +23,7 @@ class UserFixtures extends Fixture
         $admin = $this->userService->createUser('admin@gmail.com', 'admin-password');
         $user = $this->userService->createUser('user@gmail.com', 'user-password');
         $monitor = $this->userService->createUser('monitor@gmail.com', 'monitor-password');
-        $disabled = $this->userService->createUser('disabled@gmail.com', 'disabled-password');
+        $disabled = $this->userService->createUser('disable@gmail.com', 'disable-password');
 
         $this->setReference(self::REFERENCE_ADMIN, $admin);
         $this->setReference(self::REFERENCE_USER, $user);

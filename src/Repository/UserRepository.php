@@ -77,6 +77,7 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
             ->from(User::class, 'u')
             ->where('u.email = :mail')
             ->andWhere('u.deletedAt IS NULL')
+            ->andWhere('u.enable = true')
             ->setParameter('mail', strtolower($email))
             ->getQuery()
             ->getOneOrNullResult();

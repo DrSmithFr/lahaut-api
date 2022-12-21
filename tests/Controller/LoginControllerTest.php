@@ -51,4 +51,15 @@ class LoginControllerTest extends ApiTestCase
 
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
+
+    public function testLoginUserDisable(): void
+    {
+        $form = (new LoginModel())
+            ->setUsername('disable@gmail.com')
+            ->setPassword('disable-password');
+
+        $this->post('/login', $form);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+    }
 }
