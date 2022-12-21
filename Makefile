@@ -9,25 +9,23 @@ env:
 	sudo apt install nginx
 
 dependencies:
-	symfony composer self-update --1
+	symfony composer self-update --2
 	symfony composer install
 start:
-	docker compose -f docker-compose.yaml -f docker-compose.override.yaml up -d
-	symfony server:start --daemon
+	docker compose -f docker-compose.yml -f docker-compose.override.yml up -d
 	sleep 5
 
 stop:
 	docker compose kill
 	docker compose rm -f
-	symfony server:stop
 
 database:
 	-symfony console doctrine:database:drop --force
 	symfony console doctrine:database:create
 	symfony console doctrine:migration:migrate -n
-	symfony console doctrine:fixtures:load -n
 
 test:
+	-symfony console doctrine:database:drop --force --env=test
 	symfony console doctrine:schema:update --force --env=test
 	symfony console doctrine:fixtures:load -n --env=test
 	symfony php bin/phpunit

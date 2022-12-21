@@ -29,6 +29,7 @@ class PromoteUserCommand extends Command
             ->setName('app:user:promote')
             ->addArgument('email', InputArgument::REQUIRED, 'Email of user')
             ->addOption('user', 'u', InputOption::VALUE_NONE, 'Add role user')
+            ->addOption('monitor', 'm', InputOption::VALUE_NONE, 'Add role monitor')
             ->addOption('admin', 'a', InputOption::VALUE_NONE, 'Add role admin')
             ->addOption('super-admin', 's', InputOption::VALUE_NONE, 'Add role super-admin');
     }
@@ -53,6 +54,10 @@ class PromoteUserCommand extends Command
 
         if ($input->getOption('user')) {
             $user->addRole(SecurityRoleEnum::USER->getRole());
+        }
+
+        if ($input->getOption('monitor')) {
+            $user->addRole(SecurityRoleEnum::MONITOR->getRole());
         }
 
         if ($input->getOption('admin')) {

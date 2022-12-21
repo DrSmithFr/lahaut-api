@@ -1,10 +1,9 @@
 doctrine:
     dbal:
         # configure these for your database server
-        driver: 'pdo_pgsql'
-        server_version: '14'
+        driver: 'pdo_sqlite'
         charset: UTF8
-        url: '%env(resolve:DATABASE_URL)%'
+        url: 'sqlite:///%kernel.project_dir%/var/data.db'
         schema_filter: ~^(?!(tiger|topology))~
     orm:
         auto_generate_proxy_classes: true

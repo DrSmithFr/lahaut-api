@@ -3,11 +3,11 @@
 namespace App\Entity;
 
 use App\Entity\Interfaces\Serializable;
-use App\Entity\Traits\BlamableTrait;
 use App\Entity\Traits\IdTrait;
-use App\Entity\Traits\SoftDeletableTrait;
-use App\Entity\Traits\TimestampableTrait;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Blameable\Traits\BlameableEntity;
+use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 use JMS\Serializer\Annotation as JMS;
 use Ramsey\Uuid\UuidInterface;
 use SplFileInfo;
@@ -21,9 +21,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Media implements Serializable
 {
     use IdTrait;
-    use BlamableTrait;
-    use TimestampableTrait;
-    use SoftDeletableTrait;
+    use TimestampableEntity;
+    use BlameableEntity;
+    use SoftDeleteableEntity;
 
     #[ORM\Column(type: 'uuid', unique: true)]
     #[JMS\Type('string')]

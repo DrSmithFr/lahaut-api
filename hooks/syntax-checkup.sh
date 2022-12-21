@@ -42,7 +42,7 @@ then
     display phpmd
 
     for file in $(echo "$PHPs"); do
-        symfony php vendor/bin/phpmd $file ansi ruleset.xml
+        symfony php vendor/bin/phpmd $file ansi phpmd.xml
         SUBMD=$?
 
         if [[ $PHPMD -eq 0 ]]
@@ -63,6 +63,7 @@ fi
 
 # Unit Tests running
 PHPUNIT=0
+-symfony console doctrine:database:drop --force --env=test
 symfony console doctrine:schema:update --force --env=test
 symfony console doctrine:fixtures:load -n --env=test
 symfony php bin/phpunit

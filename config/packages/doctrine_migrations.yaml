@@ -1,6 +1,6 @@
 doctrine_migrations:
     migrations_paths:
-        'App\Migrations': '%kernel.project_dir%/src/App'
+        'App\Migrations': '%kernel.project_dir%/src/Migrations'
 
     storage:
         # Default (SQL table) metadata storage configuration

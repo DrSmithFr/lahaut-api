@@ -32,18 +32,6 @@ class RegisterControllerTest extends ApiTestCase
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
 
-    public function testRegisterValid(): void
-    {
-        $form = (new RegisterModel())
-            ->setUsername('test@gmail.com')
-            ->setPassword('password');
-
-        $this->post('/register', $form);
-
-        $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
-        $this->assertResponseHeaderSame('content-type', 'application/json');
-    }
-
     public function testRegisterEmailAlreadyUsed(): void
     {
         $form = (new RegisterModel())
@@ -53,6 +41,18 @@ class RegisterControllerTest extends ApiTestCase
         $this->post('/register', $form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        $this->assertResponseHeaderSame('content-type', 'application/json');
+    }
+
+    public function testRegisterValid(): void
+    {
+        $form = (new RegisterModel())
+            ->setUsername('test@gmail.com')
+            ->setPassword('password');
+
+        $this->post('/register', $form);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
 }

@@ -13,6 +13,7 @@
 
     <rule ref="rulesets/cleancode.xml">
         <exclude name="StaticAccess" />
+        <exclude name="IfStatementAssignment" />
     </rule>
 
     <rule ref="rulesets/cleancode.xml/StaticAccess">
@@ -47,6 +48,7 @@
     <rule ref="rulesets/naming.xml">
         <exclude name="ShortVariable" />
         <exclude name="LongVariable" />
+        <exclude name="ShortMethodName" />
     </rule>
 
     <rule ref="rulesets/unusedcode.xml">

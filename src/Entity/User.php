@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Entity\Interfaces\Serializable;
-use App\Entity\Traits\BlamableTrait;
 use App\Entity\Traits\EnableTrait;
 use App\Entity\Traits\IdTrait;
-use App\Entity\Traits\SoftDeletableTrait;
-use App\Entity\Traits\TimestampableTrait;
 use App\Enum\SecurityRoleEnum;
 use App\Repository\UserRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Blameable\Traits\BlameableEntity;
+use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 use InvalidArgumentException;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherAwareInterface;
@@ -30,10 +30,12 @@ class User implements
     Serializable
 {
     use IdTrait;
-    use TimestampableTrait;
-    use BlamableTrait;
-    use SoftDeletableTrait;
     use EnableTrait;
+
+    use TimestampableEntity;
+    use BlameableEntity;
+    use SoftDeleteableEntity;
+
 
     #[ORM\Column(type: 'string', unique: true)]
     #[Assert\Email]
