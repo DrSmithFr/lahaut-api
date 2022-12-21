@@ -34,7 +34,7 @@ class ResetPasswordController extends AbstractApiController
      *      mediaType="application/json",
      *      @OA\Schema(
      *         type="object",
-     *         example={"username": "user@gmail.com"}
+     *         example={"username": "user@mail.com"}
      *      )
      *    )
      * )

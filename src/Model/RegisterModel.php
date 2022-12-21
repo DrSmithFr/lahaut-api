@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class RegisterModel
 {
     #[Assert\Email]
-    #[OA\Property(description: 'Email of user', type: 'string', example: 'john.doe@gmail.com')]
+    #[OA\Property(description: 'Email of user', type: 'string', example: 'john.doe@mail.com')]
     private ?string $username = null;
 
     #[Assert\Length(min: 4)]

@@ -27,7 +27,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class RegisterController extends AbstractApiController
 {
     /**
-     * Create a new user
+     * Create a new customer account
      * @OA\RequestBody(@Model(type=RegisterModel::class))
      * @OA\Response(response=201, description="User created")
      * @OA\Response(
@@ -36,7 +36,7 @@ class RegisterController extends AbstractApiController
      *     @Model(type=FormErrorModel::class)
      * )
      */
-    #[Route(path: '/register/user', name: 'app_register_user', methods: ['post'])]
+    #[Route(path: '/register/customer', name: 'app_register_user', methods: ['post'])]
     final public function registerUser(
         Request $request,
         EntityManagerInterface $entityManager,
@@ -44,7 +44,7 @@ class RegisterController extends AbstractApiController
         UserService $userService
     ): JsonResponse {
         return $this->registerAnUserWithRoles(
-            [UserEnum::USER->getRole()],
+            [UserEnum::CUSTOMER->getRole()],
             $request,
             $entityManager,
             $userRepository,
@@ -53,7 +53,7 @@ class RegisterController extends AbstractApiController
     }
 
     /**
-     * Create a new monitor
+     * Create a new monitor account
      * @OA\RequestBody(@Model(type=RegisterModel::class))
      * @OA\Response(response=201, description="User created")
      * @OA\Response(

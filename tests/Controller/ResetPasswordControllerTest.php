@@ -12,7 +12,7 @@ class ResetPasswordControllerTest extends ApiTestCase
 {
     public function testRequestPasswordResetWithUnknownUser(): void
     {
-        $data = ['username' => 'unknown@gmail.com'];
+        $data = ['username' => 'unknown@mail.com'];
 
         $this->post('/reset_password', $data);
 
@@ -22,7 +22,7 @@ class ResetPasswordControllerTest extends ApiTestCase
 
     public function testRequestPasswordResetWithNewPasswordTooShort(): void
     {
-        $data = ['username' => 'user@gmail.com'];
+        $data = ['username' => 'customer@mail.com'];
 
         $this->post('/reset_password', $data);
 
@@ -34,7 +34,7 @@ class ResetPasswordControllerTest extends ApiTestCase
                           ->getRepository(User::class);
 
         /** @var User $user */
-        $user = $repository->findOneByEmail('user@gmail.com');
+        $user = $repository->findOneByEmail('customer@mail.com');
 
         $this->assertNotNull($user->getPasswordResetToken());
 
@@ -49,7 +49,7 @@ class ResetPasswordControllerTest extends ApiTestCase
 
     public function testRequestPasswordResetWithBadToken(): void
     {
-        $data = ['username' => 'user@gmail.com'];
+        $data = ['username' => 'customer@mail.com'];
 
         $this->post('/reset_password', $data);
 
@@ -61,7 +61,7 @@ class ResetPasswordControllerTest extends ApiTestCase
                           ->getRepository(User::class);
 
         /** @var User $user */
-        $user = $repository->findOneByEmail('user@gmail.com');
+        $user = $repository->findOneByEmail('customer@mail.com');
 
         $this->assertNotNull($user->getPasswordResetToken());
 
@@ -76,7 +76,7 @@ class ResetPasswordControllerTest extends ApiTestCase
 
     public function testRequestPasswordResetWithExpireToken(): void
     {
-        $data = ['username' => 'user@gmail.com'];
+        $data = ['username' => 'customer@mail.com'];
 
         $this->post('/reset_password', $data);
 
@@ -89,7 +89,7 @@ class ResetPasswordControllerTest extends ApiTestCase
         $repository = $doctrine->getRepository(User::class);
 
         /** @var User $user */
-        $user = $repository->findOneByEmail('user@gmail.com');
+        $user = $repository->findOneByEmail('customer@mail.com');
 
         // Update the token creation date to force the token to expire
         $user->setPasswordResetTokenValidUntil(new DateTime('-1 second'));
@@ -106,7 +106,7 @@ class ResetPasswordControllerTest extends ApiTestCase
 
     public function testRequestPasswordResetValid(): void
     {
-        $data = ['username' => 'user@gmail.com'];
+        $data = ['username' => 'customer@mail.com'];
 
         $this->post('/reset_password', $data);
 
@@ -118,20 +118,20 @@ class ResetPasswordControllerTest extends ApiTestCase
                           ->getRepository(User::class);
 
         /** @var User $user */
-        $user = $repository->findOneByEmail('user@gmail.com');
+        $user = $repository->findOneByEmail('customer@mail.com');
 
         $this->assertNotNull($user->getPasswordResetToken());
 
         $data = [
             'token' => $user->getPasswordResetToken(),
-            'password' => 'user-password' // reset to the original password
+            'password' => 'customer-password' // reset to the original password
         ];
 
         $this->patch('/reset_password', $data);
         $this->assertResponseStatusCodeSame(Response::HTTP_ACCEPTED);
 
         /** @var User $user */
-        $user = $repository->findOneByEmail('user@gmail.com');
+        $user = $repository->findOneByEmail('customer@mail.com');
         $this->assertNull($user->getPasswordResetToken());
         $this->assertNull($user->getPasswordResetTokenValidUntil());
     }
@@ -147,7 +147,7 @@ class ResetPasswordControllerTest extends ApiTestCase
 
     public function testIsPasswordResetTokenValid(): void
     {
-        $data = ['username' => 'user@gmail.com'];
+        $data = ['username' => 'customer@mail.com'];
 
         $this->post('/reset_password', $data);
 
@@ -159,7 +159,7 @@ class ResetPasswordControllerTest extends ApiTestCase
                           ->getRepository(User::class);
 
         /** @var User $user */
-        $user = $repository->findOneByEmail('user@gmail.com');
+        $user = $repository->findOneByEmail('customer@mail.com');
 
         $this->post('/reset_password/validity', ['token' => $user->getPasswordResetToken()]);
 

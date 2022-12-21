@@ -10,7 +10,7 @@ use Doctrine\Persistence\ObjectManager;
 class UserFixtures extends Fixture
 {
     final public const REFERENCE_ADMIN = 'user-admin';
-    final public const REFERENCE_USER = 'user-user';
+    final public const REFERENCE_USER = 'user-customer';
     final public const REFERENCE_MONITOR = 'user-monitor';
     final public const REFERENCE_DISABLED = 'user-disabled';
 
@@ -20,10 +20,10 @@ class UserFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        $admin = $this->userService->createUser('admin@gmail.com', 'admin-password');
-        $user = $this->userService->createUser('user@gmail.com', 'user-password');
-        $monitor = $this->userService->createUser('monitor@gmail.com', 'monitor-password');
-        $disabled = $this->userService->createUser('disable@gmail.com', 'disable-password');
+        $admin = $this->userService->createUser('admin@mail.com', 'admin-password');
+        $user = $this->userService->createUser('customer@mail.com', 'customer-password');
+        $monitor = $this->userService->createUser('monitor@mail.com', 'monitor-password');
+        $disabled = $this->userService->createUser('disable@mail.com', 'disable-password');
 
         $this->setReference(self::REFERENCE_ADMIN, $admin);
         $this->setReference(self::REFERENCE_USER, $user);
@@ -36,9 +36,9 @@ class UserFixtures extends Fixture
         $disabled->setEnable(false);
 
         $admin->addRole(UserEnum::ADMIN->getRole());
-        $user->addRole(UserEnum::USER->getRole());
+        $user->addRole(UserEnum::CUSTOMER->getRole());
         $monitor->addRole(UserEnum::MONITOR->getRole());
-        $disabled->addRole(UserEnum::USER->getRole());
+        $disabled->addRole(UserEnum::CUSTOMER->getRole());
 
         $manager->persist($admin);
         $manager->persist($user);

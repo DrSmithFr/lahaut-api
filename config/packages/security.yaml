@@ -44,5 +44,7 @@ security:
         - { path: ^/,       roles: [ IS_AUTHENTICATED_FULLY, ROLE_USER ] }
 
     role_hierarchy:
+        ROLE_CUSTOMER: [ ROLE_USER ]
+        ROLE_MONITOR: [ ROLE_USER ]
         ROLE_ADMIN: [ ROLE_USER, ROLE_MONITOR ]
         ROLE_SUPER_ADMIN: [ ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH ]

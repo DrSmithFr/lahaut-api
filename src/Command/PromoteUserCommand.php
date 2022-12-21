@@ -53,7 +53,7 @@ class PromoteUserCommand extends Command
         }
 
         if ($input->getOption('user')) {
-            $user->addRole(UserEnum::USER->getRole());
+            $user->addRole(UserEnum::CUSTOMER->getRole());
         }
 
         if ($input->getOption('monitor')) {

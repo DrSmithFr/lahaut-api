@@ -22,7 +22,7 @@ class LoginControllerTest extends ApiTestCase
     public function testLoginBadCredencial(): void
     {
         $form = (new LoginModel())
-            ->setUsername('admin@gmail.com')
+            ->setUsername('admin@mail.com')
             ->setPassword('bad_password');
 
         $this->post('/login', $form);
@@ -33,7 +33,7 @@ class LoginControllerTest extends ApiTestCase
     public function testLoginAdmin(): void
     {
         $form = (new LoginModel())
-            ->setUsername('admin@gmail.com')
+            ->setUsername('admin@mail.com')
             ->setPassword('admin-password');
 
         $this->post('/login', $form);
@@ -41,11 +41,11 @@ class LoginControllerTest extends ApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
 
-    public function testLoginUser(): void
+    public function testLoginCustomer(): void
     {
         $form = (new LoginModel())
-            ->setUsername('user@gmail.com')
-            ->setPassword('user-password');
+            ->setUsername('customer@mail.com')
+            ->setPassword('customer-password');
 
         $this->post('/login', $form);
 
@@ -55,7 +55,7 @@ class LoginControllerTest extends ApiTestCase
     public function testLoginUserDisable(): void
     {
         $form = (new LoginModel())
-            ->setUsername('disable@gmail.com')
+            ->setUsername('disable@mail.com')
             ->setPassword('disable-password');
 
         $this->post('/login', $form);

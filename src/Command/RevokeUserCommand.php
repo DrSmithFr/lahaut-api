@@ -52,7 +52,7 @@ class RevokeUserCommand extends Command
         }
 
         if ($input->getOption('user')) {
-            $user->removeRole(UserEnum::USER->getRole());
+            $user->removeRole(UserEnum::CUSTOMER->getRole());
         }
 
         if ($input->getOption('admin')) {

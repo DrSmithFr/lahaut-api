@@ -16,7 +16,7 @@ class RegisterControllerTest extends ApiTestCase
             ->setUsername('not_an_email')
             ->setPassword('password');
 
-        $this->post('/register/user', $form);
+        $this->post('/register/customer', $form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
         $this->assertResponseHeaderSame('content-type', 'application/json');
@@ -25,10 +25,10 @@ class RegisterControllerTest extends ApiTestCase
     public function testRegisterUserWithShortPassword(): void
     {
         $form = (new RegisterModel())
-            ->setUsername('test@gmail.com')
+            ->setUsername('test-short-password@mail.com')
             ->setPassword('...');
 
-        $this->post('/register/user', $form);
+        $this->post('/register/customer', $form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
         $this->assertResponseHeaderSame('content-type', 'application/json');
@@ -37,22 +37,22 @@ class RegisterControllerTest extends ApiTestCase
     public function testRegisterUserEmailAlreadyUsed(): void
     {
         $form = (new RegisterModel())
-            ->setUsername('user@gmail.com')
+            ->setUsername('customer@mail.com')
             ->setPassword('password');
 
-        $this->post('/register/user', $form);
+        $this->post('/register/customer', $form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
 
-    public function testRegisterUserValid(): void
+    public function testRegisterCustomerValid(): void
     {
         $form = (new RegisterModel())
-            ->setUsername('test-user@gmail.com')
+            ->setUsername('test-customer@mail.com')
             ->setPassword('password');
 
-        $this->post('/register/user', $form);
+        $this->post('/register/customer', $form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
         $this->assertResponseHeaderSame('content-type', 'application/json');
@@ -62,15 +62,15 @@ class RegisterControllerTest extends ApiTestCase
                           ->getRepository(User::class);
 
         /** @var User $user */
-        $user = $repository->findOneByEmail('test-user@gmail.com');
+        $user = $repository->findOneByEmail('test-customer@mail.com');
 
-        $this->assertEquals([UserEnum::USER->getRole()], $user->getRoles());
+        $this->assertEquals([UserEnum::CUSTOMER->getRole()], $user->getRoles());
     }
 
     public function testRegisterMonitorValid(): void
     {
         $form = (new RegisterModel())
-            ->setUsername('test-monitor@gmail.com')
+            ->setUsername('test-monitor@mail.com')
             ->setPassword('password');
 
         $this->post('/register/monitor', $form);
@@ -83,7 +83,7 @@ class RegisterControllerTest extends ApiTestCase
                           ->getRepository(User::class);
 
         /** @var User $user */
-        $user = $repository->findOneByEmail('test-monitor@gmail.com');
+        $user = $repository->findOneByEmail('test-monitor@mail.com');
 
         $this->assertEquals([UserEnum::MONITOR->getRole()], $user->getRoles());
     }
