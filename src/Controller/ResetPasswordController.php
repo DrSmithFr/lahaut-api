@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\ResetPasswordType;
+use App\Form\PasswordResetType;
+use App\Model\PasswordResetModel;
 use App\Model\ResetPasswordModel;
 use App\Repository\UserRepository;
 use App\Service\MailerService;
@@ -69,7 +70,7 @@ class ResetPasswordController extends AbstractApiController
 
     /**
      * Reset password with token.
-     * @OA\RequestBody(@Model(type=ResetPasswordModel::class))
+     * @OA\RequestBody(@Model(type=PasswordResetModel::class))
      * @OA\Response(response=202, description="Update User password")
      * @OA\Response(response=400, description="New password not valid")
      * @OA\Response(response=404, description="Token not found")
@@ -82,11 +83,11 @@ class ResetPasswordController extends AbstractApiController
         UserService $userService,
         EntityManagerInterface $entityManager
     ): JsonResponse {
-        $data = new ResetPasswordModel();
+        $data = new PasswordResetModel();
 
         $form = $this->handleJsonFormRequest(
             $request,
-            ResetPasswordType::class,
+            PasswordResetType::class,
             $data
         );
 

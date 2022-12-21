@@ -7,7 +7,7 @@ namespace App\Model;
 use OpenApi\Attributes as OA;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class ResetPasswordModel
+class PasswordResetModel
 {
     #[Assert\NotNull]
     #[Assert\NotBlank]
@@ -20,7 +20,7 @@ class ResetPasswordModel
     private ?string $token = null;
 
     #[Assert\Length(min: 4)]
-    #[OA\Property(description: 'Plaintext password', type: 'string', example: 'user-passwd')]
+    #[OA\Property(description: 'Plaintext password', type: 'string', example: 'user-password')]
     private ?string $password = null;
 
     public function getToken(): ?string

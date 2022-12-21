@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Tests;
 
+use App\Entity\User;
 use Exception;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use LogicException;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -91,5 +93,25 @@ abstract class ApiTestCase extends WebTestCase
     protected function getResponse(): Response
     {
         return $this->client->getResponse();
+    }
+
+    protected function loginUser(User $user)
+    {
+        $container = self::getContainer();
+
+        $token = $container
+            ->get(JWTTokenManagerInterface::class)
+            ->create($user);
+
+        $this
+            ->client
+            ->setServerParameter('HTTP_Authorization', sprintf('Bearer %s', $token));
+    }
+
+    protected function disconnectUser(): void
+    {
+        $this
+            ->client
+            ->setServerParameters([]);
     }
 }

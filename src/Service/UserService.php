@@ -66,4 +66,14 @@ class UserService
         $user->setPasswordResetToken(null);
         $user->setPasswordResetTokenValidUntil(null);
     }
+
+    public function isPasswordValid(User $user, string $password): bool
+    {
+        return $this
+            ->passwordEncoder
+            ->isPasswordValid(
+                $user,
+                $password
+            );
+    }
 }

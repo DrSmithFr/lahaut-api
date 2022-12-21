@@ -4,6 +4,7 @@ namespace App\Tests\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Service\UserService;
 use App\Tests\ApiTestCase;
 use DateTime;
 use Symfony\Component\HttpFoundation\Response;
@@ -122,18 +123,43 @@ class ResetPasswordControllerTest extends ApiTestCase
 
         $this->assertNotNull($user->getPasswordResetToken());
 
-        $data = [
-            'token' => $user->getPasswordResetToken(),
-            'password' => 'customer-password' // reset to the original password
-        ];
+        $this->patch(
+            '/reset_password',
+            [
+                'token' => $user->getPasswordResetToken(),
+                'password' => 'new-password'
+            ]
+        );
 
-        $this->patch('/reset_password', $data);
         $this->assertResponseStatusCodeSame(Response::HTTP_ACCEPTED);
 
         /** @var User $user */
         $user = $repository->findOneByEmail('customer@mail.com');
-        $this->assertNull($user->getPasswordResetToken());
-        $this->assertNull($user->getPasswordResetTokenValidUntil());
+        $userService = self::getContainer()->get(UserService::class);
+
+        $this->assertTrue(
+            $userService->isPasswordValid($user, 'new-password'),
+            'Password has not been changed'
+        );
+
+        $this->assertNull(
+            $user->getPasswordResetToken(),
+            'Password reset token has not been removed'
+        );
+
+        $this->assertNull(
+            $user->getPasswordResetTokenValidUntil(),
+            'Password reset token validity until has not been removed'
+        );
+
+        // rollback to the original password
+        $user->setPlainPassword('customer-password');
+        $userService->updatePassword($user);
+
+        self::getContainer()
+            ->get('doctrine')
+            ->getManager()
+            ->flush();
     }
 
     public function testIsPasswordResetTokenValidWithBadToken(): void
