@@ -24,13 +24,10 @@ security:
             pattern: ^/documentation$
             security: false
         register:
-            pattern: ^/register$
+            pattern: ^/register/
             security: false
         reset_password:
-            pattern:  ^/reset_password$
-            security: false
-        reset_password_validity:
-            pattern:  ^/reset_password/validity$
+            pattern:  ^/reset_password
             security: false
         public_media:
             pattern: ^/media/

@@ -14,6 +14,7 @@
     <rule ref="rulesets/cleancode.xml">
         <exclude name="StaticAccess" />
         <exclude name="IfStatementAssignment" />
+        <exclude name="ElseExpression" />
     </rule>
 
     <rule ref="rulesets/cleancode.xml/StaticAccess">
@@ -26,7 +27,7 @@
                     \JMS\Serializer\SerializerBuilder,
                     \JMS\Serializer\SerializationContext,
                     \Ramsey\Uuid\Uuid,
-                    \App\Enum\SecurityRoleEnum
+                    \App\Enum\UserEnum
                 </value>
             </property>
         </properties>

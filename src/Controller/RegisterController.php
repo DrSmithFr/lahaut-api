@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\User;
-use App\Enum\SecurityRoleEnum;
+use App\Enum\UserEnum;
 use App\Form\RegisterType;
 use App\Model\FormErrorModel;
 use App\Model\RegisterModel;
 use App\Repository\UserRepository;
 use App\Service\UserService;
 use Doctrine\ORM\EntityManagerInterface;
+use InvalidArgumentException;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Annotations as OA;
@@ -27,21 +27,59 @@ use Symfony\Component\Routing\Annotation\Route;
 class RegisterController extends AbstractApiController
 {
     /**
-     * Initialise sessions with encryption API (Token valid for 30s)
+     * Create a new user
      * @OA\RequestBody(@Model(type=RegisterModel::class))
-     * @OA\Response(
-     *     response=201,
-     *     description="User created",
-     *     @Model(type=User::class)
-     * )
+     * @OA\Response(response=201, description="User created")
      * @OA\Response(
      *     response="400",
      *     description="Bad request",
      *     @Model(type=FormErrorModel::class)
      * )
      */
-    #[Route(path: '/register', name: 'app_register', methods: ['post'])]
-    final public function register(
+    #[Route(path: '/register/user', name: 'app_register_user', methods: ['post'])]
+    final public function registerUser(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UserRepository $userRepository,
+        UserService $userService
+    ): JsonResponse {
+        return $this->registerAnUserWithRoles(
+            [UserEnum::USER->getRole()],
+            $request,
+            $entityManager,
+            $userRepository,
+            $userService,
+        );
+    }
+
+    /**
+     * Create a new monitor
+     * @OA\RequestBody(@Model(type=RegisterModel::class))
+     * @OA\Response(response=201, description="User created")
+     * @OA\Response(
+     *     response="400",
+     *     description="Bad request",
+     *     @Model(type=FormErrorModel::class)
+     * )
+     */
+    #[Route(path: '/register/monitor', name: 'app_register_monitor', methods: ['post'])]
+    final public function registerMonitor(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UserRepository $userRepository,
+        UserService $userService
+    ): JsonResponse {
+        return $this->registerAnUserWithRoles(
+            [UserEnum::MONITOR->getRole()],
+            $request,
+            $entityManager,
+            $userRepository,
+            $userService,
+        );
+    }
+
+    private function registerAnUserWithRoles(
+        array $roles,
         Request $request,
         EntityManagerInterface $entityManager,
         UserRepository $userRepository,
@@ -70,7 +108,13 @@ class RegisterController extends AbstractApiController
             $data->getPassword()
         );
 
-        $user->setRoles([SecurityRoleEnum::USER]);
+        foreach ($roles as $role) {
+            if (!UserEnum::tryFrom($role)) {
+                throw new InvalidArgumentException('Invalid role');
+            }
+        }
+
+        $user->setRoles($roles);
 
         $entityManager->persist($user);
         $entityManager->flush();

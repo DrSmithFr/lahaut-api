@@ -7,7 +7,7 @@ namespace App\Entity;
 use App\Entity\Interfaces\Serializable;
 use App\Entity\Traits\EnableTrait;
 use App\Entity\Traits\IdTrait;
-use App\Enum\SecurityRoleEnum;
+use App\Enum\UserEnum;
 use App\Repository\UserRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -91,7 +91,7 @@ class User implements
 
     public function addRole(string $role): self
     {
-        if (!SecurityRoleEnum::tryFrom($role)) {
+        if (!UserEnum::tryFrom($role)) {
             throw new InvalidArgumentException('invalid role');
         }
 
@@ -104,7 +104,7 @@ class User implements
 
     public function removeRole(string $role): self
     {
-        if (!SecurityRoleEnum::tryFrom($role)) {
+        if (!UserEnum::tryFrom($role)) {
             throw new InvalidArgumentException('invalid role');
         }
 

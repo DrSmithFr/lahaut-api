@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class LoginController extends AbstractApiController
 {
     /**
-     * Initialise sessions with encryption API (Token valid for 30s)
+     * Initialise sessions with encryption API (Token valid for 1 hour)
      * @OA\RequestBody(@Model(type=LoginModel::class))
      * @OA\Response(
      *     response=200,
