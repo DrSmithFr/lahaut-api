@@ -10,11 +10,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 class LoginModel
 {
     #[Assert\Email]
-    #[OA\Property(description: 'Email of user', type: 'string', example: 'user@mail.com')]
+    #[OA\Property(description: 'Email of user', type: 'string', example: 'customer@mail.com')]
     private ?string $username = null;
 
     #[Assert\Length(min: 4)]
-    #[OA\Property(description: 'Plaintext password', type: 'string', example: 'user-passwd')]
+    #[OA\Property(description: 'Plaintext password', type: 'string', example: 'customer-password')]
     private ?string $password = null;
 
     public function getUsername(): ?string

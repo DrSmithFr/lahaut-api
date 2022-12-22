@@ -26,7 +26,6 @@
                     \DateTimeZone,
                     \JMS\Serializer\SerializerBuilder,
                     \JMS\Serializer\SerializationContext,
-                    \Ramsey\Uuid\Uuid,
                     \App\Enum\UserEnum
                 </value>
             </property>

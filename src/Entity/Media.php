@@ -3,13 +3,12 @@
 namespace App\Entity;
 
 use App\Entity\Interfaces\Serializable;
-use App\Entity\Traits\IdTrait;
+use App\Entity\Traits\UuidTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Blameable\Traits\BlameableEntity;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use JMS\Serializer\Annotation as JMS;
-use Ramsey\Uuid\UuidInterface;
 use SplFileInfo;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -20,31 +19,28 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[JMS\ExclusionPolicy('all')]
 class Media implements Serializable
 {
-    use IdTrait;
+    use UuidTrait;
+
     use TimestampableEntity;
     use BlameableEntity;
     use SoftDeleteableEntity;
 
-    #[ORM\Column(type: 'uuid', unique: true)]
-    #[JMS\Type('string')]
-    private ?UuidInterface $uuid = null;
-
-    #[ORM\Column(name: 'content_type', type: 'string', length: 255, nullable: true)]
     #[JMS\Expose]
+    #[ORM\Column(name: 'content_type', type: 'string', length: 255, nullable: true)]
     private ?string $contentType = null;
 
-    #[ORM\Column(name: 'size', type: 'integer', nullable: true)]
     #[JMS\Expose]
+    #[ORM\Column(name: 'size', type: 'integer', nullable: true)]
     private ?int $size = null;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    #[JMS\Type('string')]
     #[JMS\Expose]
+    #[JMS\Type('string')]
+    #[ORM\Column(type: 'string', length: 255)]
     private ?string $extension = null;
 
-    #[ORM\Column(type: 'string', length: 1024)]
-    #[JMS\Type('string')]
     #[JMS\Expose]
+    #[JMS\Type('string')]
+    #[ORM\Column(type: 'string', length: 1024)]
     private ?string $key = null;
 
     /**
@@ -53,17 +49,6 @@ class Media implements Serializable
      */
     #[Assert\File(maxSize: 10_000_000)]
     private ?SplFileInfo $file = null;
-
-    public function getUuid(): ?UuidInterface
-    {
-        return $this->uuid;
-    }
-
-    public function setUuid(?UuidInterface $uuid): self
-    {
-        $this->uuid = $uuid;
-        return $this;
-    }
 
     public function getContentType(): ?string
     {

@@ -6,6 +6,7 @@ use App\Entity\Interfaces\Serializable;
 use App\Entity\Interfaces\SerializableEntity;
 use App\Model\FormErrorDetailModel;
 use App\Model\FormErrorModel;
+use Doctrine\Common\Collections\Collection;
 use InvalidArgumentException;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
@@ -58,8 +59,13 @@ trait SerializerAware
 
     /**
      * Return the json string of the data, serialize for specifics groups
+     *
+     * @param Serializable|Collection|array $data
+     * @param string[]                      $group
+     *
+     * @return string
      */
-    protected function serialize(Serializable $data, array $group = ['Default']): string
+    protected function serialize(Serializable|Collection|array $data, array $group = ['Default']): string
     {
         return $this
             ->getSerializer()
@@ -72,9 +78,15 @@ trait SerializerAware
 
     /**
      * Return the JsonResponse of the data, serialize for specifics groups
+     *
+     * @param Serializable|Collection|array $data
+     * @param String[]                      $group
+     * @param int                           $status
+     *
+     * @return JsonResponse
      */
     protected function serializeResponse(
-        Serializable $data,
+        Serializable|Collection|array $data,
         array $group = ['Default'],
         int $status = Response::HTTP_OK
     ): JsonResponse {
@@ -134,28 +146,5 @@ trait SerializerAware
         $reason->setChildren($children);
 
         return $reason;
-    }
-
-    /**
-     * Simple JsonResponse use to transmit the new identifier of the created entity
-     */
-    protected function createResponse(
-        SerializableEntity $entity,
-        string $message,
-        int $status = Response::HTTP_CREATED
-    ): JsonResponse {
-        if (!method_exists($entity, 'getId')) {
-            throw new InvalidArgumentException('Entity must have a getId() method');
-        }
-
-        return new JsonResponse(
-            [
-                'code' => $status,
-                'message' => $message,
-                'id' => $entity->getIdentifier(),
-                'entity' => $this->toArray($entity),
-            ],
-            $status
-        );
     }
 }

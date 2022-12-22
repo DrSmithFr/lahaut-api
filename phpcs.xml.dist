@@ -12,6 +12,6 @@
 
     <file>src/</file>
     <file>tests/</file>
-    <exclude>src/Migrations</exclude>
+    <exclude>migrations</exclude>
 
 </ruleset>

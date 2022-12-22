@@ -30,7 +30,7 @@ if [[ "$PHPs" != "" ]]
 then
     # check php syntax
     display phpcs && \
-    symfony php vendor/bin/phpcs --ignore=vendor,bin,public,documentation,src/Migrations ${PHPs} && \
+    symfony php vendor/bin/phpcs --ignore=vendor,bin,public,documentation,migrations ${PHPs} && \
     display success "PSR-2 Syntax checked"
     PHPCS=$?
 fi

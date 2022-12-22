@@ -6,7 +6,7 @@ namespace App\Entity;
 
 use App\Entity\Interfaces\Serializable;
 use App\Entity\Traits\EnableTrait;
-use App\Entity\Traits\IdTrait;
+use App\Entity\Traits\UuidTrait;
 use App\Enum\UserEnum;
 use App\Repository\UserRepository;
 use DateTime;
@@ -16,6 +16,7 @@ use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use InvalidArgumentException;
 use JMS\Serializer\Annotation as JMS;
+use OpenApi\Attributes as OA;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherAwareInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -29,19 +30,16 @@ class User implements
     PasswordHasherAwareInterface,
     Serializable
 {
-    use IdTrait;
-    use EnableTrait;
+    use UuidTrait;
 
+    use EnableTrait;
     use TimestampableEntity;
     use BlameableEntity;
     use SoftDeleteableEntity;
 
-
-    #[ORM\Column(type: 'string', unique: true)]
     #[Assert\Email]
-    #[JMS\Expose]
     #[JMS\Type('string')]
-    #[JMS\Groups(['Default', 'Login'])]
+    #[ORM\Column(type: 'string', unique: true)]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -56,10 +54,9 @@ class User implements
     #[ORM\Column(nullable: true)]
     private ?string $salt = null;
 
-    #[ORM\Column(name: 'roles', type: 'json')]
     #[JMS\Expose]
-    #[JMS\Groups(['Default'])]
     #[JMS\MaxDepth(1)]
+    #[ORM\Column(name: 'roles', type: 'json')]
     #[JMS\Type('array<string>')]
     private array $roles = [];
 
@@ -68,6 +65,20 @@ class User implements
 
     #[ORM\Column(type: 'datetime', nullable: true)]
     private ?DateTime $passwordResetTokenValidUntil = null;
+
+    #[JMS\Expose]
+    #[JMS\VirtualProperty]
+    #[JMS\Type('string')]
+    #[JMS\SerializedName("uuid")]
+    #[OA\Property(
+        description: 'User Uuid',
+        type: 'string',
+        example: '1ed82229-3199-6552-afb9-5752dd505444'
+    )]
+    public function getUserUuid(): ?string
+    {
+        return $this->getUuid()?->toRfc4122();
+    }
 
     public function getUserIdentifier(): string
     {

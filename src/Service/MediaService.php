@@ -7,7 +7,6 @@ namespace App\Service;
 use App\Entity\Media;
 use Exception;
 use Generator;
-use Ramsey\Uuid\Uuid;
 use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
@@ -42,7 +41,6 @@ class MediaService
         $encryptedPassword = $this->encryptionService->encryptData($password);
 
         $media
-            ->setUuid(Uuid::uuid4())
             ->setContentType($file->getClientMimeType())
             ->setSize($file->getSize())
             ->setExtension($file->guessExtension())
