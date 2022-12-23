@@ -23,6 +23,9 @@ security:
         documentation:
             pattern: ^/documentation$
             security: false
+        documentation_json:
+            pattern:  ^/documentation.json$
+            security: false
         register:
             pattern: ^/register/
             security: false

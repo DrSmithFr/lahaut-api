@@ -102,6 +102,14 @@ class ChatController extends AbstractApiController
     }
 
     /**
+     * @OA\Response(
+     *     response=200,
+     *     description="Returns the messages of a conversation",
+     *     @OA\JsonContent(
+     *        type="array",
+     *        @OA\Items(ref=@Model(type=Message::class))
+     *     )
+     * )
      * @param Conversation      $conversation
      * @param MessageRepository $messageRepository
      *
