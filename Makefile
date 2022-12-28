@@ -25,13 +25,8 @@ database:
 	symfony console doctrine:database:create --complete
 	symfony console doctrine:migration:migrate -n
 
-test: test_database
+test:
 	symfony php bin/phpunit
-
-test_database:
-	-symfony console doctrine:database:drop --force --env=test
-	symfony console doctrine:schema:update --force --complete --env=test
-	symfony console doctrine:fixtures:load -n --env=test
 
 git_hooks:
 	chmod +x hooks/syntax-checkup.sh

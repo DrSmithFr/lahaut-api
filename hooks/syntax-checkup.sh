@@ -63,9 +63,6 @@ fi
 
 # Unit Tests running
 PHPUNIT=0
-symfony console doctrine:database:drop --force --env=test
-symfony console doctrine:schema:update --force --complete --env=test && \
-symfony console doctrine:fixtures:load -n --env=test && \
 symfony php bin/phpunit
 PHPUNIT=$?
 
