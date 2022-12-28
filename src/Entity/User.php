@@ -7,10 +7,13 @@ namespace App\Entity;
 use App\Entity\Interfaces\Serializable;
 use App\Entity\Traits\EnableTrait;
 use App\Entity\Traits\UuidTrait;
+use App\Entity\User\Address;
+use App\Entity\User\Identity;
 use App\Enum\RoleEnum;
 use App\Repository\UserRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Embedded;
 use Gedmo\Blameable\Traits\BlameableEntity;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
@@ -69,6 +72,23 @@ class User implements
 
     #[ORM\Column(type: 'datetime', nullable: true)]
     private ?DateTime $passwordResetTokenValidUntil = null;
+
+    #[JMS\Expose]
+    #[Embedded(class: Identity::class)]
+    private Identity $identity;
+
+    #[Embedded(class: Address::class, columnPrefix: "address_")]
+    private Address $address;
+
+    #[Embedded(class: Address::class, columnPrefix: "billing_")]
+    private Address $billing;
+
+    public function __construct()
+    {
+        $this->identity = new Identity();
+        $this->address = new Address();
+        $this->billing = new Address();
+    }
 
     public function getUserIdentifier(): string
     {
@@ -192,6 +212,39 @@ class User implements
     public function setPasswordResetTokenValidUntil(?DateTime $passwordResetTokenValidUntil): self
     {
         $this->passwordResetTokenValidUntil = $passwordResetTokenValidUntil;
+        return $this;
+    }
+
+    public function getIdentity(): Identity
+    {
+        return $this->identity;
+    }
+
+    public function setIdentity(Identity $identity): self
+    {
+        $this->identity = $identity;
+        return $this;
+    }
+
+    public function getAddress(): Address
+    {
+        return $this->address;
+    }
+
+    public function setAddress(Address $address): self
+    {
+        $this->address = $address;
+        return $this;
+    }
+
+    public function getBilling(): Address
+    {
+        return $this->billing;
+    }
+
+    public function setBilling(Address $billing): self
+    {
+        $this->billing = $billing;
         return $this;
     }
 }

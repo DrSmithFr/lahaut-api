@@ -5,7 +5,11 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\User\Address;
+use App\Entity\User\Identity;
 use App\Form\PasswordUpdateType;
+use App\Form\User\AddressType;
+use App\Form\User\IdentityType;
 use App\Model\PasswordUpdateModel;
 use App\Service\UserService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -86,5 +90,101 @@ class UserController extends AbstractApiController
         $entityManager->flush();
 
         return $this->messageResponse('Password changed', Response::HTTP_ACCEPTED);
+    }
+
+    /**
+     * Update the current user identity.
+     * @OA\RequestBody(@Model(type=Identity::class))
+     * @OA\Response(response=202, description="Update User Identity")
+     * @OA\Response(response=400, description="Identity not valid")
+     */
+    #[Route(path: '/user/identity', name: 'app_user_identity_update', methods: ['put'])]
+    public function updateIdentityAction(
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+        $data = new Identity();
+
+        $form = $this->handleJsonFormRequest(
+            $request,
+            IdentityType::class,
+            $data
+        );
+
+        if (!$form->isValid()) {
+            return $this->formErrorResponse($form, Response::HTTP_BAD_REQUEST);
+        }
+
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $user->setIdentity($data);
+        $entityManager->flush();
+
+        return $this->serializeResponse($data, ['Default'], Response::HTTP_ACCEPTED);
+    }
+
+    /**
+     * Update the current user personal address.
+     * @OA\RequestBody(@Model(type=Address::class))
+     * @OA\Response(response=202, description="Update User Personal address")
+     * @OA\Response(response=400, description="Address not valid")
+     */
+    #[Route(path: '/user/address', name: 'app_user_address_update', methods: ['put'])]
+    public function updateAddressAction(
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+        $data = new Address();
+
+        $form = $this->handleJsonFormRequest(
+            $request,
+            AddressType::class,
+            $data
+        );
+
+        if (!$form->isValid()) {
+            return $this->formErrorResponse($form, Response::HTTP_BAD_REQUEST);
+        }
+
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $user->setAddress($data);
+        $entityManager->flush();
+
+        return $this->serializeResponse($data, ['Default'], Response::HTTP_ACCEPTED);
+    }
+
+    /**
+     * Update the current user billing address.
+     * @OA\RequestBody(@Model(type=Address::class))
+     * @OA\Response(response=202, description="Update User Billing address")
+     * @OA\Response(response=400, description="Billing address not valid")
+     */
+    #[Route(path: '/user/billing_address', name: 'app_user_billing_update', methods: ['put'])]
+    public function updateBillingAddressAction(
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+        $data = new Address();
+
+        $form = $this->handleJsonFormRequest(
+            $request,
+            AddressType::class,
+            $data
+        );
+
+        if (!$form->isValid()) {
+            return $this->formErrorResponse($form, Response::HTTP_BAD_REQUEST);
+        }
+
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $user->setBilling($data);
+        $entityManager->flush();
+
+        return $this->serializeResponse($data, ['Default'], Response::HTTP_ACCEPTED);
     }
 }

@@ -125,4 +125,60 @@ class UserControllerTest extends ApiTestCase
         // remove simulate user connection
         $this->disconnectUser();
     }
+
+    public function testUpdateIdentity()
+    {
+        $repository = self::getContainer()
+                          ->get('doctrine')
+                          ->getRepository(User::class);
+
+        /** @var User $user */
+        $user = $repository->findOneByEmail('customer@mail.com');
+
+        // simulate user connection
+        $this->loginApiUser($user);
+
+        $data = [
+            "anniversary" => "1992-10-06",
+            "first_name" => "bob",
+            "last_name" => "moran",
+            "nationality" => "fr",
+            "phone" => "+33612345678"
+        ];
+
+        $this->apiPut('/user/identity', $data);
+        $this->assertResponseStatusCodeSame(Response::HTTP_ACCEPTED);
+        $this->assertResponseHeaderSame('content-type', 'application/json');
+        $this->assertEquals($data, $this->getApiResponse(), 'Identity has not been updated');
+    }
+
+    public function testUpdateAddress()
+    {
+        $repository = self::getContainer()
+                          ->get('doctrine')
+                          ->getRepository(User::class);
+
+        /** @var User $user */
+        $user = $repository->findOneByEmail('customer@mail.com');
+
+        // simulate user connection
+        $this->loginApiUser($user);
+
+        $data = [
+            "street" => "1 road street",
+            "postal_code" => "69000",
+            "city" => "Lyon",
+            "country" => "FR"
+        ];
+
+        $this->apiPut('/user/address', $data);
+        $this->assertResponseStatusCodeSame(Response::HTTP_ACCEPTED);
+        $this->assertResponseHeaderSame('content-type', 'application/json');
+        $this->assertEquals($data, $this->getApiResponse(), 'Address has not been updated');
+
+        $this->apiPut('/user/billing_address', $data);
+        $this->assertResponseStatusCodeSame(Response::HTTP_ACCEPTED);
+        $this->assertResponseHeaderSame('content-type', 'application/json');
+        $this->assertEquals($data, $this->getApiResponse(), 'Address has not been updated');
+    }
 }
