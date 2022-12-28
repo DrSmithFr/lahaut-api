@@ -12,6 +12,7 @@ trait UuidTrait
 {
     #[ORM\Id]
     #[JMS\Expose]
+    #[JMS\Type('uuid')]
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]

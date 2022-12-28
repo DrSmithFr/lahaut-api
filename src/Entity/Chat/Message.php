@@ -46,7 +46,7 @@ class Message implements Serializable
     )]
     public function getUserUuid(): ?string
     {
-        return $this->getUser()?->getUuid()?->toRfc4122();
+        return $this->getUser()?->getUuid();
     }
 
     public function getContent(): ?string

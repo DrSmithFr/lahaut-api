@@ -127,23 +127,15 @@ trait SerializerAware
     private function getFormErrorDetail(FormInterface $data): FormErrorDetailModel
     {
         $reason = new FormErrorDetailModel();
-        $errors = $children = [];
+        $errors = [];
 
-        foreach ($data->getErrors() as $error) {
-            /** @var ConstraintViolation $cause */
-            $cause = $error->getCause();
-            $errors[$cause->getPropertyPath()] = $error->getMessage();
-        }
-
-        $reason->setErrors($errors);
-
-        foreach ($data->all() as $child) {
-            if ($child instanceof FormInterface) {
-                $children[$child->getName()] = $this->getFormErrorDetail($child);
+        foreach ($data->all() as $field) {
+            foreach ($field->getErrors() as $error) {
+                $errors[$field->getName()] = $error->getMessage();
             }
         }
 
-        $reason->setChildren($children);
+        $reason->setErrors($errors);
 
         return $reason;
     }

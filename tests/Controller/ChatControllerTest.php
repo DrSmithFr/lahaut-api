@@ -69,5 +69,160 @@ class ChatControllerTest extends ApiTestCase
         $this->apiGet('/conversations');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
         $this->assertCount(1, $this->getApiResponse(), 'conversation not found');
+
+        // Test data integrity
+        $data = $this->getApiResponse()[0];
+        $this->assertEquals($conversation->getUuid(), $data['uuid'], 'conversation id mismatch');
+        $this->assertEquals((string)$customer->getUuid(), $data['participants'][0]['uuid'], 'customer id mismatch');
+        $this->assertEquals((string)$admin->getUuid(), $data['participants'][1]['uuid'], 'admin id mismatch');
+    }
+
+    /**
+     * @depends testShouldHaveConversationsBetweenCustomerAndAdmin
+     */
+    public function testAddMessage(): void
+    {
+        /** @var EntityManagerInterface $manager */
+        $manager = self::getContainer()
+                       ->get('doctrine')
+                       ->getManager();
+
+        /** @var UserRepository $userRepository */
+        $userRepository = $manager->getRepository(User::class);
+
+        /** @var ConversationRepository $conversationRepository */
+        $conversationRepository = $manager->getRepository(Conversation::class);
+
+        /** @var User $customer */
+        $customer = $userRepository->findOneByEmail('customer@mail.com');
+
+        /** @var User $admin */
+        $admin = $userRepository->findOneByEmail('admin@mail.com');
+
+        /** @var ChatService $chatService */
+        $conversation = $conversationRepository->getOneByParticipants([$customer, $admin]);
+
+        $this->loginApiUser($customer);
+        $this->apiGet('/conversations/' . $conversation->getUuid());
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertCount(0, $this->getApiResponse(), 'conversation not empty');
+
+        $this->apiPost('/conversations/' . $conversation->getUuid(), [
+            'content' => 'Hello world',
+        ]);
+        $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
+
+        $this->apiGet('/conversations/' . $conversation->getUuid());
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertCount(1, $this->getApiResponse(), 'conversation empty');
+
+        $data = $this->getApiResponse()[0];
+        $this->assertEquals('Hello world', $data['content'], 'message content mismatch');
+    }
+
+    public function testInitializeNewConversationWithBadForm()
+    {
+        /** @var EntityManagerInterface $manager */
+        $manager = self::getContainer()
+                       ->get('doctrine')
+                       ->getManager();
+
+        /** @var UserRepository $userRepository */
+        $userRepository = $manager->getRepository(User::class);
+
+        /** @var User $customer */
+        $customer = $userRepository->findOneByEmail('customer@mail.com');
+
+        $this->loginApiUser($customer);
+        $this->apiPost(
+            '/conversations',
+            [
+                'bad_paramter' => [],
+            ]
+        );
+        $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
+    }
+
+    public function testInitializeNewConversationWithNoData()
+    {
+        /** @var EntityManagerInterface $manager */
+        $manager = self::getContainer()
+                       ->get('doctrine')
+                       ->getManager();
+
+        /** @var UserRepository $userRepository */
+        $userRepository = $manager->getRepository(User::class);
+
+        /** @var User $customer */
+        $customer = $userRepository->findOneByEmail('customer@mail.com');
+
+        $this->loginApiUser($customer);
+        $this->apiPost(
+            '/conversations',
+            [
+                'users' => []
+            ]
+        );
+        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_ACCEPTABLE);
+    }
+
+    public function testInitializeNewConversationWithBadData()
+    {
+        /** @var EntityManagerInterface $manager */
+        $manager = self::getContainer()
+                       ->get('doctrine')
+                       ->getManager();
+
+        /** @var UserRepository $userRepository */
+        $userRepository = $manager->getRepository(User::class);
+
+        /** @var User $customer */
+        $customer = $userRepository->findOneByEmail('customer@mail.com');
+
+        $this->loginApiUser($customer);
+        $this->apiPost(
+            '/conversations',
+            [
+                'users' => ['bad_uuid']
+            ]
+        );
+        $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
+    }
+
+    public function testInitializeNewConversation()
+    {
+        /** @var EntityManagerInterface $manager */
+        $manager = self::getContainer()
+                       ->get('doctrine')
+                       ->getManager();
+
+        /** @var UserRepository $userRepository */
+        $userRepository = $manager->getRepository(User::class);
+
+        /** @var User $customer */
+        $customer = $userRepository->findOneByEmail('customer@mail.com');
+
+        /** @var User $monitor */
+        $monitor = $userRepository->findOneByEmail('monitor@mail.com');
+
+        $this->loginApiUser($customer);
+        $this->apiPost(
+            '/conversations',
+            [
+                'users' => [(string)$monitor->getUuid()]
+            ]
+        );
+        $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
+
+        $uuidConversation = $this->getApiResponse()['uuid'];
+
+        $this->apiPost(
+            '/conversations',
+            [
+                'users' => [(string)$monitor->getUuid()]
+            ]
+        );
+        $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
+        $this->assertEquals($uuidConversation, $this->getApiResponse()['uuid'], 'conversation uuid mismatch');
     }
 }

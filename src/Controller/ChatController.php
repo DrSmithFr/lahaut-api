@@ -55,7 +55,7 @@ class ChatController extends AbstractApiController
         $otherUsers = $data->getUsers();
 
         if (!count($otherUsers)) {
-            return $this->messageResponse('No other users provided', Response::HTTP_BAD_REQUEST);
+            return $this->messageResponse('No other users provided', Response::HTTP_NOT_ACCEPTABLE);
         }
 
         $currentUser = $this->getUser();

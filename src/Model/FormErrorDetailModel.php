@@ -13,10 +13,6 @@ class FormErrorDetailModel
     #[OA\Property(description: 'Form error', type: 'string[]', example: '{"field-name": "error message"}')]
     private array $errors = [];
 
-    #[Expose]
-    #[OA\Property(description: 'Form Child error', type: 'string[]', example: '{"field-name": "error message"}')]
-    private array $children = [];
-
     /**
      * @return array
      */
@@ -31,21 +27,5 @@ class FormErrorDetailModel
     public function setErrors(array $errors): void
     {
         $this->errors = $errors;
-    }
-
-    /**
-     * @return array
-     */
-    public function getChildren(): array
-    {
-        return $this->children;
-    }
-
-    /**
-     * @param array $children
-     */
-    public function setChildren(array $children): void
-    {
-        $this->children = $children;
     }
 }

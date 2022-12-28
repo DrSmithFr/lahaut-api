@@ -60,6 +60,8 @@ then
     display phpmd
 
     for file in $(echo "$PHPs"); do
+        echo "============================="
+        echo "Checking $file:"
         symfony php vendor/bin/phpmd $file ansi phpmd.xml
         SUBMD=$?
 
@@ -68,6 +70,8 @@ then
             PHPMD=$SUBMD
         fi
     done
+
+    echo "============================="
 
     if [[ ${PHPMD} -ne 0 ]]
     then

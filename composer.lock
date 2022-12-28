@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4110552471b903a9d880f5ddc6375e2a",
+    "content-hash": "00a0679e2cd5a7108c29c055b6b4daae",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -2307,6 +2307,66 @@
                 }
             ],
             "time": "2022-06-12T16:22:12+00:00"
+        },
+        {
+            "name": "mhujer/jms-serializer-uuid",
+            "version": "3.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mhujer/jms-serializer-uuid.git",
+                "reference": "fa710640e3bc5fcb85bd7f3c35a59aa5e59d1024"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mhujer/jms-serializer-uuid/zipball/fa710640e3bc5fcb85bd7f3c35a59aa5e59d1024",
+                "reference": "fa710640e3bc5fcb85bd7f3c35a59aa5e59d1024",
+                "shasum": ""
+            },
+            "require": {
+                "jms/serializer": "~3.14",
+                "php": "~8.0",
+                "ramsey/uuid": "~3.0|~4.0"
+            },
+            "require-dev": {
+                "consistence-community/coding-standard": "3.11.1",
+                "php-coveralls/php-coveralls": "2.5.2",
+                "php-parallel-lint/php-parallel-lint": "1.3.1",
+                "phpunit/phpunit": "9.5.10"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Mhujer\\JmsSerializer\\": [
+                        "src"
+                    ]
+                },
+                "classmap": [
+                    "src"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Martin Hujer",
+                    "email": "mail@martinhujer.cz",
+                    "homepage": "https://www.martinhujer.cz"
+                }
+            ],
+            "description": "Uuid serializer and deserializer for JMS Serializer library",
+            "homepage": "https://github.com/mhujer/jms-serializer-uuid",
+            "keywords": [
+                "jms",
+                "serializer",
+                "uuid"
+            ],
+            "support": {
+                "issues": "https://github.com/mhujer/jms-serializer-uuid/issues",
+                "source": "https://github.com/mhujer/jms-serializer-uuid/tree/3.4.1"
+            },
+            "time": "2021-12-07T08:15:46+00:00"
         },
         {
             "name": "monolog/monolog",
