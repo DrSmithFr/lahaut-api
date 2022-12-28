@@ -1,6 +1,7 @@
 APP_DIR := $(abspath $(lastword $(MAKEFILE_LIST)))
 
-build: env hooks dependencies start build start database
+build: reload
+install: env hooks dependencies start build start database
 reload: stop start
 
 env:
@@ -11,9 +12,9 @@ env:
 dependencies:
 	symfony composer self-update --2
 	symfony composer install
+
 start:
 	docker compose -f docker-compose.yml -f docker-compose.override.yml up -d
-	sleep 5
 
 stop:
 	docker compose kill
@@ -21,14 +22,16 @@ stop:
 
 database:
 	-symfony console doctrine:database:drop --force
-	symfony console doctrine:database:create
+	symfony console doctrine:database:create --complete
 	symfony console doctrine:migration:migrate -n
 
-test:
-	-symfony console doctrine:database:drop --force --env=test
-	symfony console doctrine:schema:update --force --env=test
-	symfony console doctrine:fixtures:load -n --env=test
+test: test_database
 	symfony php bin/phpunit
+
+test_database:
+	-symfony console doctrine:database:drop --force --env=test
+	symfony console doctrine:schema:update --force --complete --env=test
+	symfony console doctrine:fixtures:load -n --env=test
 
 git_hooks:
 	chmod +x hooks/syntax-checkup.sh

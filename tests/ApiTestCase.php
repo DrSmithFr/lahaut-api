@@ -25,7 +25,7 @@ abstract class ApiTestCase extends WebTestCase
         $this->client = static::createClient();
     }
 
-    protected function patch(
+    protected function apiPatch(
         string $url,
         mixed $object,
         array $group = ['Default']
@@ -33,7 +33,7 @@ abstract class ApiTestCase extends WebTestCase
         return $this->call('PATCH', $url, $object, $group);
     }
 
-    protected function put(
+    protected function apiPut(
         string $url,
         mixed $object,
         array $group = ['Default']
@@ -41,12 +41,26 @@ abstract class ApiTestCase extends WebTestCase
         return $this->call('PUT', $url, $object, $group);
     }
 
-    protected function post(
+    protected function apiPost(
         string $url,
         mixed $object,
         array $group = ['Default']
     ): Crawler {
         return $this->call('POST', $url, $object, $group);
+    }
+
+    protected function apiGet(string $url): Crawler
+    {
+        $this
+            ->client
+            ->enableProfiler();
+
+        return $this
+            ->client
+            ->request(
+                'GET',
+                $url,
+            );
     }
 
     /**
@@ -95,7 +109,12 @@ abstract class ApiTestCase extends WebTestCase
         return $this->client->getResponse();
     }
 
-    protected function loginUser(User $user)
+    protected function getApiResponse(): array
+    {
+        return json_decode($this->getResponse()->getContent(), true);
+    }
+
+    protected function loginApiUser(User $user)
     {
         $container = self::getContainer();
 

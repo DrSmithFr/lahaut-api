@@ -14,7 +14,7 @@ class LoginControllerTest extends ApiTestCase
             ->setUsername('bad_user')
             ->setPassword('bad_password');
 
-        $this->post('/login', $form);
+        $this->apiPost('/login', $form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
@@ -25,7 +25,7 @@ class LoginControllerTest extends ApiTestCase
             ->setUsername('admin@mail.com')
             ->setPassword('bad_password');
 
-        $this->post('/login', $form);
+        $this->apiPost('/login', $form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
@@ -36,7 +36,7 @@ class LoginControllerTest extends ApiTestCase
             ->setUsername('admin@mail.com')
             ->setPassword('admin-password');
 
-        $this->post('/login', $form);
+        $this->apiPost('/login', $form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
@@ -47,7 +47,7 @@ class LoginControllerTest extends ApiTestCase
             ->setUsername('customer@mail.com')
             ->setPassword('customer-password');
 
-        $this->post('/login', $form);
+        $this->apiPost('/login', $form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
@@ -58,7 +58,7 @@ class LoginControllerTest extends ApiTestCase
             ->setUsername('disable@mail.com')
             ->setPassword('disable-password');
 
-        $this->post('/login', $form);
+        $this->apiPost('/login', $form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }

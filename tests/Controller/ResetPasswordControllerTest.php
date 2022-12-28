@@ -7,6 +7,7 @@ use App\Repository\UserRepository;
 use App\Service\UserService;
 use App\Tests\ApiTestCase;
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class ResetPasswordControllerTest extends ApiTestCase
@@ -15,7 +16,7 @@ class ResetPasswordControllerTest extends ApiTestCase
     {
         $data = ['username' => 'unknown@mail.com'];
 
-        $this->post('/reset_password', $data);
+        $this->apiPost('/reset_password', $data);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
         $this->assertResponseHeaderSame('content-type', 'application/json');
@@ -25,7 +26,7 @@ class ResetPasswordControllerTest extends ApiTestCase
     {
         $data = ['username' => 'customer@mail.com'];
 
-        $this->post('/reset_password', $data);
+        $this->apiPost('/reset_password', $data);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_ACCEPTED);
         $this->assertResponseHeaderSame('content-type', 'application/json');
@@ -44,7 +45,7 @@ class ResetPasswordControllerTest extends ApiTestCase
             'password' => '...'
         ];
 
-        $this->patch('/reset_password', $data);
+        $this->apiPatch('/reset_password', $data);
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
     }
 
@@ -52,7 +53,7 @@ class ResetPasswordControllerTest extends ApiTestCase
     {
         $data = ['username' => 'customer@mail.com'];
 
-        $this->post('/reset_password', $data);
+        $this->apiPost('/reset_password', $data);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_ACCEPTED);
         $this->assertResponseHeaderSame('content-type', 'application/json');
@@ -71,7 +72,7 @@ class ResetPasswordControllerTest extends ApiTestCase
             'password' => 'new_password'
         ];
 
-        $this->patch('/reset_password', $data);
+        $this->apiPatch('/reset_password', $data);
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
@@ -79,7 +80,7 @@ class ResetPasswordControllerTest extends ApiTestCase
     {
         $data = ['username' => 'customer@mail.com'];
 
-        $this->post('/reset_password', $data);
+        $this->apiPost('/reset_password', $data);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_ACCEPTED);
         $this->assertResponseHeaderSame('content-type', 'application/json');
@@ -101,7 +102,7 @@ class ResetPasswordControllerTest extends ApiTestCase
             'password' => 'new_password'
         ];
 
-        $this->patch('/reset_password', $data);
+        $this->apiPatch('/reset_password', $data);
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_ACCEPTABLE);
     }
 
@@ -109,21 +110,25 @@ class ResetPasswordControllerTest extends ApiTestCase
     {
         $data = ['username' => 'customer@mail.com'];
 
-        $this->post('/reset_password', $data);
+        $this->apiPost('/reset_password', $data);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_ACCEPTED);
         $this->assertResponseHeaderSame('content-type', 'application/json');
 
-        $repository = self::getContainer()
-                          ->get('doctrine')
-                          ->getRepository(User::class);
+        /** @var EntityManagerInterface $manager */
+        $manager = self::getContainer()
+                       ->get('doctrine')
+                       ->getManager();
+
+        /** @var UserRepository $repository */
+        $repository = $manager->getRepository(User::class);
 
         /** @var User $user */
         $user = $repository->findOneByEmail('customer@mail.com');
 
         $this->assertNotNull($user->getPasswordResetToken());
 
-        $this->patch(
+        $this->apiPatch(
             '/reset_password',
             [
                 'token' => $user->getPasswordResetToken(),
@@ -156,17 +161,17 @@ class ResetPasswordControllerTest extends ApiTestCase
         $user->setPlainPassword('customer-password');
         $userService->updatePassword($user);
 
-        self::getContainer()
-            ->get('doctrine')
-            ->getManager()
-            ->flush();
+        // ensure rollback can be saved to database
+        $this->assertTrue($manager->contains($user), 'User Entity is not managed');
+
+        $manager->flush();
     }
 
     public function testIsPasswordResetTokenValidWithBadToken(): void
     {
         $data = ['token' => 'bad_token'];
 
-        $this->post('/reset_password/validity', $data);
+        $this->apiPost('/reset_password/validity', $data);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
@@ -175,7 +180,7 @@ class ResetPasswordControllerTest extends ApiTestCase
     {
         $data = ['username' => 'customer@mail.com'];
 
-        $this->post('/reset_password', $data);
+        $this->apiPost('/reset_password', $data);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_ACCEPTED);
         $this->assertResponseHeaderSame('content-type', 'application/json');
@@ -187,7 +192,7 @@ class ResetPasswordControllerTest extends ApiTestCase
         /** @var User $user */
         $user = $repository->findOneByEmail('customer@mail.com');
 
-        $this->post('/reset_password/validity', ['token' => $user->getPasswordResetToken()]);
+        $this->apiPost('/reset_password/validity', ['token' => $user->getPasswordResetToken()]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_ACCEPTED);
     }

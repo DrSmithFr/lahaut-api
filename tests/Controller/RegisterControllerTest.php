@@ -16,7 +16,7 @@ class RegisterControllerTest extends ApiTestCase
             ->setUsername('not_an_email')
             ->setPassword('password');
 
-        $this->post('/register/customer', $form);
+        $this->apiPost('/register/customer', $form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
         $this->assertResponseHeaderSame('content-type', 'application/json');
@@ -28,7 +28,7 @@ class RegisterControllerTest extends ApiTestCase
             ->setUsername('test-short-password@mail.com')
             ->setPassword('...');
 
-        $this->post('/register/customer', $form);
+        $this->apiPost('/register/customer', $form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
         $this->assertResponseHeaderSame('content-type', 'application/json');
@@ -40,7 +40,7 @@ class RegisterControllerTest extends ApiTestCase
             ->setUsername('customer@mail.com')
             ->setPassword('password');
 
-        $this->post('/register/customer', $form);
+        $this->apiPost('/register/customer', $form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
         $this->assertResponseHeaderSame('content-type', 'application/json');
@@ -52,7 +52,7 @@ class RegisterControllerTest extends ApiTestCase
             ->setUsername('test-customer@mail.com')
             ->setPassword('password');
 
-        $this->post('/register/customer', $form);
+        $this->apiPost('/register/customer', $form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
         $this->assertResponseHeaderSame('content-type', 'application/json');
@@ -73,7 +73,7 @@ class RegisterControllerTest extends ApiTestCase
             ->setUsername('test-monitor@mail.com')
             ->setPassword('password');
 
-        $this->post('/register/monitor', $form);
+        $this->apiPost('/register/monitor', $form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
         $this->assertResponseHeaderSame('content-type', 'application/json');

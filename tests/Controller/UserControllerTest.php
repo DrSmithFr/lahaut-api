@@ -17,7 +17,7 @@ class UserControllerTest extends ApiTestCase
             ->setCurrentPassword('customer-password')
             ->setNewPassword('new-password');
 
-        $this->patch('/user/password_update', $form);
+        $this->apiPatch('/user/password_update', $form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
         $this->assertResponseHeaderSame('content-type', 'application/json');
@@ -33,13 +33,13 @@ class UserControllerTest extends ApiTestCase
         $user = $repository->findOneByEmail('customer@mail.com');
 
         // simulate user connection
-        $this->loginUser($user);
+        $this->loginApiUser($user);
 
         $form = (new PasswordUpdateModel())
             ->setCurrentPassword('bad-current-password')
             ->setNewPassword('new-password');
 
-        $this->patch('/user/password_update', $form);
+        $this->apiPatch('/user/password_update', $form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
         $this->assertResponseHeaderSame('content-type', 'application/json');
@@ -54,7 +54,7 @@ class UserControllerTest extends ApiTestCase
             ->setUsername('password-update-too-short@mail.com')
             ->setPassword('password');
 
-        $this->post('/register/customer', $form);
+        $this->apiPost('/register/customer', $form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
         $this->assertResponseHeaderSame('content-type', 'application/json');
@@ -67,13 +67,13 @@ class UserControllerTest extends ApiTestCase
         $user = $repository->findOneByEmail('password-update-too-short@mail.com');
 
         // simulate user connection
-        $this->loginUser($user);
+        $this->loginApiUser($user);
 
         $form = (new PasswordUpdateModel())
             ->setCurrentPassword('password')
             ->setNewPassword('...');
 
-        $this->patch('/user/password_update', $form);
+        $this->apiPatch('/user/password_update', $form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
         $this->assertResponseHeaderSame('content-type', 'application/json');
@@ -88,7 +88,7 @@ class UserControllerTest extends ApiTestCase
             ->setUsername('update-password-valid@mail.com')
             ->setPassword('password');
 
-        $this->post('/register/customer', $form);
+        $this->apiPost('/register/customer', $form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
         $this->assertResponseHeaderSame('content-type', 'application/json');
@@ -101,13 +101,13 @@ class UserControllerTest extends ApiTestCase
         $user = $repository->findOneByEmail('update-password-valid@mail.com');
 
         // simulate user connection
-        $this->loginUser($user);
+        $this->loginApiUser($user);
 
         $form = (new PasswordUpdateModel())
             ->setCurrentPassword('password')
             ->setNewPassword('new-password');
 
-        $this->patch('/user/password_update', $form);
+        $this->apiPatch('/user/password_update', $form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_ACCEPTED);
         $this->assertResponseHeaderSame('content-type', 'application/json');

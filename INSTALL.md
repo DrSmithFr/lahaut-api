@@ -1,10 +1,20 @@
+# Working on project
+
+   - Run `make` to reload containers
+
 # Installation
 
   - Install [docker](https://docs.docker.com/get-docker/)
   - Install [docker-compose](https://docs.docker.com/compose/install/)
   - Install [Symfony Local Web Server](https://symfony.com/doc/current/setup/symfony_server.html)
   - Add [PHP-PPA repository](ppa:ondrej/php) with add-apt-repository
-  - Install PHP and needed library, hooks and dependencies with `make env`
+  - Install everything with `make install`
+
+## If auto-install fails
+  - Install PHP and needed library with `make env`, (see [Makefile](Makefile) for more details)
+  - Install Git Hooks `make git_hooks`
+  - Install Composer dependencies with `make dependencies`
+  - Then run `make` to reload containers
 
 # Create nginx vHost
 
@@ -24,6 +34,6 @@
 
 ## Create vHost
 
-- Create the file `/etc/nginx/sites-available/ms-encryptor` according to the template `config/vhost.conf`
-- Enable the vHost using `ls -s /etc/nginx/sites-available/ms-encryptor /etc/nginx/sites-enabled/ms-encryptor`
+- Create the file `/etc/nginx/sites-available/ms-base` according to the template `config/nginx/vhost.conf` or `config/nginx/vhost-with-xdebug.conf`
+- Enable the vHost using `ls -s /etc/nginx/sites-available/ms-base /etc/nginx/sites-enabled/ms-base`
 - Reload nginx to apply configuration : `sudo service nginx reload`

@@ -33,7 +33,7 @@ class ChatController extends AbstractApiController
      * )
      * @OA\Response(response="401", description="Cannot connect user")
      */
-    #[Route(path: '/chat', name: 'app_chat_new_conversation', methods: ['post'])]
+    #[Route(path: '/conversations', name: 'app_conversation_new', methods: ['post'])]
     public function createConversation(
         Request $request,
         EntityManagerInterface $entityManager,
@@ -91,7 +91,7 @@ class ChatController extends AbstractApiController
      *     @Model(type=Conversation::class)
      * )
      */
-    #[Route(path: '/chat', name: 'app_chat_list_conversation', methods: ['get'])]
+    #[Route(path: '/conversations', name: 'app_conversation_list', methods: ['get'])]
     public function listConversation(
         ConversationRepository $conversationRepository
     ): JsonResponse {
@@ -116,8 +116,8 @@ class ChatController extends AbstractApiController
      * @return JsonResponse
      */
     #[Route(
-        path: 'chat/{uuid}',
-        name: 'app_chat_conversation_get_message',
+        path: '/conversations/{uuid}',
+        name: 'app_conversation_messages',
         requirements: ['id' => '\d+'],
         methods: ['GET']
     )]
@@ -145,8 +145,8 @@ class ChatController extends AbstractApiController
      * @return JsonResponse
      */
     #[Route(
-        path: 'chat/{uuid}',
-        name: 'app_chat_conversation_post_message',
+        path: '/conversations/{uuid}',
+        name: 'app_conversation_post_message',
         requirements: ['id' => '\d+'],
         methods: ['POST']
     )]
