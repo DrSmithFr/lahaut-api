@@ -7,6 +7,6 @@ PHPUNIT=$?
 
 if [[ ${PHPUNIT} -ne 0 ]]
 then
-    echo "Your code need to be checked"
+    echo "Your code need to be checked, PHPUnit failed (code ${PHPUNIT})"
     exit 1
 fi

@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures;
 
-use App\Enum\UserEnum;
+use App\Enum\RoleEnum;
 use App\Service\UserService;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -35,10 +35,10 @@ class UserFixtures extends Fixture
         $monitor->setEnable(true);
         $disabled->setEnable(false);
 
-        $admin->addRole(UserEnum::ADMIN->getRole());
-        $user->addRole(UserEnum::CUSTOMER->getRole());
-        $monitor->addRole(UserEnum::MONITOR->getRole());
-        $disabled->addRole(UserEnum::CUSTOMER->getRole());
+        $admin->addRole(RoleEnum::ADMIN->getRole());
+        $user->addRole(RoleEnum::CUSTOMER->getRole());
+        $monitor->addRole(RoleEnum::MONITOR->getRole());
+        $disabled->addRole(RoleEnum::CUSTOMER->getRole());
 
         $manager->persist($admin);
         $manager->persist($user);

@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-use App\Enum\UserEnum;
+use App\Enum\RoleEnum;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -53,19 +53,19 @@ class PromoteUserCommand extends Command
         }
 
         if ($input->getOption('user')) {
-            $user->addRole(UserEnum::CUSTOMER->getRole());
+            $user->addRole(RoleEnum::CUSTOMER->getRole());
         }
 
         if ($input->getOption('monitor')) {
-            $user->addRole(UserEnum::MONITOR->getRole());
+            $user->addRole(RoleEnum::MONITOR->getRole());
         }
 
         if ($input->getOption('admin')) {
-            $user->addRole(UserEnum::ADMIN->getRole());
+            $user->addRole(RoleEnum::ADMIN->getRole());
         }
 
         if ($input->getOption('super-admin')) {
-            $user->addRole(UserEnum::SUPER_ADMIN->getRole());
+            $user->addRole(RoleEnum::SUPER_ADMIN->getRole());
         }
 
         $this->entityManager->flush();

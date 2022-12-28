@@ -12,15 +12,27 @@ display inspect
 
 # check for merge tags against all files
 ./hooks/src/check-merge-tags.sh ${FILES}
-MERGE_FOUND=$?
+if [[ $? -ne 0 ]]
+then
+  echo "Your code need to be checked (Merge tags found)"
+  exit 1
+fi
 
 # check for dump tags against all php files
 ./hooks/src/check-dump.sh ${FILES}
-DUMP_FOUND=$?
+if [[ $? -ne 0 ]]
+then
+  echo "Your code need to be checked (Dump tags found)"
+  exit 1
+fi
 
 # check for console.log against JS/TS files
 ./hooks/src/check-console-log.sh ${FILES}
-CONSOLE_LOG_FOUND=$?
+if [[ $? -ne 0 ]]
+then
+  echo "Your code need to be checked (Console.log found)"
+  exit 1
+fi
 
 # getting all php files affected by commit
 PHPs=$(git_modified_files_by_ext "php" ${FILES})
@@ -33,6 +45,12 @@ then
     symfony php vendor/bin/phpcs --ignore=vendor,bin,public,documentation,migrations ${PHPs} && \
     display success "PSR-2 Syntax checked"
     PHPCS=$?
+fi
+
+if [[ ${PHPCS} -ne 0 ]]
+then
+  echo "Your code need to be checked (PSR-2 Syntax errors)"
+  exit 1
 fi
 
 PHPMD=0
@@ -51,25 +69,22 @@ then
         fi
     done
 
-    if [[ $PHPMD -eq 0 ]]
+    if [[ ${PHPMD} -ne 0 ]]
     then
-        display success "PHP Logic checked"
-    else
-        display error "PHP Logic errors"
+      echo "Your code need to be checked (PHP Mess Detector exited with code ${PHPMD})"
+      exit 1
     fi
 
-
+    display success "PHP Logic checked"
 fi
 
 # Unit Tests running
 PHPUNIT=0
 symfony php bin/phpunit
-PHPUNIT=$?
-
-if [[ $((${MERGE_FOUND} + ${DUMP_FOUND} + ${CONSOLE_LOG_FOUND} + ${PHPCS} + ${PHPMD} + ${PHPUNIT})) -ne 0 ]]
+if [[ $? -ne 0 ]]
 then
-    echo "Your code need to be checked"
-    exit 1
+  echo "Your code need to be checked (PHPUnit exited with code ${PHPUNIT})"
+  exit 1
 fi
 
 # Post checkup validation

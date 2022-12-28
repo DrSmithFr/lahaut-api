@@ -9,7 +9,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
-use OpenApi\Attributes as OA;
 
 #[JMS\ExclusionPolicy('all')]
 #[ORM\Entity(repositoryClass: ConversationRepository::class)]
@@ -43,26 +42,6 @@ class Conversation implements Serializable
     )]
     private Collection $messages;
 
-    public function __construct()
-    {
-        $this->participants = new ArrayCollection();
-        $this->messages = new ArrayCollection();
-    }
-
-    #[JMS\Expose]
-    #[JMS\VirtualProperty]
-    #[JMS\Type('string')]
-    #[JMS\SerializedName("conversation")]
-    #[OA\Property(
-        description: 'Uuid of the conversation',
-        type: 'string',
-        example: '1ed82229-3199-6552-afb9-5752dd505444'
-    )]
-    public function getUuidString(): ?string
-    {
-        return $this->getUuid()?->toRfc4122();
-    }
-
     #[JMS\Expose]
     #[JMS\VirtualProperty]
     #[JMS\Type('ArrayCollection<App\Entity\User>')]
@@ -72,6 +51,12 @@ class Conversation implements Serializable
         return $this
             ->getParticipants()
             ->map(fn(Participant $participant) => $participant->getUser());
+    }
+
+    public function __construct()
+    {
+        $this->participants = new ArrayCollection();
+        $this->messages = new ArrayCollection();
     }
 
     /**

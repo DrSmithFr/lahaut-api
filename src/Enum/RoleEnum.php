@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-enum UserEnum: string
+enum RoleEnum: string
 {
     case CUSTOMER = 'ROLE_CUSTOMER';
     case MONITOR = 'ROLE_MONITOR';

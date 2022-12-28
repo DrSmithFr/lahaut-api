@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Enum\UserEnum;
+use App\Enum\RoleEnum;
 use App\Form\RegisterType;
 use App\Model\FormErrorModel;
 use App\Model\RegisterModel;
@@ -44,7 +44,7 @@ class RegisterController extends AbstractApiController
         UserService $userService
     ): JsonResponse {
         return $this->registerAnUserWithRoles(
-            [UserEnum::CUSTOMER->getRole()],
+            [RoleEnum::CUSTOMER->getRole()],
             $request,
             $entityManager,
             $userRepository,
@@ -70,7 +70,7 @@ class RegisterController extends AbstractApiController
         UserService $userService
     ): JsonResponse {
         return $this->registerAnUserWithRoles(
-            [UserEnum::MONITOR->getRole()],
+            [RoleEnum::MONITOR->getRole()],
             $request,
             $entityManager,
             $userRepository,
@@ -109,7 +109,7 @@ class RegisterController extends AbstractApiController
         );
 
         foreach ($roles as $role) {
-            if (!UserEnum::tryFrom($role)) {
+            if (!RoleEnum::tryFrom($role)) {
                 throw new InvalidArgumentException('Invalid role');
             }
         }

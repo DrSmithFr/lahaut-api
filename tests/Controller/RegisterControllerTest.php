@@ -3,7 +3,7 @@
 namespace App\Tests\Controller;
 
 use App\Entity\User;
-use App\Enum\UserEnum;
+use App\Enum\RoleEnum;
 use App\Model\RegisterModel;
 use App\Tests\ApiTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -64,7 +64,7 @@ class RegisterControllerTest extends ApiTestCase
         /** @var User $user */
         $user = $repository->findOneByEmail('test-customer@mail.com');
 
-        $this->assertEquals([UserEnum::CUSTOMER->getRole()], $user->getRoles());
+        $this->assertEquals([RoleEnum::CUSTOMER->getRole()], $user->getRoles());
     }
 
     public function testRegisterMonitorValid(): void
@@ -85,6 +85,6 @@ class RegisterControllerTest extends ApiTestCase
         /** @var User $user */
         $user = $repository->findOneByEmail('test-monitor@mail.com');
 
-        $this->assertEquals([UserEnum::MONITOR->getRole()], $user->getRoles());
+        $this->assertEquals([RoleEnum::MONITOR->getRole()], $user->getRoles());
     }
 }

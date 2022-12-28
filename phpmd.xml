@@ -26,7 +26,7 @@
                     \DateTimeZone,
                     \JMS\Serializer\SerializerBuilder,
                     \JMS\Serializer\SerializationContext,
-                    \App\Enum\UserEnum
+                    \App\Enum\RoleEnum
                 </value>
             </property>
         </properties>

@@ -8,7 +8,6 @@ use App\Entity\User;
 use DateTime;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
-use Symfony\Component\Uid\Uuid;
 
 class UserService
 {
@@ -26,7 +25,6 @@ class UserService
     public function createUser(string $email, string $password): User
     {
         $user = (new User())
-//            ->setUuid(Uuid::v7())
             ->setEmail(strtolower($email))
             ->setPlainPassword($password)
             ->setEnable(true);

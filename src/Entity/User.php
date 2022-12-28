@@ -7,7 +7,7 @@ namespace App\Entity;
 use App\Entity\Interfaces\Serializable;
 use App\Entity\Traits\EnableTrait;
 use App\Entity\Traits\UuidTrait;
-use App\Enum\UserEnum;
+use App\Enum\RoleEnum;
 use App\Repository\UserRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -58,6 +58,10 @@ class User implements
     #[JMS\MaxDepth(1)]
     #[ORM\Column(name: 'roles', type: 'json')]
     #[JMS\Type('array<string>')]
+    #[OA\Property(
+        type: 'string[]',
+        example: '["ROLE_CUSTOMER", "ROLE_MONITOR", "ROLE_ADMIN"]',
+    )]
     private array $roles = [];
 
     #[ORM\Column(type: 'string', nullable: true)]
@@ -65,20 +69,6 @@ class User implements
 
     #[ORM\Column(type: 'datetime', nullable: true)]
     private ?DateTime $passwordResetTokenValidUntil = null;
-
-    #[JMS\Expose]
-    #[JMS\VirtualProperty]
-    #[JMS\Type('string')]
-    #[JMS\SerializedName("uuid")]
-    #[OA\Property(
-        description: 'User Uuid',
-        type: 'string',
-        example: '1ed82229-3199-6552-afb9-5752dd505444'
-    )]
-    public function getUserUuid(): ?string
-    {
-        return $this->getUuid()?->toRfc4122();
-    }
 
     public function getUserIdentifier(): string
     {
@@ -98,34 +88,6 @@ class User implements
     public function eraseCredentials(): void
     {
         $this->setPlainPassword(null);
-    }
-
-    public function addRole(string $role): self
-    {
-        if (!UserEnum::tryFrom($role)) {
-            throw new InvalidArgumentException('invalid role');
-        }
-
-        if (!in_array($role, $this->roles, true)) {
-            $this->roles[] = $role;
-        }
-
-        return $this;
-    }
-
-    public function removeRole(string $role): self
-    {
-        if (!UserEnum::tryFrom($role)) {
-            throw new InvalidArgumentException('invalid role');
-        }
-
-        $key = array_search($role, $this->roles, true);
-
-        if ($key !== false) {
-            array_splice($this->roles, $key, 1);
-        }
-
-        return $this;
     }
 
     public function getEmail(): ?string
@@ -181,6 +143,34 @@ class User implements
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
+        return $this;
+    }
+
+    public function addRole(string $role): self
+    {
+        if (!RoleEnum::tryFrom($role)) {
+            throw new InvalidArgumentException('invalid role');
+        }
+
+        if (!in_array($role, $this->roles, true)) {
+            $this->roles[] = $role;
+        }
+
+        return $this;
+    }
+
+    public function removeRole(string $role): self
+    {
+        if (!RoleEnum::tryFrom($role)) {
+            throw new InvalidArgumentException('invalid role');
+        }
+
+        $key = array_search($role, $this->roles, true);
+
+        if ($key !== false) {
+            array_splice($this->roles, $key, 1);
+        }
+
         return $this;
     }
 

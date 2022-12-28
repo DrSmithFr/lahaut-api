@@ -4,23 +4,29 @@ namespace App\Entity\Traits;
 
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
-use Symfony\Bridge\Doctrine\Types\UuidType;
-use Symfony\Component\Uid\Uuid;
+use OpenApi\Attributes as OA;
+use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Ramsey\Uuid\UuidInterface;
 
 trait UuidTrait
 {
     #[ORM\Id]
-    #[ORM\Column(type: UuidType::NAME, unique: true)]
+    #[JMS\Expose]
+    #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
-    #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
-    private ?Uuid $uuid = null;
+    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    #[OA\Property(
+        type: 'string',
+        example: '1ed82229-3199-6552-afb9-5752dd505444'
+    )]
+    private UuidInterface|string $uuid;
 
-    public function getUuid(): ?Uuid
+    public function getUuid(): ?string
     {
         return $this->uuid;
     }
 
-    public function setUuid(?Uuid $uuid): self
+    public function setUuid(UuidInterface|string $uuid): self
     {
         $this->uuid = $uuid;
         return $this;

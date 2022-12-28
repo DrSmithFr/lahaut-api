@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-use App\Enum\UserEnum;
+use App\Enum\RoleEnum;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -52,15 +52,15 @@ class RevokeUserCommand extends Command
         }
 
         if ($input->getOption('user')) {
-            $user->removeRole(UserEnum::CUSTOMER->getRole());
+            $user->removeRole(RoleEnum::CUSTOMER->getRole());
         }
 
         if ($input->getOption('admin')) {
-            $user->removeRole(UserEnum::ADMIN->getRole());
+            $user->removeRole(RoleEnum::ADMIN->getRole());
         }
 
         if ($input->getOption('super-admin')) {
-            $user->removeRole(UserEnum::SUPER_ADMIN->getRole());
+            $user->removeRole(RoleEnum::SUPER_ADMIN->getRole());
         }
 
         $this->entityManager->flush();
