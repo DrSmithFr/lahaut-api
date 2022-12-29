@@ -189,6 +189,29 @@ class ChatControllerTest extends ApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
     }
 
+    public function testInitializeNewConversationWithYourself()
+    {
+        /** @var EntityManagerInterface $manager */
+        $manager = self::getContainer()
+                       ->get('doctrine')
+                       ->getManager();
+
+        /** @var UserRepository $userRepository */
+        $userRepository = $manager->getRepository(User::class);
+
+        /** @var User $customer */
+        $customer = $userRepository->findOneByEmail('customer@mail.com');
+
+        $this->loginApiUser($customer);
+        $this->apiPost(
+            '/conversations',
+            [
+                'users' => [(string) $customer->getUuid()]
+            ]
+        );
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
     public function testInitializeNewConversation()
     {
         /** @var EntityManagerInterface $manager */
