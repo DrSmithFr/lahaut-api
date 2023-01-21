@@ -7,6 +7,7 @@
   - Install [docker](https://docs.docker.com/get-docker/)
   - Install [docker-compose](https://docs.docker.com/compose/install/)
   - Install [Symfony Local Web Server](https://symfony.com/doc/current/setup/symfony_server.html)
+  - Install [PhpStorm URL Handler](https://github.com/sanduhrs/phpstorm-url-handler)
   - Add [PHP-PPA repository](ppa:ondrej/php) with add-apt-repository
   - Install everything with `make install`
 

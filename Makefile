@@ -22,8 +22,11 @@ stop:
 
 database:
 	-symfony console doctrine:database:drop --force
-	symfony console doctrine:database:create --complete
+	symfony console doctrine:database:create
 	symfony console doctrine:migration:migrate -n
+
+migration:
+	symfony console doctrine:migration:diff
 
 test:
 	symfony php bin/phpunit
