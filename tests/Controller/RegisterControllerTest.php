@@ -64,7 +64,7 @@ class RegisterControllerTest extends ApiTestCase
         /** @var User $user */
         $user = $repository->findOneByEmail('test-customer@mail.com');
 
-        $this->assertEquals([RoleEnum::CUSTOMER->getRole()], $user->getRoles());
+        $this->assertEquals([RoleEnum::CUSTOMER->value], $user->getRoles());
     }
 
     public function testRegisterMonitorValid(): void
@@ -85,6 +85,6 @@ class RegisterControllerTest extends ApiTestCase
         /** @var User $user */
         $user = $repository->findOneByEmail('test-monitor@mail.com');
 
-        $this->assertEquals([RoleEnum::MONITOR->getRole()], $user->getRoles());
+        $this->assertEquals([RoleEnum::MONITOR->value], $user->getRoles());
     }
 }

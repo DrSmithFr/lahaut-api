@@ -10,9 +10,4 @@ enum RoleEnum: string
     case MONITOR = 'ROLE_MONITOR';
     case ADMIN = 'ROLE_ADMIN';
     case SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
-
-    public function getRole(): string
-    {
-        return $this->value;
-    }
 }

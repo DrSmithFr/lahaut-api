@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Address;
 use App\Entity\User;
-use App\Entity\User\Address;
 use App\Entity\User\Identity;
+use App\Form\AddressType;
 use App\Form\PasswordUpdateType;
-use App\Form\User\AddressType;
 use App\Form\User\IdentityType;
 use App\Model\PasswordUpdateModel;
 use App\Service\UserService;

@@ -18,7 +18,6 @@ class Conversation implements Serializable
 
     #[JMS\Expose]
     #[ORM\OneToOne(
-        mappedBy: 'conversation',
         targetEntity: Message::class,
         orphanRemoval: true
     )]

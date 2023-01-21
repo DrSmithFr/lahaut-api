@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Form\User;
+namespace App\Form;
 
-use App\Entity\User\Address;
+use App\Entity\Address;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CountryType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;

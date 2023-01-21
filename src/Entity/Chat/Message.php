@@ -6,6 +6,7 @@ use App\Entity\Interfaces\Serializable;
 use App\Entity\Traits\IdTrait;
 use App\Entity\User;
 use App\Repository\Chat\MessageRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
@@ -24,7 +25,7 @@ class Message implements Serializable
 
     #[JMS\Expose]
     #[JMS\Type('string')]
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: Types::TEXT)]
     private ?string $content;
 
     #[ORM\JoinColumn(name: 'user_uuid', referencedColumnName: 'uuid')]

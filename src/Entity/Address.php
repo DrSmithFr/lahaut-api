@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\User;
+namespace App\Entity;
 
 use App\Entity\Interfaces\Serializable;
 use Doctrine\ORM\Mapping\Column;
@@ -12,19 +12,19 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Address implements Serializable
 {
     #[Assert\NotBlank]
-    #[Column(type: "string", nullable: true)]
+    #[Column(nullable: true)]
     private ?string $street;
 
     #[Assert\NotBlank]
-    #[Column(type: "string", nullable: true)]
+    #[Column(nullable: true)]
     private ?string $postalCode;
 
     #[Assert\NotBlank]
-    #[Column(type: "string", nullable: true)]
+    #[Column(nullable: true)]
     private ?string $city;
 
     #[Assert\NotBlank]
-    #[Column(type: "string", nullable: true)]
+    #[Column(nullable: true)]
     #[OA\Property(description: "ISO 3166-1 alpha-2", type: 'string', example: "FR")]
     private ?string $country;
 

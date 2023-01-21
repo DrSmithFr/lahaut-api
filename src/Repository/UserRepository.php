@@ -6,11 +6,18 @@ namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+/**
+ * @method User|null find($id, $lockMode = null, $lockVersion = null)
+ * @method User|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Collection<User>    findAll()
+ * @method Collection<User>    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
 class UserRepository extends ServiceEntityRepository implements UserLoaderInterface
 {
     public function __construct(ManagerRegistry $registry)
@@ -27,26 +34,6 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
     public function loadUserByIdentifier(string $identifier): ?UserInterface
     {
         return $this->findOneActiveByEmail($identifier);
-    }
-
-    /**
-     * @return User[]
-     */
-    public function findAll(): array
-    {
-        return $this
-            ->getEntityManager()
-            ->createQueryBuilder()
-            ->select('u')
-            ->addSelect('r')
-            ->addSelect('g')
-            ->addSelect('gr')
-            ->from(User::class, 'u')
-            ->leftJoin('u.roles', 'r')
-            ->leftJoin('u.groups', 'g')
-            ->leftJoin('g.roles', 'gr')
-            ->getQuery()
-            ->getResult();
     }
 
     /**

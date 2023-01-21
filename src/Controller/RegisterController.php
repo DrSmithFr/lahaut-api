@@ -44,7 +44,7 @@ class RegisterController extends AbstractApiController
         UserService $userService
     ): JsonResponse {
         return $this->registerAnUserWithRoles(
-            [RoleEnum::CUSTOMER->getRole()],
+            [RoleEnum::CUSTOMER->value],
             $request,
             $entityManager,
             $userRepository,
@@ -70,7 +70,7 @@ class RegisterController extends AbstractApiController
         UserService $userService
     ): JsonResponse {
         return $this->registerAnUserWithRoles(
-            [RoleEnum::MONITOR->getRole()],
+            [RoleEnum::MONITOR->value],
             $request,
             $entityManager,
             $userRepository,

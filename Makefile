@@ -29,7 +29,7 @@ migration:
 	symfony console doctrine:migration:diff
 
 test:
-	symfony php bin/phpunit
+	symfony php bin/phpunit --stop-on-failure
 
 git_hooks:
 	chmod +x hooks/pre-commit.sh

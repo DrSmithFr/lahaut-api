@@ -60,10 +60,14 @@ then
     display phpmd
 
     for file in $(echo "$PHPs"); do
-        echo "============================="
-        echo "Checking $file:"
-        symfony php vendor/bin/phpmd $file ansi phpmd.xml
+        prompt=$(symfony php vendor/bin/phpmd $file ansi phpmd.xml 2>&1)
         SUBMD=$?
+
+        if [[ ${SUBMD} -ne 0 ]]
+        then
+            echo -e "$prompt"
+            PHPMD=1
+        fi
 
         if [[ $PHPMD -eq 0 ]]
         then
@@ -71,10 +75,9 @@ then
         fi
     done
 
-    echo "============================="
-
     if [[ ${PHPMD} -ne 0 ]]
     then
+      echo -e "\n=============================\n"
       echo "Your code need to be checked (PHP Mess Detector exited with code ${PHPMD})"
       exit 1
     fi

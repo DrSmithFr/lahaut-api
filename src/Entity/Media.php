@@ -9,8 +9,6 @@ use Gedmo\Blameable\Traits\BlameableEntity;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use JMS\Serializer\Annotation as JMS;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
-use Ramsey\Uuid\UuidInterface;
 use SplFileInfo;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -28,21 +26,21 @@ class Media implements Serializable
     use SoftDeleteableEntity;
 
     #[JMS\Expose]
-    #[ORM\Column(name: 'content_type', type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(name: 'content_type', length: 255, nullable: true)]
     private ?string $contentType = null;
 
     #[JMS\Expose]
-    #[ORM\Column(name: 'size', type: 'integer', nullable: true)]
+    #[ORM\Column(name: 'size', nullable: true)]
     private ?int $size = null;
 
     #[JMS\Expose]
     #[JMS\Type('string')]
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(length: 255)]
     private ?string $extension = null;
 
     #[JMS\Expose]
     #[JMS\Type('string')]
-    #[ORM\Column(type: 'string', length: 1024)]
+    #[ORM\Column(length: 1024)]
     private ?string $key = null;
 
     /**

@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Chat\Message;
+use App\Entity\Fly\Slot;
 use App\Entity\Interfaces\Serializable;
 use App\Entity\Traits\EnableTrait;
 use App\Entity\Traits\UuidTrait;
-use App\Entity\User\Address;
 use App\Entity\User\Identity;
 use App\Enum\RoleEnum;
 use App\Repository\UserRepository;
 use DateTime;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Embedded;
 use Gedmo\Blameable\Traits\BlameableEntity;
@@ -42,7 +45,7 @@ class User implements
 
     #[Assert\Email]
     #[JMS\Type('string')]
-    #[ORM\Column(type: 'string', unique: true)]
+    #[ORM\Column(unique: true)]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -59,7 +62,7 @@ class User implements
 
     #[JMS\Expose]
     #[JMS\MaxDepth(1)]
-    #[ORM\Column(name: 'roles', type: 'json')]
+    #[ORM\Column(name: 'roles', type: Types::JSON)]
     #[JMS\Type('array<string>')]
     #[OA\Property(
         type: 'string[]',
@@ -67,10 +70,10 @@ class User implements
     )]
     private array $roles = [];
 
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(nullable: true)]
     private ?string $passwordResetToken = null;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?DateTime $passwordResetTokenValidUntil = null;
 
     #[JMS\Expose]
@@ -82,6 +85,24 @@ class User implements
 
     #[Embedded(class: Address::class, columnPrefix: "billing_")]
     private Address $billing;
+
+    #[ORM\OrderBy(['createdAt' => 'DESC'])]
+    #[ORM\OneToMany(
+        mappedBy: 'user',
+        targetEntity: Message::class,
+        cascade: ['remove'],
+        fetch: 'EXTRA_LAZY'
+    )]
+    private Collection $messages;
+
+    #[ORM\OneToMany(
+        mappedBy: 'monitor',
+        targetEntity: Slot::class,
+        cascade: ['remove'],
+        fetch: 'EXTRA_LAZY'
+    )]
+    private Collection $slots;
+
 
     public function __construct()
     {
@@ -245,6 +266,42 @@ class User implements
     public function setBilling(Address $billing): self
     {
         $this->billing = $billing;
+        return $this;
+    }
+
+    public function getMessages(): Collection
+    {
+        return $this->messages;
+    }
+
+    public function setMessages(Collection $messages): self
+    {
+        $this->messages = $messages;
+        return $this;
+    }
+
+    public function addMessage(Message $message): self
+    {
+        $this->messages->add($message);
+        $message->setUser($this);
+        return $this;
+    }
+
+    public function removeMessage(Message $message): self
+    {
+        $this->messages->removeElement($message);
+        $message->setUser(null);
+        return $this;
+    }
+
+    public function getSlots(): Collection
+    {
+        return $this->slots;
+    }
+
+    public function setSlots(Collection $slots): self
+    {
+        $this->slots = $slots;
         return $this;
     }
 }

@@ -3,7 +3,8 @@
 namespace App\Entity\User;
 
 use App\Entity\Interfaces\Serializable;
-use DateTimeInterface;
+use DateTimeImmutable;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Embeddable;
 use JMS\Serializer\Annotation as JMS;
@@ -15,40 +16,40 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Identity implements Serializable
 {
     #[JMS\Expose]
-    #[Column(type: "date", nullable: true)]
-    #[JMS\Type("DateTime<'Y-m-d'>")]
+    #[Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    #[JMS\Type("DateTimeImmutable<'Y-m-d'>")]
     #[OA\Property(type: 'date', example: "1990-12-30")]
-    private ?DateTimeInterface $anniversary;
+    private ?DateTimeImmutable $anniversary;
 
     #[JMS\Expose]
     #[Assert\NotBlank]
-    #[Column(type: "string", nullable: true)]
+    #[Column(nullable: true)]
     private ?string $firstName;
 
     #[JMS\Expose]
     #[Assert\NotBlank]
-    #[Column(type: "string", nullable: true)]
+    #[Column(nullable: true)]
     private ?string $lastName;
 
     #[JMS\Expose]
     #[Assert\NotBlank]
     #[Assert\Regex(pattern: "/^\+33[67][0-9]{8}$/")]
-    #[Column(type: "string", nullable: true)]
-    #[OA\Property(type: 'string', example: "+33612345678")]
+    #[Column(nullable: true)]
+    #[OA\Property(example: "+33612345678")]
     private ?string $phone;
 
     #[JMS\Expose]
     #[Assert\NotBlank]
-    #[Column(type: "string", nullable: true)]
-    #[OA\Property(type: 'date', example: "fr")]
+    #[Column(nullable: true)]
+    #[OA\Property(example: "fr")]
     private ?string $nationality;
 
-    public function getAnniversary(): ?DateTimeInterface
+    public function getAnniversary(): ?DateTimeImmutable
     {
         return $this->anniversary;
     }
 
-    public function setAnniversary(?DateTimeInterface $anniversary): self
+    public function setAnniversary(?DateTimeImmutable $anniversary): self
     {
         $this->anniversary = $anniversary;
         return $this;

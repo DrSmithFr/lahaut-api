@@ -24,6 +24,7 @@ class IdentityType extends AbstractType
                 'anniversary',
                 DateType::class,
                 [
+                    'input' => 'datetime_immutable',
                     'widget' => 'single_text',
                     'format' => 'yyyy-MM-dd',
                 ]

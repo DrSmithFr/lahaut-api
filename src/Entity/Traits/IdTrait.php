@@ -8,7 +8,7 @@ use JMS\Serializer\Annotation as JMS;
 trait IdTrait
 {
     #[ORM\Id]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
     #[JMS\Type('int')]
     private ?int $id = null;

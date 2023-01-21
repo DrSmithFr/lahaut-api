@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20221228172530 extends AbstractMigration
+final class Version20221229130612 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -33,6 +33,7 @@ final class Version20221228172530 extends AbstractMigration
         $this->addSql('ALTER TABLE app_user ADD billing_postal_code VARCHAR(255) DEFAULT NULL');
         $this->addSql('ALTER TABLE app_user ADD billing_city VARCHAR(255) DEFAULT NULL');
         $this->addSql('ALTER TABLE app_user ADD billing_country VARCHAR(255) DEFAULT NULL');
+        $this->addSql('COMMENT ON COLUMN app_user.identity_anniversary IS \'(DC2Type:date_immutable)\'');
     }
 
     public function down(Schema $schema): void
