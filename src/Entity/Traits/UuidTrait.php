@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use OpenApi\Attributes as OA;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 trait UuidTrait
@@ -24,12 +25,21 @@ trait UuidTrait
 
     public function getUuid(): ?string
     {
+        if ($this->uuid instanceof UuidInterface) {
+            return $this->uuid->toString();
+        }
+
         return $this->uuid;
     }
 
     public function setUuid(UuidInterface|string $uuid): self
     {
-        $this->uuid = $uuid;
+        if (is_string($uuid)) {
+            $this->uuid = Uuid::fromString($uuid);
+        } else {
+            $this->uuid = $uuid;
+        }
+
         return $this;
     }
 }

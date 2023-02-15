@@ -228,9 +228,10 @@ class User implements
         return $this->passwordResetToken;
     }
 
-    public function setPasswordResetToken(?string $passwordResetToken): void
+    public function setPasswordResetToken(?string $passwordResetToken): self
     {
         $this->passwordResetToken = $passwordResetToken;
+        return $this;
     }
 
     public function getPasswordResetTokenValidUntil(): ?DateTime

@@ -27,6 +27,7 @@
                     \DateTimeZone,
                     \JMS\Serializer\SerializerBuilder,
                     \JMS\Serializer\SerializationContext,
+                    \Ramsey\Uuid\Uuid,
                     \App\Enum\RoleEnum,
                     \App\Enum\FlyTypeEnum,
                 </value>

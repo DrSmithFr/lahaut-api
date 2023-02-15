@@ -7,6 +7,8 @@ use App\Model\FormErrorDetailModel;
 use App\Model\FormErrorModel;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ReadableCollection;
+use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
+use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\SerializerInterface;
@@ -48,18 +50,18 @@ trait SerializerAware
      */
     protected function toArray(Serializable $data, array $group = ['Default']): array
     {
-        $builder = SerializerBuilder::create();
+        $json = $this
+            ->getSerializer()
+            ->serialize($data, 'json', $this->getSerializationContext($group));
 
-        return $builder
-            ->build()
-            ->toArray($data, $this->getSerializationContext($group));
+        return json_decode($json, true);
     }
 
     /**
      * Return the json string of the data, serialize for specifics groups
      *
      * @param Serializable|Collection|ReadableCollection|array $data
-     * @param string[]                      $group
+     * @param string[]                                         $group
      *
      * @return string
      */
@@ -80,8 +82,8 @@ trait SerializerAware
      * Return the JsonResponse of the data, serialize for specifics groups
      *
      * @param Serializable|Collection|ReadableCollection|array $data
-     * @param String[]                      $group
-     * @param int                           $status
+     * @param String[]                                         $group
+     * @param int                                              $status
      *
      * @return JsonResponse
      */

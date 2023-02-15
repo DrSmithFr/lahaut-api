@@ -2,6 +2,7 @@ jms_serializer:
     enum_support: true
     property_naming:
         id: 'jms_serializer.identical_property_naming_strategy'
+
     handlers:
         datetime:
             default_format:   "Y-m-d\\TH:i:sP" # ATOM
@@ -14,12 +15,3 @@ jms_serializer:
             serialize_null: true
         deserialization:
             serialize_null: true
-#    metadata:
-#        auto_detection: false
-#        directories:
-#            any-name:
-#                namespace_prefix: "My\\FooBundle"
-#                path: "@MyFooBundle/Resources/config/serializer"
-#            another-name:
-#                namespace_prefix: "My\\BarBundle"
-#                path: "@MyBarBundle/Resources/config/serializer"
