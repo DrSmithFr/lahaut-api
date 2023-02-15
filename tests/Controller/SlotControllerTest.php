@@ -11,11 +11,8 @@ use App\Entity\Fly\Place\MeetingPoint;
 use App\Entity\Fly\Place\TakeOffPoint;
 use App\Entity\User;
 use App\Enum\FlyTypeEnum;
-use App\Model\Fly\AddSlotsModel;
-use App\Model\Fly\SlotModel;
 use App\Repository\UserRepository;
 use App\Tests\ApiTestCase;
-use DateInterval;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -65,7 +62,7 @@ class SlotControllerTest extends ApiTestCase
         $this->loginApiUser($user);
         $today = (new DateTimeImmutable())->format('Y-m-d');
 
-        $this->apiGet(sprintf('/slots/%s/%s', $monitor->getUuid(), $today));
+        $this->apiGet('/slots/' . $monitor->getUuid() . '/' . $today);
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
         $response = $this->getApiResponse();
@@ -92,7 +89,7 @@ class SlotControllerTest extends ApiTestCase
         $this->loginApiUser($user);
         $today = (new DateTimeImmutable())->format('Y-m-d');
 
-        $this->apiGet(sprintf('/slots/%s/%s', $user->getUuid(), $today));
+        $this->apiGet('/slots/' . $user->getUuid() . '/' . $today);
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
         $response = $this->getApiResponse();
@@ -118,38 +115,41 @@ class SlotControllerTest extends ApiTestCase
         /** @var MeetingPoint $meetting */
         $meeting = $manager
             ->getRepository(MeetingPoint::class)
-            ->findOneByIdentifier(MeetingPointFixtures::IDENTIFIER);
+            ->findOneByIdentifier(MeetingPointFixtures::ORM_IDENTIFIER);
 
         /** @var LandingPoint $landing */
         $landing = $manager
             ->getRepository(LandingPoint::class)
-            ->findOneByIdentifier(LandingPointFixtures::IDENTIFIER);
+            ->findOneByIdentifier(LandingPointFixtures::ORM_IDENTIFIER);
 
         /** @var TakeOffPoint $takeOff */
         $takeOff = $manager
             ->getRepository(TakeOffPoint::class)
-            ->findOneByIdentifier(TakeOffPointFixtures::IDENTIFIER);
+            ->findOneByIdentifier(TakeOffPointFixtures::ORM_IDENTIFIER);
 
         $this->loginApiUser($monitor);
         $today = (new DateTimeImmutable())->format('Y-m-d');
 
-        $newSlot = (new SlotModel())
-            ->setMeetingPoint($meeting)
-            ->setLandingPoint($landing)
-            ->setTakeOffPoint($takeOff)
-            ->setType(FlyTypeEnum::DISCOVERY)
-            ->setStartAt(new DateTimeImmutable(sprintf('%s 10:00:00', $today)))
-            ->setEndAt(new DateTimeImmutable(sprintf('%s 10:00:00', $today)))
-            ->setAverageFlyDuration(new DateInterval('PT40M'));
-
-//        $intr = new DateInterval('PT0H160M');
-//        dump($intr->);
-
-        $this->apiPut('/slots', (new AddSlotsModel())->addSlot($newSlot));
+        $this->apiPut(
+            '/slots',
+            [
+                'slots' => [
+                    [
+                        'meetingPoint'       => (string)$meeting->getUuid(),
+                        'landingPoint'       => (string)$landing->getUuid(),
+                        'takeOffPoint'       => (string)$takeOff->getUuid(),
+                        'type'               => FlyTypeEnum::DISCOVERY->value,
+                        'startAt'            => sprintf('%s 10:00:00', $today),
+                        'endAt'              => sprintf('%s 11:00:00', $today),
+                        'averageFlyDuration' => 'PT40M',
+                    ]
+                ],
+            ]
+        );
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
 
         // check if the slot is in the database
-        $this->apiGet(sprintf('/slots/%s/%s', $monitor->getUuid(), $today));
+        $this->apiGet('/slots/' . $monitor->getUuid() . '/' . $today);
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
         $response = $this->getApiResponse();

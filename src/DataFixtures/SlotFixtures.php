@@ -36,13 +36,13 @@ class SlotFixtures extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager): void
     {
         /** @var MeetingPoint $meetingPoint */
-        $meetingPoint = $this->getReference(MeetingPointFixtures::IDENTIFIER);
+        $meetingPoint = $this->getReference(MeetingPointFixtures::REFERENCE);
 
         /** @var LandingPoint $landingPoint */
-        $landingPoint = $this->getReference(LandingPointFixtures::IDENTIFIER);
+        $landingPoint = $this->getReference(LandingPointFixtures::REFERENCE);
 
         /** @var TakeOffPoint $takeOffPoint */
-        $takeOffPoint = $this->getReference(TakeOffPointFixtures::IDENTIFIER);
+        $takeOffPoint = $this->getReference(TakeOffPointFixtures::REFERENCE);
 
         /** @var User $monitor */
         $monitor = $this->getReference(UserFixtures::REFERENCE_MONITOR, User::class);

@@ -6,14 +6,13 @@ use App\Entity\Interfaces\Serializable;
 use App\Model\FormErrorDetailModel;
 use App\Model\FormErrorModel;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ReadableCollection;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\SerializerInterface;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Validator\ConstraintViolation;
 
 trait SerializerAware
 {
@@ -59,13 +58,15 @@ trait SerializerAware
     /**
      * Return the json string of the data, serialize for specifics groups
      *
-     * @param Serializable|Collection|array $data
+     * @param Serializable|Collection|ReadableCollection|array $data
      * @param string[]                      $group
      *
      * @return string
      */
-    protected function serialize(Serializable|Collection|array $data, array $group = ['Default']): string
-    {
+    protected function serialize(
+        Serializable|Collection|ReadableCollection|array $data,
+        array $group = ['Default']
+    ): string {
         return $this
             ->getSerializer()
             ->serialize(
@@ -78,14 +79,14 @@ trait SerializerAware
     /**
      * Return the JsonResponse of the data, serialize for specifics groups
      *
-     * @param Serializable|Collection|array $data
+     * @param Serializable|Collection|ReadableCollection|array $data
      * @param String[]                      $group
      * @param int                           $status
      *
      * @return JsonResponse
      */
     protected function serializeResponse(
-        Serializable|Collection|array $data,
+        Serializable|Collection|ReadableCollection|array $data,
         array $group = ['Default'],
         int $status = Response::HTTP_OK
     ): JsonResponse {

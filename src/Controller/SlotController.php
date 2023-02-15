@@ -27,12 +27,7 @@ class SlotController extends AbstractApiController
 {
     /**
      * Add a new slot to the current user slot list
-     * @OA\RequestBody(
-     *     @OA\JsonContent(
-     *        type="array",
-     *        @OA\Items(ref=@Model(type=Slot::class))
-     *     )
-     * )
+     * @OA\RequestBody(@Model(type=AddSlotsModel::class))
      * @OA\Response(
      *     response=200,
      *     description="Returns all fly slots created",

@@ -10,7 +10,11 @@ class NewConversationModel
     /**
      * @var User[]
      */
-    #[OA\Property(description: 'List of user ID', type: 'string[]', example: '["1", "2"]')]
+    #[OA\Property(
+        description: 'List of user UuiD',
+        type: 'string[]',
+        example: '["1ed82229-3199-6552-afb9-5752dd505444"]'
+    )]
     private array $users = [];
 
     /**

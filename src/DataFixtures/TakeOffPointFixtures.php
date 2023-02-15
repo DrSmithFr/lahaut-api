@@ -9,11 +9,13 @@ use Doctrine\Persistence\ObjectManager;
 
 class TakeOffPointFixtures extends Fixture
 {
-    public const IDENTIFIER = 'take-off-point';
+    public const ORM_IDENTIFIER = 'take-off-point-from-fixture';
+    public const REFERENCE = 'take-off-point';
+
     public function load(ObjectManager $manager): void
     {
         $takeOffPoint = (new TakeOffPoint())
-            ->setIdentifier(self::IDENTIFIER)
+            ->setIdentifier(self::ORM_IDENTIFIER)
             ->setName('Take Off')
             ->setAddress(
                 (new Address())
@@ -25,7 +27,7 @@ class TakeOffPointFixtures extends Fixture
             ->setLatitude(0)
             ->setLongitude(0);
 
-        $this->setReference(self::IDENTIFIER, $takeOffPoint);
+        $this->setReference(self::REFERENCE, $takeOffPoint);
 
         $manager->persist($takeOffPoint);
         $manager->flush();

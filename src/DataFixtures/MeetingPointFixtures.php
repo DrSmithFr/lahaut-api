@@ -9,11 +9,13 @@ use Doctrine\Persistence\ObjectManager;
 
 class MeetingPointFixtures extends Fixture
 {
-    public const IDENTIFIER = 'meeting-point';
+    public const ORM_IDENTIFIER = 'meeting-point-from-fixture';
+    public const REFERENCE = 'meeting-point';
+
     public function load(ObjectManager $manager): void
     {
         $meetingPoint = (new MeetingPoint())
-            ->setIdentifier(self::IDENTIFIER)
+            ->setIdentifier(self::ORM_IDENTIFIER)
             ->setName('Meeting Point')
             ->setAddress(
                 (new Address())
@@ -25,7 +27,7 @@ class MeetingPointFixtures extends Fixture
             ->setLatitude(0)
             ->setLongitude(0);
 
-        $this->setReference(self::IDENTIFIER, $meetingPoint);
+        $this->setReference(self::REFERENCE, $meetingPoint);
 
         $manager->persist($meetingPoint);
         $manager->flush();

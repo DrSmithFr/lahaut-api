@@ -4,14 +4,16 @@ namespace App\Model\Fly;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use OpenApi\Attributes as OA;
+use JMS\Serializer\Annotation as JMS;
 
+#[JMS\ExclusionPolicy('all')]
 class AddSlotsModel
 {
     /**
      * @var Collection<SlotModel>
      */
-    #[OA\Property(description: 'List of slot', type: 'Collection<SlotModel>')]
+    #[JMS\Expose]
+    #[JMS\Type('ArrayCollection<App\Model\Fly\SlotModel>')]
     private Collection $slots;
 
     public function __construct()

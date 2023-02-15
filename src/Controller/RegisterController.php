@@ -112,6 +112,10 @@ class RegisterController extends AbstractApiController
             if (!RoleEnum::tryFrom($role)) {
                 throw new InvalidArgumentException('Invalid role');
             }
+
+            if ($role === RoleEnum::ADMIN->value || $role === RoleEnum::SUPER_ADMIN->value) {
+                throw new InvalidArgumentException('cannot create admin user');
+            }
         }
 
         $user->setRoles($roles);

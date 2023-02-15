@@ -4,7 +4,6 @@ namespace App\Tests\Controller;
 
 use App\Entity\User;
 use App\Enum\RoleEnum;
-use App\Model\RegisterModel;
 use App\Tests\ApiTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -12,11 +11,13 @@ class RegisterControllerTest extends ApiTestCase
 {
     public function testRegisterUserWithBadEmail(): void
     {
-        $form = (new RegisterModel())
-            ->setUsername('not_an_email')
-            ->setPassword('password');
-
-        $this->apiPost('/register/customer', $form);
+        $this->apiPost(
+            '/register/customer',
+            [
+                'username' => 'not_an_email',
+                'password' => 'password',
+            ]
+        );
 
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
         $this->assertResponseHeaderSame('content-type', 'application/json');
@@ -24,11 +25,13 @@ class RegisterControllerTest extends ApiTestCase
 
     public function testRegisterUserWithShortPassword(): void
     {
-        $form = (new RegisterModel())
-            ->setUsername('test-short-password@mail.com')
-            ->setPassword('...');
-
-        $this->apiPost('/register/customer', $form);
+        $this->apiPost(
+            '/register/customer',
+            [
+                'username' => 'test-short-password@mail.com',
+                'password' => '...',
+            ]
+        );
 
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
         $this->assertResponseHeaderSame('content-type', 'application/json');
@@ -36,11 +39,13 @@ class RegisterControllerTest extends ApiTestCase
 
     public function testRegisterUserEmailAlreadyUsed(): void
     {
-        $form = (new RegisterModel())
-            ->setUsername('customer@mail.com')
-            ->setPassword('password');
-
-        $this->apiPost('/register/customer', $form);
+        $this->apiPost(
+            '/register/customer',
+            [
+                'username' => 'customer@mail.com',
+                'password' => 'password',
+            ]
+        );
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
         $this->assertResponseHeaderSame('content-type', 'application/json');
@@ -48,11 +53,13 @@ class RegisterControllerTest extends ApiTestCase
 
     public function testRegisterCustomerValid(): void
     {
-        $form = (new RegisterModel())
-            ->setUsername('test-customer@mail.com')
-            ->setPassword('password');
-
-        $this->apiPost('/register/customer', $form);
+        $this->apiPost(
+            '/register/customer',
+            [
+                'username' => 'test-customer@mail.com',
+                'password' => 'password',
+            ]
+        );
 
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
         $this->assertResponseHeaderSame('content-type', 'application/json');
@@ -69,11 +76,13 @@ class RegisterControllerTest extends ApiTestCase
 
     public function testRegisterMonitorValid(): void
     {
-        $form = (new RegisterModel())
-            ->setUsername('test-monitor@mail.com')
-            ->setPassword('password');
-
-        $this->apiPost('/register/monitor', $form);
+        $this->apiPost(
+            '/register/monitor',
+            [
+                'username' => 'test-monitor@mail.com',
+                'password' => 'password',
+            ]
+        );
 
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
         $this->assertResponseHeaderSame('content-type', 'application/json');

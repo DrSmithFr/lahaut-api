@@ -107,9 +107,12 @@ class ChatControllerTest extends ApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
         $this->assertCount(0, $this->getApiResponse(), 'conversation not empty');
 
-        $this->apiPost('/conversations/' . $conversation->getUuid(), [
-            'content' => 'Hello world',
-        ]);
+        $this->apiPost(
+            '/conversations/' . $conversation->getUuid(),
+            [
+                'content' => 'Hello world',
+            ]
+        );
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
 
         $this->apiGet('/conversations/' . $conversation->getUuid());
@@ -137,7 +140,7 @@ class ChatControllerTest extends ApiTestCase
         $this->apiPost(
             '/conversations',
             [
-                'bad_paramter' => [],
+                'bad_parameter' => [],
             ]
         );
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
@@ -206,7 +209,7 @@ class ChatControllerTest extends ApiTestCase
         $this->apiPost(
             '/conversations',
             [
-                'users' => [(string) $customer->getUuid()]
+                'users' => [(string)$customer->getUuid()]
             ]
         );
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
