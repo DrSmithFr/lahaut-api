@@ -1,36 +1,19 @@
 <?php
 
-namespace App\Entity\Fly;
+namespace App\Model\Fly;
 
 use App\Entity\Fly\Place\LandingPoint;
 use App\Entity\Fly\Place\MeetingPoint;
 use App\Entity\Fly\Place\TakeOffPoint;
-use App\Entity\Interfaces\Serializable;
-use App\Entity\Traits\IdTrait;
-use App\Entity\User;
 use App\Enum\FlyTypeEnum;
-use App\Repository\Fly\SlotRepository;
 use DateInterval;
 use DateTimeImmutable;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use OpenApi\Attributes as OA;
 
 #[JMS\ExclusionPolicy('all')]
-#[ORM\Entity(repositoryClass: SlotRepository::class)]
-class Slot implements Serializable
+class SlotModel
 {
-    use IdTrait;
-
-    #[ORM\JoinColumn(name: 'monitor_uuid', referencedColumnName: 'uuid', nullable: false)]
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'slots')]
-    private User $monitor;
-
-    #[JMS\Expose]
-    #[ORM\JoinColumn(name: 'meeting_point_uuid', referencedColumnName: 'uuid', nullable: false)]
-    #[ORM\ManyToOne(targetEntity: MeetingPoint::class)]
     #[OA\Property(
         description: 'Meeting point Uuid',
         type: 'string',
@@ -38,9 +21,6 @@ class Slot implements Serializable
     )]
     private MeetingPoint $meetingPoint;
 
-    #[JMS\Expose]
-    #[ORM\JoinColumn(name: 'take_off_uuid', referencedColumnName: 'uuid', nullable: false)]
-    #[ORM\ManyToOne(targetEntity: TakeOffPoint::class)]
     #[OA\Property(
         description: 'Take off Uuid',
         type: 'string',
@@ -48,9 +28,6 @@ class Slot implements Serializable
     )]
     private TakeOffPoint $takeOffPoint;
 
-    #[JMS\Expose]
-    #[ORM\JoinColumn(name: 'landing_uuid', referencedColumnName: 'uuid', nullable: false)]
-    #[ORM\ManyToOne(targetEntity: LandingPoint::class)]
     #[OA\Property(
         description: 'Landing Uuid',
         type: 'string',
@@ -60,7 +37,6 @@ class Slot implements Serializable
 
     #[JMS\Expose]
     #[JMS\Type("DateTimeImmutable<'Y-m-d H:i'>")]
-    #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
     #[OA\Property(
         description: 'Start at',
         type: 'string',
@@ -70,7 +46,6 @@ class Slot implements Serializable
 
     #[JMS\Expose]
     #[JMS\Type("DateTimeImmutable<'Y-m-d H:i'>")]
-    #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
     #[OA\Property(
         description: 'End at',
         type: 'string',
@@ -80,7 +55,6 @@ class Slot implements Serializable
 
     #[JMS\Expose]
     #[JMS\Type("DateInterval<'PT%iM'>")]
-    #[ORM\Column(type: Types::DATEINTERVAL)]
     #[OA\Property(
         description: 'Average fly duration',
         type: 'string',
@@ -90,7 +64,6 @@ class Slot implements Serializable
 
     #[JMS\Expose]
     #[JMS\Type(FlyTypeEnum::class)]
-    #[ORM\Column(type: Types::STRING, enumType: FlyTypeEnum::class)]
     #[OA\Property(
         description: 'Fly type',
         type: 'string',
@@ -98,40 +71,31 @@ class Slot implements Serializable
     )]
     private FlyTypeEnum $type;
 
-    #[ORM\OneToMany(
-        mappedBy: 'slot',
-        targetEntity: SlotLock::class,
-        cascade: ['remove'],
-        fetch: 'EXTRA_LAZY'
-    )]
-    private Collection $locks;
-
-    #[ORM\OneToOne(mappedBy: 'slot', targetEntity: Booking::class)]
-    private Booking $booking;
+    #[JMS\Expose]
+    #[JMS\VirtualProperty]
+    #[JMS\Type('string')]
+    #[JMS\SerializedName("meetingPoint")]
+    public function getMeetingPointUuid(): string
+    {
+        return $this->getMeetingPoint()->getUuid();
+    }
 
     #[JMS\Expose]
     #[JMS\VirtualProperty]
     #[JMS\Type('string')]
-    #[JMS\SerializedName("monitor")]
-    #[OA\Property(
-        description: 'Monitor Uuid',
-        type: 'string',
-        example: '1ed82229-3199-6552-afb9-5752dd505444'
-    )]
-    public function getMonitorUuid(): ?string
+    #[JMS\SerializedName("takeOffPoint")]
+    public function getTakeOffPointUuid(): string
     {
-        return $this->getMonitor()?->getUuid();
+        return $this->getTakeOffPoint()->getUuid();
     }
 
-    public function getMonitor(): User
+    #[JMS\Expose]
+    #[JMS\VirtualProperty]
+    #[JMS\Type('string')]
+    #[JMS\SerializedName("landingPoint")]
+    public function getLandingPointUuid(): string
     {
-        return $this->monitor;
-    }
-
-    public function setMonitor(User $monitor): self
-    {
-        $this->monitor = $monitor;
-        return $this;
+        return $this->getLandingPoint()->getUuid();
     }
 
     public function getMeetingPoint(): MeetingPoint
@@ -208,28 +172,6 @@ class Slot implements Serializable
     public function setType(FlyTypeEnum $type): self
     {
         $this->type = $type;
-        return $this;
-    }
-
-    public function getLocks(): Collection
-    {
-        return $this->locks;
-    }
-
-    public function setLocks(Collection $locks): self
-    {
-        $this->locks = $locks;
-        return $this;
-    }
-
-    public function getBooking(): Booking
-    {
-        return $this->booking;
-    }
-
-    public function setBooking(Booking $booking): self
-    {
-        $this->booking = $booking;
         return $this;
     }
 }

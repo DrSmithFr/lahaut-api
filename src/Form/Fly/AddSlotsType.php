@@ -1,28 +1,32 @@
 <?php
 
-declare(strict_types=1);
+namespace App\Form\Fly;
 
-namespace App\Form;
-
-use App\Model\PasswordUpdateModel;
+use App\Model\Fly\AddSlotsModel;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class PasswordUpdateType extends AbstractType
+class AddSlotsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('currentPassword', PasswordType::class)
-            ->add('newPassword', PasswordType::class);
+            ->add(
+                'slots',
+                CollectionType::class,
+                [
+                    'entry_type' => SlotType::class,
+                    'allow_add' => true,
+                ]
+            );
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => PasswordUpdateModel::class,
+            'data_class' => AddSlotsModel::class,
             'csrf_protection' => false,
         ]);
     }

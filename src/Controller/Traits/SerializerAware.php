@@ -3,14 +3,13 @@
 namespace App\Controller\Traits;
 
 use App\Entity\Interfaces\Serializable;
-use App\Entity\Interfaces\SerializableEntity;
 use App\Model\FormErrorDetailModel;
 use App\Model\FormErrorModel;
 use Doctrine\Common\Collections\Collection;
-use InvalidArgumentException;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\SerializerInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -129,14 +128,24 @@ trait SerializerAware
         $reason = new FormErrorDetailModel();
         $errors = [];
 
-        foreach ($data->all() as $field) {
-            foreach ($field->getErrors() as $error) {
-                $errors[$field->getName()] = $error->getMessage();
-            }
+        foreach ($data->getErrors(true) as $error) {
+            $path = $this->getFormPath($error->getOrigin());
+            $errors[$path] = $error->getMessage();
         }
 
         $reason->setErrors($errors);
 
         return $reason;
+    }
+
+    private function getFormPath(FormInterface $form): string
+    {
+        $parent = $form->getParent();
+
+        if ($parent && $parent->getParent()) {
+            return $this->getFormPath($parent) . '.' . $form->getName();
+        }
+
+        return $form->getName();
     }
 }

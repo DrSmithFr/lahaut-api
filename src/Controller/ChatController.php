@@ -117,8 +117,7 @@ class ChatController extends AbstractApiController
      */
     #[Route(
         path: '/conversations/{uuid}',
-        name: 'app_conversation_messages',
-        requirements: ['id' => '\d+'],
+        name: 'app_conversation_message_list',
         methods: ['GET']
     )]
     public function getConversationMessages(
@@ -146,8 +145,7 @@ class ChatController extends AbstractApiController
      */
     #[Route(
         path: '/conversations/{uuid}',
-        name: 'app_conversation_post_message',
-        requirements: ['id' => '\d+'],
+        name: 'app_conversation_message_post',
         methods: ['POST']
     )]
     public function postConversationMessages(

@@ -4,33 +4,33 @@
 source ./hooks/bin/ask.sh
 source ./hooks/bin/display.sh
 source ./hooks/bin/git.sh
+source ./hooks/bin/php_wrapper.sh
 
 # get all modified files array
 FILES=$(git_modified_files $(git_current_commit))
 
-display inspect
 
-# check for merge tags against all files
+display title "Checking files for merge conflicts"
 ./hooks/src/check-merge-tags.sh ${FILES}
 if [[ $? -ne 0 ]]
 then
-  echo "Your code need to be checked (Merge tags found)"
+  display error "Your code need to be checked (Merge tags found)"
   exit 1
 fi
 
-# check for dump tags against all php files
+display title "Checking files for forgotten dump()"
 ./hooks/src/check-dump.sh ${FILES}
 if [[ $? -ne 0 ]]
 then
-  echo "Your code need to be checked (Dump tags found)"
+  display error "Your code need to be checked (Dump tags found)"
   exit 1
 fi
 
-# check for console.log against JS/TS files
+display title "Checking files for forgotten console.log()"
 ./hooks/src/check-console-log.sh ${FILES}
 if [[ $? -ne 0 ]]
 then
-  echo "Your code need to be checked (Console.log found)"
+  display error "Your code need to be checked (Console.log found)"
   exit 1
 fi
 
@@ -38,63 +38,78 @@ fi
 PHPs=$(git_modified_files_by_ext "php" ${FILES})
 
 PHPCS=0
-if [[ "$PHPs" != "" ]]
+if [[ -f "./vendor/bin/phpcs" ]]
 then
-    # check php syntax
-    display phpcs && \
-    symfony php vendor/bin/phpcs --ignore=vendor,bin,public,documentation,migrations ${PHPs} && \
-    display success "PSR-2 Syntax checked"
-    PHPCS=$?
+  if [[ "$PHPs" != "" ]]
+  then
+      # check php syntax
+      display title "Checking phpcs" && \
+      php_wrapper vendor/bin/phpcs --ignore=vendor,bin,public,documentation,migrations ${PHPs} && \
+      display success "PSR-2 Syntax checked"
+      PHPCS=$?
+  fi
+else
+    display warning "phpcs not found, please install it with composer"
 fi
 
 if [[ ${PHPCS} -ne 0 ]]
 then
-  echo "Your code need to be checked (PSR-2 Syntax errors)"
+  display error "Your code need to be checked (PSR-2 Syntax errors)"
   exit 1
 fi
 
 PHPMD=0
-if [[ "$PHPs" != "" ]]
+if [[ -f "./vendor/bin/phpmd" ]]
 then
-    # check php syntax
-    display phpmd
+  if [[ "$PHPs" != "" && -f "./vendor/bin/phpmd" ]]
+  then
+      display title "Checking phpmd"
+      for file in $(echo "$PHPs"); do
+          prompt=$(php_wrapper vendor/bin/phpmd $file ansi phpmd.xml 2>&1)
+          SUBMD=$?
 
-    for file in $(echo "$PHPs"); do
-        prompt=$(symfony php vendor/bin/phpmd $file ansi phpmd.xml 2>&1)
-        SUBMD=$?
+          if [[ ${SUBMD} -ne 0 ]]
+          then
+              echo -e "\n$prompt"
+              PHPMD=1
+          fi
 
-        if [[ ${SUBMD} -ne 0 ]]
-        then
-            echo -e "$prompt"
-            PHPMD=1
-        fi
+          if [[ $PHPMD -eq 0 ]]
+          then
+              PHPMD=$SUBMD
+          fi
+      done
 
-        if [[ $PHPMD -eq 0 ]]
-        then
-            PHPMD=$SUBMD
-        fi
-    done
+      if [[ ${PHPMD} -ne 0 ]]
+      then
+        echo -e "\n=============================\n"
+        display error "Your code need to be checked (PHP Mess Detector exited with code ${PHPMD})"
+        exit 1
+      fi
 
-    if [[ ${PHPMD} -ne 0 ]]
-    then
-      echo -e "\n=============================\n"
-      echo "Your code need to be checked (PHP Mess Detector exited with code ${PHPMD})"
-      exit 1
-    fi
-
-    display success "PHP Logic checked"
+      display success "PHP Logic checked"
+  fi
+else
+    display warning "phpmd not found, please install it with composer"
 fi
 
 # Unit Tests running
 PHPUNIT=0
-symfony php bin/phpunit
-if [[ $? -ne 0 ]]
+if [[ -f "./bin/phpunit" ]]
 then
-  echo "Your code need to be checked (PHPUnit exited with code ${PHPUNIT})"
+    display title "Running phpunit" && \
+    php_wrapper bin/phpunit && \
+    display success "Unit Tests passed"
+    PHPUNIT=$?
+else
+    display warning "phpunit not found, please install it with composer"
+fi
+if [[ $PHPUNIT -ne 0 ]]
+then
+  display error "Your code need to be checked (PHPUnit exited with code ${PHPUNIT})"
   exit 1
 fi
 
 # Post checkup validation
-display final && \
 ./hooks/src/ask-validation.sh ${FILES}
 exit $?

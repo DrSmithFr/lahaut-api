@@ -9,6 +9,6 @@ use JMS\Serializer\Annotation as JMS;
 
 #[JMS\ExclusionPolicy('all')]
 #[ORM\Entity(repositoryClass: MeetingPointRepository::class)]
-class MeetingPoint extends Place implements Serializable
+class MeetingPoint extends PlacePoint implements Serializable
 {
 }

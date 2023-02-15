@@ -18,11 +18,11 @@ use JMS\Serializer\Annotation as JMS;
 #[InheritanceType('SINGLE_TABLE')]
 #[DiscriminatorColumn(name: 'type', type: 'string')]
 #[DiscriminatorMap([
-    'meeting_point' => MeetingPoint::class,
-    'take_off' => TakeOff::class,
-    'employee' => Landing::class,
+    'meeting' => MeetingPoint::class,
+    'take_off' => TakeOffPoint::class,
+    'landing' => LandingPoint::class,
 ])]
-abstract class Place implements Serializable
+abstract class PlacePoint implements Serializable
 {
     use UuidTrait;
 
@@ -42,7 +42,7 @@ abstract class Place implements Serializable
     private Address $address;
 
     #[ORM\Column(type: Types::TEXT)]
-    private ?string $description;
+    private string $description = '';
 
     public function __construct()
     {
@@ -104,12 +104,12 @@ abstract class Place implements Serializable
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getDescription(): string
     {
         return $this->description;
     }
 
-    public function setDescription(?string $description): self
+    public function setDescription(string $description): self
     {
         $this->description = $description;
         return $this;

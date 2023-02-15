@@ -19,4 +19,9 @@ class MeetingPointRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, MeetingPoint::class);
     }
+
+    public function findOneByIdentifier(string $identifier): ?MeetingPoint
+    {
+        return $this->findOneBy(['identifier' => $identifier]);
+    }
 }

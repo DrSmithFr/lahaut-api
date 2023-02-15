@@ -140,8 +140,8 @@ class UserControllerTest extends ApiTestCase
 
         $data = [
             "anniversary" => "1992-10-06",
-            "first_name" => "bob",
-            "last_name" => "moran",
+            "firstName" => "bob",
+            "lastName" => "moran",
             "nationality" => "fr",
             "phone" => "+33612345678"
         ];
@@ -166,7 +166,7 @@ class UserControllerTest extends ApiTestCase
 
         $data = [
             "street" => "1 road street",
-            "postal_code" => "69000",
+            "zipCode" => "69000",
             "city" => "Lyon",
             "country" => "FR"
         ];

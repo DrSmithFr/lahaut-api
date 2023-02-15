@@ -7,6 +7,7 @@ use App\Entity\Traits\UuidTrait;
 use App\Repository\Chat\ConversationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ReadableCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 
@@ -45,7 +46,7 @@ class Conversation implements Serializable
     #[JMS\VirtualProperty]
     #[JMS\Type('ArrayCollection<App\Entity\User>')]
     #[JMS\SerializedName("participants")]
-    public function getParticipantUuids(): Collection
+    public function getParticipantUuids(): ReadableCollection
     {
         return $this
             ->getParticipants()

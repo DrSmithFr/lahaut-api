@@ -22,6 +22,7 @@
             <property name="exceptions">
                 <value>
                     \DateTime,
+                    \DateTimeImmutable,
                     \DateInterval,
                     \DateTimeZone,
                     \JMS\Serializer\SerializerBuilder,

@@ -17,7 +17,7 @@ class Address implements Serializable
 
     #[Assert\NotBlank]
     #[Column(nullable: true)]
-    private ?string $postalCode;
+    private ?string $zipCode;
 
     #[Assert\NotBlank]
     #[Column(nullable: true)]
@@ -39,14 +39,14 @@ class Address implements Serializable
         return $this;
     }
 
-    public function getPostalCode(): ?string
+    public function getZipCode(): ?string
     {
-        return $this->postalCode;
+        return $this->zipCode;
     }
 
-    public function setPostalCode(?string $postalCode): self
+    public function setZipCode(?string $zipCode): self
     {
-        $this->postalCode = $postalCode;
+        $this->zipCode = $zipCode;
         return $this;
     }
 

@@ -16,26 +16,42 @@ if (isset($_ENV['BOOTSTRAP_RESET_DATABASE'])) {
         'APP_ENV=%s symfony php "%s" doctrine:database:drop --force',
         $_ENV['BOOTSTRAP_RESET_DATABASE'],
         dirname(__DIR__) . '/bin/console'
-    ));
+    ), $return);
+
+    if ($return !== 0) {
+        exit($return);
+    }
 
     passthru(sprintf(
         'APP_ENV=%s symfony php "%s" doctrine:schema:update --force --complete',
         $_ENV['BOOTSTRAP_RESET_DATABASE'],
         dirname(__DIR__) . '/bin/console'
-    ));
+    ), $return);
+
+    if ($return !== 0) {
+        exit($return);
+    }
 
     passthru(sprintf(
         'APP_ENV=%s symfony php "%s" doctrine:fixtures:load -n',
         $_ENV['BOOTSTRAP_RESET_DATABASE'],
         dirname(__DIR__) . '/bin/console'
-    ));
+    ), $return);
+
+    if ($return !== 0) {
+        exit($return);
+    }
 }
 
 if (isset($_ENV['BOOTSTRAP_CLEAR_CACHE_ENV'])) {
     // executes the "php bin/console cache:clear" command
-    passthru(sprintf(
-        'APP_ENV=%s symfony php "%s/../bin/console" cache:clear --no-warmup',
-        $_ENV['BOOTSTRAP_CLEAR_CACHE_ENV'],
-        __DIR__
-    ));
+    if (
+        passthru(sprintf(
+            'APP_ENV=%s symfony php "%s/../bin/console" cache:clear --no-warmup',
+            $_ENV['BOOTSTRAP_CLEAR_CACHE_ENV'],
+            __DIR__
+        )) === false
+    ) {
+        exit(1);
+    }
 }

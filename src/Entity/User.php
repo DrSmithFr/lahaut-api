@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Entity\Chat\Message;
+use App\Entity\Fly\Booking;
 use App\Entity\Fly\Slot;
 use App\Entity\Interfaces\Serializable;
 use App\Entity\Traits\EnableTrait;
@@ -103,6 +104,13 @@ class User implements
     )]
     private Collection $slots;
 
+    #[ORM\OneToMany(
+        mappedBy: 'customer',
+        targetEntity: Booking::class,
+        cascade: ['remove'],
+        fetch: 'EXTRA_LAZY'
+    )]
+    private Collection $bookings;
 
     public function __construct()
     {
@@ -302,6 +310,17 @@ class User implements
     public function setSlots(Collection $slots): self
     {
         $this->slots = $slots;
+        return $this;
+    }
+
+    public function getBookings(): Collection
+    {
+        return $this->bookings;
+    }
+
+    public function setBookings(Collection $bookings): self
+    {
+        $this->bookings = $bookings;
         return $this;
     }
 }

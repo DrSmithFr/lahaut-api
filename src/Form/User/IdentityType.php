@@ -17,8 +17,8 @@ class IdentityType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('first_name', TextType::class)
-            ->add('last_name', TextType::class)
+            ->add('firstName', TextType::class)
+            ->add('lastName', TextType::class)
             ->add('phone', TextType::class)
             ->add(
                 'anniversary',
