@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Enum\RoleEnum;
 use App\Form\RegisterType;
 use App\Model\FormErrorModel;
@@ -26,6 +27,32 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Security(name: null)]
 class RegisterController extends AbstractApiController
 {
+    /**
+     * Create a new customer account
+     * @OA\RequestBody(
+     *     @OA\JsonContent(
+     *         type="object",
+     *         @OA\Property(property="username", type="string", example="john.doe@mail.fr")
+     *     )
+     * )
+     * @OA\Response(response=200, description="Email can be used")
+     * @OA\Response(response="406", description="Email already used")
+     */
+    #[Route(path: '/register/available', name: 'app_register_available', methods: ['post'])]
+    final public function registerAvailable(
+        Request $request,
+        UserRepository $userRepository,
+    ): JsonResponse {
+        $email = $request->request->get('username');
+        $user = $userRepository->findOneByEmail($email);
+
+        if ($user instanceof User) {
+            return $this->messageResponse('Email already used', Response::HTTP_NOT_ACCEPTABLE);
+        }
+
+        return $this->messageResponse('Email can be used');
+    }
+
     /**
      * Create a new customer account
      * @OA\RequestBody(@Model(type=RegisterModel::class))

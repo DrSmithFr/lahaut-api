@@ -35,7 +35,7 @@ class UserController extends AbstractApiController
      * )
      * @OA\Response(response="403", description="No user connected")
      */
-    #[Route(path: '/user/information', name: 'app_user_information', methods: ['post'])]
+    #[Route(path: '/user/information', name: 'app_user_information', methods: ['get'])]
     public function currentUser(): JsonResponse
     {
         $user = $this->getUser();
