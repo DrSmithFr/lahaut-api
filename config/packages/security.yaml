@@ -36,13 +36,17 @@ security:
             security: false
         main:
             stateless: true
+            entry_point: jwt
             provider: users
             jwt: ~
+            refresh_jwt:
+                check_path: /login/refresh
 
     access_control:
-        - { path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/reset_password$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/medias/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login$, roles: PUBLIC_ACCESS }
+        - { path: ^/login/refresh$, roles: PUBLIC_ACCESS }
+        - { path: ^/reset_password$, roles: PUBLIC_ACCESS }
+        - { path: ^/medias/, roles: PUBLIC_ACCESS }
         - { path: ^/,       roles: [ IS_AUTHENTICATED_FULLY, ROLE_USER ] }
 
     role_hierarchy:

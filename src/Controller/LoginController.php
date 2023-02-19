@@ -25,13 +25,39 @@ class LoginController extends AbstractApiController
      *     description="User connected",
      *     @OA\MediaType(
      *      mediaType="application/json",
-     *      @OA\Schema(type="object", example={"token": "gjc7834ace3-8525-4814-bf0f-b7146bc9e8ab"})
+     *      @OA\Schema(type="object", example={"token": "xxxxxxx", "refresh_token": "xxxxxxx"})
      *    )
      * )
      * @OA\Response(response="401", description="Cannot connect user")
      */
     #[Route(path: '/login', name: 'app_login', methods: ['post'])]
     final public function login(): never
+    {
+        throw new RuntimeException(
+            'You may have screwed the firewall configuration, this function should not have been called.'
+        );
+    }
+
+    /**
+     * Initialise sessions with encryption API (Token valid for 1 hour)
+     * @OA\RequestBody(
+     *     @OA\JsonContent(
+     *         type="object",
+     *         @OA\Property(property="refresh_token", type="string", example="xxxxxxx")
+     *     )
+     * )
+     * @OA\Response(
+     *     response=200,
+     *     description="User reconnected",
+     *     @OA\MediaType(
+     *      mediaType="application/json",
+     *      @OA\Schema(type="object", example={"token": "xxxxxxx", "refresh_token": "xxxxxxx"})
+     *    )
+     * )
+     * @OA\Response(response="401", description="Cannot connect user")
+     */
+    #[Route(path: '/login/refresh', name: 'app_login_refresh', methods: ['post'])]
+    final public function loginRefresh(): never
     {
         throw new RuntimeException(
             'You may have screwed the firewall configuration, this function should not have been called.'
