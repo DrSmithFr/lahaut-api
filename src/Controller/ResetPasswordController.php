@@ -7,7 +7,6 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\PasswordResetType;
 use App\Model\PasswordResetModel;
-use App\Model\ResetPasswordModel;
 use App\Repository\UserRepository;
 use App\Service\MailerService;
 use App\Service\UserService;
@@ -39,7 +38,7 @@ class ResetPasswordController extends AbstractApiController
      *      )
      *    )
      * )
-     * @OA\Response(response=202, description="User connected")
+     * @OA\Response(response=202, description="Mail with reset token sent")
      * @OA\Response(response=404, description="User not found")
      *
      * @throws NonUniqueResultException
@@ -71,7 +70,7 @@ class ResetPasswordController extends AbstractApiController
     /**
      * Reset password with token.
      * @OA\RequestBody(@Model(type=PasswordResetModel::class))
-     * @OA\Response(response=202, description="Update User password")
+     * @OA\Response(response=202, description="User password updated")
      * @OA\Response(response=400, description="New password not valid")
      * @OA\Response(response=404, description="Token not found")
      * @OA\Response(response=406, description="Token expired")
@@ -124,8 +123,8 @@ class ResetPasswordController extends AbstractApiController
      *     @OA\Schema(type="object", example={"token": "9E4PrHk1sHLCs4ruM3k7v-mgGNWdecm9yhi1RLZ491k"})
      *   )
      * )
-     * @OA\Response(response=202, description="Update User password")
-     * @OA\Response(response=404, description="Token not valid")
+     * @OA\Response(response=202, description="Reset password token still valid")
+     * @OA\Response(response=404, description="Reset password token outdated or invalid")
      */
     #[Route(path: '/reset_password/validity', name: 'app_reset_password_token_validity', methods: ['post'])]
     public function isPasswordResetTokenValidAction(
