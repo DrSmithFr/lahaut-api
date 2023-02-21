@@ -1,5 +1,7 @@
 APP_DIR := $(abspath $(lastword $(MAKEFILE_LIST)))
 
+.PHONY: hooks
+
 build: reload
 install: env hooks dependencies start build start database
 reload: stop start
@@ -31,7 +33,7 @@ migration:
 test:
 	symfony php bin/phpunit --stop-on-failure
 
-git_hooks:
+hooks:
 	chmod +x hooks/pre-commit.sh
 	chmod +x hooks/pre-push.sh
 	rm -f .git/hooks/pre-commit

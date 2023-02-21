@@ -13,7 +13,7 @@
 
 ## If auto-install fails
   - Install PHP and needed library with `make env`, (see [Makefile](Makefile) for more details)
-  - Install Git Hooks `make git_hooks`
+  - Install Git Hooks `make hooks`
   - Install Composer dependencies with `make dependencies`
   - Then run `make` to reload containers
 
