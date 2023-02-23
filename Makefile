@@ -4,7 +4,7 @@ APP_DIR := $(abspath $(lastword $(MAKEFILE_LIST)))
 
 build: reload
 install: env hooks dependencies start build start database
-reload: stop start
+reload: kill start
 
 env:
 	sudo apt install php8.1-cli php8.1-fpm php8.1-common php8.1-curl php8.1-pgsql php8.1-xml php8.1-mbstring php-xdebug
@@ -18,7 +18,7 @@ dependencies:
 start:
 	docker compose -f docker-compose.yml -f docker-compose.override.yml up -d
 
-stop:
+kill:
 	docker compose kill
 	docker compose rm -f
 
