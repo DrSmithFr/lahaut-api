@@ -18,12 +18,12 @@ class MigrationEventSubscriber implements EventSubscriber
      * Avoid public schema creation on doctrine:migration:diff
      * @throws SchemaException
      */
-    public function postGenerateSchema(GenerateSchemaEventArgs $Args): void
+    public function postGenerateSchema(GenerateSchemaEventArgs $args): void
     {
-        $Schema = $Args->getSchema();
+        $schema = $args->getSchema();
 
-        if (!$Schema->hasNamespace('public')) {
-            $Schema->createNamespace('public');
+        if (!$schema->hasNamespace('public')) {
+            $schema->createNamespace('public');
         }
     }
 }
