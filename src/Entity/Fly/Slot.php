@@ -2,8 +2,6 @@
 
 namespace App\Entity\Fly;
 
-use App\Entity\Fly\Place\LandingPoint;
-use App\Entity\Fly\Place\MeetingPoint;
 use App\Entity\Fly\Place\TakeOffPoint;
 use App\Entity\Interfaces\Serializable;
 use App\Entity\Traits\IdTrait;
@@ -29,34 +27,14 @@ class Slot implements Serializable
     private User $monitor;
 
     #[JMS\Expose]
-    #[ORM\JoinColumn(name: 'meeting_point_uuid', referencedColumnName: 'uuid', nullable: false)]
-    #[ORM\ManyToOne(targetEntity: MeetingPoint::class)]
+    #[ORM\JoinColumn(name: 'fly_location_uuid', referencedColumnName: 'uuid', nullable: false)]
+    #[ORM\ManyToOne(targetEntity: FlyLocation::class)]
     #[OA\Property(
-        description: 'Meeting point Uuid',
+        description: 'Fly Location Uuid',
         type: 'string',
         example: '123e4567-e89b-12d3-a456-426614174000'
     )]
-    private MeetingPoint $meetingPoint;
-
-    #[JMS\Expose]
-    #[ORM\JoinColumn(name: 'take_off_uuid', referencedColumnName: 'uuid', nullable: false)]
-    #[ORM\ManyToOne(targetEntity: TakeOffPoint::class)]
-    #[OA\Property(
-        description: 'Take off Uuid',
-        type: 'string',
-        example: '123e4567-e89b-12d3-a456-426614174000'
-    )]
-    private TakeOffPoint $takeOffPoint;
-
-    #[JMS\Expose]
-    #[ORM\JoinColumn(name: 'landing_uuid', referencedColumnName: 'uuid', nullable: false)]
-    #[ORM\ManyToOne(targetEntity: LandingPoint::class)]
-    #[OA\Property(
-        description: 'Landing Uuid',
-        type: 'string',
-        example: '123e4567-e89b-12d3-a456-426614174000'
-    )]
-    private LandingPoint $landingPoint;
+    private FlyLocation $flyLocation;
 
     #[JMS\Expose]
     #[JMS\Type("DateTimeImmutable<'Y-m-d H:i'>")]
@@ -134,36 +112,14 @@ class Slot implements Serializable
         return $this;
     }
 
-    public function getMeetingPoint(): MeetingPoint
+    public function getFlyLocation(): FlyLocation
     {
-        return $this->meetingPoint;
+        return $this->flyLocation;
     }
 
-    public function setMeetingPoint(MeetingPoint $meetingPoint): self
+    public function setFlyLocation(FlyLocation $flyLocation): self
     {
-        $this->meetingPoint = $meetingPoint;
-        return $this;
-    }
-
-    public function getTakeOffPoint(): TakeOffPoint
-    {
-        return $this->takeOffPoint;
-    }
-
-    public function setTakeOffPoint(TakeOffPoint $takeOffPoint): self
-    {
-        $this->takeOffPoint = $takeOffPoint;
-        return $this;
-    }
-
-    public function getLandingPoint(): LandingPoint
-    {
-        return $this->landingPoint;
-    }
-
-    public function setLandingPoint(LandingPoint $landingPoint): self
-    {
-        $this->landingPoint = $landingPoint;
+        $this->flyLocation = $flyLocation;
         return $this;
     }
 

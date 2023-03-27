@@ -2,9 +2,7 @@
 
 namespace App\Form\Fly;
 
-use App\Entity\Fly\Place\LandingPoint;
-use App\Entity\Fly\Place\MeetingPoint;
-use App\Entity\Fly\Place\TakeOffPoint;
+use App\Entity\Fly\FlyLocation;
 use App\Enum\FlyTypeEnum;
 use App\Model\Fly\SlotModel;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -21,32 +19,18 @@ class SlotType extends AbstractType
     {
         $builder
             ->add(
-                'meetingPoint',
+                'flyLocation',
                 EntityType::class,
                 [
-                    'class' => MeetingPoint::class,
-                ]
-            )
-            ->add(
-                'takeOffPoint',
-                EntityType::class,
-                [
-                    'class' => TakeOffPoint::class,
-                ]
-            )
-            ->add(
-                'landingPoint',
-                EntityType::class,
-                [
-                    'class' => LandingPoint::class,
+                    'class' => FlyLocation::class,
                 ]
             )
             ->add(
                 'startAt',
                 DateTimeType::class,
                 [
-                    'widget' => 'single_text',
-                    'input' => 'datetime_immutable',
+                    'widget'       => 'single_text',
+                    'input'        => 'datetime_immutable',
                     'input_format' => 'yyyy-MM-dd HH:mm',
                 ]
             )
@@ -54,8 +38,8 @@ class SlotType extends AbstractType
                 'endAt',
                 DateTimeType::class,
                 [
-                    'widget' => 'single_text',
-                    'input' => 'datetime_immutable',
+                    'widget'       => 'single_text',
+                    'input'        => 'datetime_immutable',
                     'input_format' => 'yyyy-MM-dd HH:mm',
                 ]
             )
@@ -63,14 +47,14 @@ class SlotType extends AbstractType
                 'averageFlyDuration',
                 DateIntervalType::class,
                 [
-                    'widget' => 'single_text',
+                    'widget'       => 'single_text',
                     'with_minutes' => true,
 
-                    'with_hours' => false,
-                    'with_years' => false,
-                    'with_months' => false,
-                    'with_days' => false,
-                    'with_weeks' => false,
+                    'with_hours'   => false,
+                    'with_years'   => false,
+                    'with_months'  => false,
+                    'with_days'    => false,
+                    'with_weeks'   => false,
                     'with_seconds' => false,
                 ]
             )
@@ -80,14 +64,13 @@ class SlotType extends AbstractType
                 [
                     'class' => FlyTypeEnum::class,
                 ]
-            )
-        ;
+            );
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => SlotModel::class,
+            'data_class'      => SlotModel::class,
             'csrf_protection' => false,
         ]);
     }

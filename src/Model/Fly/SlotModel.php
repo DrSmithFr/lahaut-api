@@ -2,9 +2,7 @@
 
 namespace App\Model\Fly;
 
-use App\Entity\Fly\Place\LandingPoint;
-use App\Entity\Fly\Place\MeetingPoint;
-use App\Entity\Fly\Place\TakeOffPoint;
+use App\Entity\Fly\FlyLocation;
 use App\Enum\FlyTypeEnum;
 use DateInterval;
 use DateTimeImmutable;
@@ -15,25 +13,11 @@ use OpenApi\Attributes as OA;
 class SlotModel
 {
     #[OA\Property(
-        description: 'Meeting point Uuid',
+        description: 'Fly Location Uuid',
         type: 'string',
         example: '123e4567-e89b-12d3-a456-426614174000'
     )]
-    private MeetingPoint $meetingPoint;
-
-    #[OA\Property(
-        description: 'Take off Uuid',
-        type: 'string',
-        example: '123e4567-e89b-12d3-a456-426614174000'
-    )]
-    private TakeOffPoint $takeOffPoint;
-
-    #[OA\Property(
-        description: 'Landing Uuid',
-        type: 'string',
-        example: '123e4567-e89b-12d3-a456-426614174000'
-    )]
-    private LandingPoint $landingPoint;
+    private FlyLocation $flyLocation;
 
     #[JMS\Expose]
     #[JMS\Type("DateTimeImmutable<'Y-m-d H:i'>")]
@@ -74,60 +58,20 @@ class SlotModel
     #[JMS\Expose]
     #[JMS\VirtualProperty]
     #[JMS\Type('string')]
-    #[JMS\SerializedName("meetingPoint")]
-    public function getMeetingPointUuid(): string
+    #[JMS\SerializedName("flyLocation")]
+    public function getFlyLocationUuid(): string
     {
-        return $this->getMeetingPoint()->getUuid();
+        return $this->getFlyLocation()->getUuid();
     }
 
-    #[JMS\Expose]
-    #[JMS\VirtualProperty]
-    #[JMS\Type('string')]
-    #[JMS\SerializedName("takeOffPoint")]
-    public function getTakeOffPointUuid(): string
+    public function getFlyLocation(): FlyLocation
     {
-        return $this->getTakeOffPoint()->getUuid();
+        return $this->flyLocation;
     }
 
-    #[JMS\Expose]
-    #[JMS\VirtualProperty]
-    #[JMS\Type('string')]
-    #[JMS\SerializedName("landingPoint")]
-    public function getLandingPointUuid(): string
+    public function setFlyLocation(FlyLocation $flyLocation): self
     {
-        return $this->getLandingPoint()->getUuid();
-    }
-
-    public function getMeetingPoint(): MeetingPoint
-    {
-        return $this->meetingPoint;
-    }
-
-    public function setMeetingPoint(MeetingPoint $meetingPoint): self
-    {
-        $this->meetingPoint = $meetingPoint;
-        return $this;
-    }
-
-    public function getTakeOffPoint(): TakeOffPoint
-    {
-        return $this->takeOffPoint;
-    }
-
-    public function setTakeOffPoint(TakeOffPoint $takeOffPoint): self
-    {
-        $this->takeOffPoint = $takeOffPoint;
-        return $this;
-    }
-
-    public function getLandingPoint(): LandingPoint
-    {
-        return $this->landingPoint;
-    }
-
-    public function setLandingPoint(LandingPoint $landingPoint): self
-    {
-        $this->landingPoint = $landingPoint;
+        $this->flyLocation = $flyLocation;
         return $this;
     }
 

@@ -26,16 +26,16 @@ abstract class PlacePoint implements Serializable
 {
     use UuidTrait;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: false)]
     private ?string $identifier;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: false)]
     private ?string $name;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: false)]
     private ?string $latitude;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: false)]
     private ?string $longitude;
 
     #[Embedded(class: Address::class, columnPrefix: "address_")]

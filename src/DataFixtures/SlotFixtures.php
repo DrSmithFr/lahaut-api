@@ -2,9 +2,7 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Fly\Place\LandingPoint;
-use App\Entity\Fly\Place\MeetingPoint;
-use App\Entity\Fly\Place\TakeOffPoint;
+use App\Entity\Fly\FlyLocation;
 use App\Entity\Fly\Slot;
 use App\Entity\User;
 use App\Enum\FlyTypeEnum;
@@ -35,14 +33,8 @@ class SlotFixtures extends Fixture implements DependentFixtureInterface
 
     public function load(ObjectManager $manager): void
     {
-        /** @var MeetingPoint $meetingPoint */
-        $meetingPoint = $this->getReference(MeetingPointFixtures::REFERENCE);
-
-        /** @var LandingPoint $landingPoint */
-        $landingPoint = $this->getReference(LandingPointFixtures::REFERENCE);
-
-        /** @var TakeOffPoint $takeOffPoint */
-        $takeOffPoint = $this->getReference(TakeOffPointFixtures::REFERENCE);
+        /** @var FlyLocation $flyLocation */
+        $flyLocation = $this->getReference(FlyLocationFixtures::REFERENCE);
 
         /** @var User $monitor */
         $monitor = $this->getReference(UserFixtures::REFERENCE_MONITOR, User::class);
@@ -54,9 +46,7 @@ class SlotFixtures extends Fixture implements DependentFixtureInterface
             $endAt = new DateTimeImmutable(sprintf('%s %s', $now, $slot[1]));
 
             $slot = (new Slot())
-                ->setMeetingPoint($meetingPoint)
-                ->setLandingPoint($landingPoint)
-                ->setTakeOffPoint($takeOffPoint)
+                ->setFlyLocation($flyLocation)
                 ->setStartAt($startAt)
                 ->setEndAt($endAt)
                 ->setAverageFlyDuration(new DateInterval($slot[2]))
@@ -69,13 +59,11 @@ class SlotFixtures extends Fixture implements DependentFixtureInterface
         $manager->flush();
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             UserFixtures::class,
-            MeetingPointFixtures::class,
-            LandingPointFixtures::class,
-            TakeOffPointFixtures::class,
+            FlyLocationFixtures::class,
         ];
     }
 }

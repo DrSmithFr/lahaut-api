@@ -189,16 +189,29 @@ class User implements
         return $this->roles;
     }
 
+    /**
+     * @param string[]|RoleEnum[] $roles
+     * @return $this
+     */
     public function setRoles(array $roles): self
     {
-        $this->roles = $roles;
+        $this->roles = [];
+
+        foreach ($roles as $role) {
+            $this->addRole($role);
+        }
+
         return $this;
     }
 
-    public function addRole(string $role): self
+    public function addRole(string|RoleEnum $role): self
     {
-        if (!RoleEnum::tryFrom($role)) {
+        if (is_string($role) && !RoleEnum::tryFrom($role)) {
             throw new InvalidArgumentException('invalid role');
+        }
+
+        if ($role instanceof RoleEnum) {
+            $role = $role->value;
         }
 
         if (!in_array($role, $this->roles, true)) {
@@ -208,10 +221,14 @@ class User implements
         return $this;
     }
 
-    public function removeRole(string $role): self
+    public function removeRole(string|RoleEnum $role): self
     {
-        if (!RoleEnum::tryFrom($role)) {
+        if (is_string($role) && !RoleEnum::tryFrom($role)) {
             throw new InvalidArgumentException('invalid role');
+        }
+
+        if ($role instanceof RoleEnum) {
+            $role = $role->value;
         }
 
         $key = array_search($role, $this->roles, true);
@@ -221,6 +238,19 @@ class User implements
         }
 
         return $this;
+    }
+
+    public function hasRole(string|RoleEnum $role): bool
+    {
+        if (is_string($role) && !RoleEnum::tryFrom($role)) {
+            throw new InvalidArgumentException('invalid role');
+        }
+
+        if ($role instanceof RoleEnum) {
+            $role = $role->value;
+        }
+
+        return in_array($role, $this->roles, true);
     }
 
     public function getPasswordResetToken(): ?string

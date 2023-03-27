@@ -17,8 +17,8 @@ class UserSerializationTest extends SerializationTestCase
             ->setPlainPassword('plain-password')
             ->setPassword('encrypted-password')
             ->setPasswordResetToken('reset-password-token')
-            ->addRole(RoleEnum::CUSTOMER->value)
-            ->addRole(RoleEnum::ADMIN->value)
+            ->addRole(RoleEnum::CUSTOMER)
+            ->addRole(RoleEnum::ADMIN)
             ->setIdentity(
                 (new User\Identity())
                     ->setFirstName('John')

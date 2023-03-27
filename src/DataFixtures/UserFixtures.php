@@ -35,10 +35,10 @@ class UserFixtures extends Fixture
         $monitor->setEnable(true);
         $disabled->setEnable(false);
 
-        $admin->addRole(RoleEnum::ADMIN->value);
-        $user->addRole(RoleEnum::CUSTOMER->value);
-        $monitor->addRole(RoleEnum::MONITOR->value);
-        $disabled->addRole(RoleEnum::CUSTOMER->value);
+        $admin->addRole(RoleEnum::ADMIN);
+        $user->addRole(RoleEnum::CUSTOMER);
+        $monitor->addRole(RoleEnum::MONITOR);
+        $disabled->addRole(RoleEnum::CUSTOMER);
 
         $manager->persist($admin);
         $manager->persist($user);

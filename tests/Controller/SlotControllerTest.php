@@ -2,13 +2,9 @@
 
 namespace App\Tests\Controller;
 
-use App\DataFixtures\LandingPointFixtures;
-use App\DataFixtures\MeetingPointFixtures;
+use App\DataFixtures\FlyLocationFixtures;
 use App\DataFixtures\SlotFixtures;
-use App\DataFixtures\TakeOffPointFixtures;
-use App\Entity\Fly\Place\LandingPoint;
-use App\Entity\Fly\Place\MeetingPoint;
-use App\Entity\Fly\Place\TakeOffPoint;
+use App\Entity\Fly\FlyLocation;
 use App\Entity\User;
 use App\Enum\FlyTypeEnum;
 use App\Repository\UserRepository;
@@ -112,20 +108,10 @@ class SlotControllerTest extends ApiTestCase
             ->getRepository(User::class)
             ->findOneByEmail('monitor@mail.com');
 
-        /** @var MeetingPoint $meetting */
-        $meeting = $manager
-            ->getRepository(MeetingPoint::class)
-            ->findOneByIdentifier(MeetingPointFixtures::ORM_IDENTIFIER);
-
-        /** @var LandingPoint $landing */
-        $landing = $manager
-            ->getRepository(LandingPoint::class)
-            ->findOneByIdentifier(LandingPointFixtures::ORM_IDENTIFIER);
-
-        /** @var TakeOffPoint $takeOff */
-        $takeOff = $manager
-            ->getRepository(TakeOffPoint::class)
-            ->findOneByIdentifier(TakeOffPointFixtures::ORM_IDENTIFIER);
+        /** @var FlyLocation $flyLocation */
+        $flyLocation = $manager
+            ->getRepository(FlyLocation::class)
+            ->findOneByIdentifier(FlyLocationFixtures::ORM_IDENTIFIER);
 
         $this->loginApiUser($monitor);
         $today = (new DateTimeImmutable())->format('Y-m-d');
@@ -135,9 +121,7 @@ class SlotControllerTest extends ApiTestCase
             [
                 'slots' => [
                     [
-                        'meetingPoint'       => (string)$meeting->getUuid(),
-                        'landingPoint'       => (string)$landing->getUuid(),
-                        'takeOffPoint'       => (string)$takeOff->getUuid(),
+                        'flyLocation'        => (string)$flyLocation->getUuid(),
                         'type'               => FlyTypeEnum::DISCOVERY->value,
                         'startAt'            => sprintf('%s 10:00:00', $today),
                         'endAt'              => sprintf('%s 11:00:00', $today),

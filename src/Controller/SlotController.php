@@ -61,9 +61,7 @@ class SlotController extends AbstractApiController
             ->map(
                 fn(SlotModel $slot) => (new Slot())
                     ->setMonitor($this->getUser())
-                    ->setMeetingPoint($slot->getMeetingPoint())
-                    ->setTakeOffPoint($slot->getTakeOffPoint())
-                    ->setLandingPoint($slot->getLandingPoint())
+                    ->setFlyLocation($slot->getFlyLocation())
                     ->setStartAt($slot->getStartAt())
                     ->setEndAt($slot->getEndAt())
                     ->setAverageFlyDuration($slot->getAverageFlyDuration())
