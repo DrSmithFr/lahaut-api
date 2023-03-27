@@ -2,7 +2,8 @@
 <?php
 
 use App\Kernel;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
+use DrSmithFr\ChooseYourSide\Application;
+use DrSmithFr\ChooseYourSide\Side;
 
 if (!is_file(dirname(__DIR__).'/vendor/autoload_runtime.php')) {
     throw new LogicException('Symfony Runtime is missing. Try running "composer require symfony/runtime".');
@@ -13,5 +14,5 @@ require_once dirname(__DIR__).'/vendor/autoload_runtime.php';
 return function (array $context) {
     $kernel = new Kernel($context['APP_ENV'], (bool) $context['APP_DEBUG']);
 
-    return new Application($kernel);
+    return new Application($kernel, Side::APOLITICAL);
 };
