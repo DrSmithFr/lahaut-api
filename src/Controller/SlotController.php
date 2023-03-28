@@ -2,11 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\Fly\FlyLocation;
 use App\Entity\Fly\Slot;
+use App\Entity\Media;
 use App\Entity\User;
+use App\Enum\FlyTypeEnum;
 use App\Form\Fly\AddSlotsType;
 use App\Model\Fly\AddSlotsModel;
 use App\Model\Fly\SlotModel;
+use App\Repository\Fly\FlyLocationRepository;
 use App\Repository\Fly\SlotRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -88,16 +92,22 @@ class SlotController extends AbstractApiController
      * )
      */
     #[Route(
-        path: '/slots/{date}',
+        path: '/slots/{location}/{type<(discovery|freestyle|xl)>}/{date<\d{4}-\d{2}-\d{2}>}',
         name: 'app_slots_list',
-        requirements: ['date' => '\d{4}-\d{2}-\d{2}'],
         methods: ['get']
     )]
     #[IsGranted('ROLE_USER')]
     public function listAllSlots(
         Request $request,
+        FlyLocationRepository $flyLocationRepository,
         SlotRepository $slotRepository,
     ): JsonResponse {
+        $type = FlyTypeEnum::tryFrom($request->get('type'));
+
+        if (!$type) {
+            return $this->messageResponse('Invalid type', Response::HTTP_BAD_REQUEST);
+        }
+
         // resetting the time to 00:00:00 but keeping current timezone
         $date = DateTimeImmutable::createFromFormat(
             DateTimeInterface::ATOM,
@@ -108,10 +118,18 @@ class SlotController extends AbstractApiController
             return $this->messageResponse('Invalid date', Response::HTTP_BAD_REQUEST);
         }
 
+        $flyLocation = $flyLocationRepository->findOneByIdentifier($request->get('location'));
+
+        if (!$flyLocation) {
+            return $this->messageResponse('Invalid location', Response::HTTP_BAD_REQUEST);
+        }
+
         $slots = $slotRepository
             ->findUnlockedBetween(
                 $date,
-                $date->modify('+1 day')
+                $date->modify('+1 day'),
+                $flyLocation,
+                $type
             );
 
         return $this->serializeResponse($slots);
@@ -133,17 +151,24 @@ class SlotController extends AbstractApiController
      * @return JsonResponse
      */
     #[Route(
-        path: '/slots/{uuid}/{date}',
+        path: '/slots/{uuid}/{location}/{type<(discovery|freestyle|xl)>}/{date<\d{4}-\d{2}-\d{2}>}',
         name: 'app_conversation_messages',
         requirements: ['date' => '\d{4}-\d{2}-\d{2}'],
         methods: ['GET']
     )]
     #[IsGranted('ROLE_USER')]
     public function listMonitorSlots(
-        Request $request,
         #[MapEntity(class: User::class)] User $monitor,
-        SlotRepository $slotRepository
+        Request $request,
+        FlyLocationRepository $flyLocationRepository,
+        SlotRepository $slotRepository,
     ): JsonResponse {
+        $type = FlyTypeEnum::tryFrom($request->get('type'));
+
+        if (!$type) {
+            return $this->messageResponse('Invalid type', Response::HTTP_BAD_REQUEST);
+        }
+
         // resetting the time to 00:00:00 but keeping current timezone
         $date = DateTimeImmutable::createFromFormat(
             DateTimeInterface::ATOM,
@@ -154,10 +179,18 @@ class SlotController extends AbstractApiController
             return $this->messageResponse('Invalid date', Response::HTTP_BAD_REQUEST);
         }
 
+        $flyLocation = $flyLocationRepository->findOneByIdentifier($request->get('location'));
+
+        if (!$flyLocation) {
+            return $this->messageResponse('Invalid location', Response::HTTP_BAD_REQUEST);
+        }
+
         $slots = $slotRepository
             ->findUnlockedBetween(
                 $date,
                 $date->modify('+1 day'),
+                $flyLocation,
+                $type,
                 $monitor
             );
 

@@ -7,12 +7,13 @@ use App\Entity\Fly\Place\MeetingPoint;
 use App\Entity\Fly\Place\TakeOffPoint;
 use App\Entity\Interfaces\Serializable;
 use App\Entity\Traits\UuidTrait;
+use App\Repository\Fly\FlyLocationRepository;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use OpenApi\Attributes as OA;
 
 #[JMS\ExclusionPolicy('all')]
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: FlyLocationRepository::class)]
 class FlyLocation implements Serializable
 {
     use UuidTrait;

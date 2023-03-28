@@ -15,7 +15,7 @@ use Doctrine\Persistence\ObjectManager;
 
 class SlotFixtures extends Fixture implements DependentFixtureInterface
 {
-    public const SLOTS = [
+    public const SLOTS_DISCOVERY = [
         ['09:00:00', '10:00:00', 'PT20M', FlyTypeEnum::DISCOVERY],
         ['10:00:00', '11:00:00', 'PT20M', FlyTypeEnum::DISCOVERY],
         ['11:00:00', '12:00:00', 'PT20M', FlyTypeEnum::DISCOVERY],
@@ -23,13 +23,17 @@ class SlotFixtures extends Fixture implements DependentFixtureInterface
         ['15:00:00', '16:00:00', 'PT20M', FlyTypeEnum::DISCOVERY],
         ['16:00:00', '17:00:00', 'PT20M', FlyTypeEnum::DISCOVERY],
         ['17:00:00', '18:00:00', 'PT20M', FlyTypeEnum::DISCOVERY],
+    ];
 
+    public const SLOTS_FREESTYLE = [
         ['09:00:00', '11:00:00', 'PT40M', FlyTypeEnum::FREESTYLE],
         ['10:00:00', '12:00:00', 'PT40M', FlyTypeEnum::FREESTYLE],
         ['14:00:00', '16:00:00', 'PT40M', FlyTypeEnum::FREESTYLE],
         ['15:00:00', '17:00:00', 'PT40M', FlyTypeEnum::FREESTYLE],
         ['16:00:00', '18:00:00', 'PT40M', FlyTypeEnum::FREESTYLE],
     ];
+
+    public const SLOTS = [...self::SLOTS_DISCOVERY, ...self::SLOTS_FREESTYLE];
 
     public function load(ObjectManager $manager): void
     {

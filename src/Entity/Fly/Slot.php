@@ -2,7 +2,6 @@
 
 namespace App\Entity\Fly;
 
-use App\Entity\Fly\Place\TakeOffPoint;
 use App\Entity\Interfaces\Serializable;
 use App\Entity\Traits\IdTrait;
 use App\Entity\User;

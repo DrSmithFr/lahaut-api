@@ -8,5 +8,5 @@ enum FlyTypeEnum: string
 {
     case DISCOVERY = 'discovery';
     case FREESTYLE = 'freestyle';
-    case KID = 'kid';
+    case XL = 'xl';
 }

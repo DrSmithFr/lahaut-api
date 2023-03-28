@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SlotControllerTest extends ApiTestCase
 {
-    public function testShouldHaveSameNumberOfSlotAsFixtureWithCleanDatabase(): void
+    public function testShouldHaveSameNumberOfDiscoverySlotAsFixtureWithCleanDatabase(): void
     {
         /** @var EntityManagerInterface $manager */
         $manager = self::getContainer()
@@ -30,18 +30,44 @@ class SlotControllerTest extends ApiTestCase
         $this->loginApiUser($user);
         $today = (new DateTimeImmutable())->format('Y-m-d');
 
-        $this->apiGet('/slots/' . $today);
+        $this->apiGet('/slots/fly-location-from-fixture/discovery/' . $today);
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
         $response = $this->getApiResponse();
         $this->assertEquals(
-            count(SlotFixtures::SLOTS),
+            count(SlotFixtures::SLOTS_DISCOVERY),
             count($response),
             'number of slots in database dont match fixture (did you reset the database?)'
         );
     }
 
-    public function testShouldHaveSameNumberOfSlotForTheMonitorAsFixtureWithCleanDatabase(): void
+    public function testShouldHaveSameNumberOfFreestyleSlotAsFixtureWithCleanDatabase(): void
+    {
+        /** @var EntityManagerInterface $manager */
+        $manager = self::getContainer()
+                       ->get('doctrine')
+                       ->getManager();
+
+        /** @var UserRepository $repository */
+        $repository = $manager->getRepository(User::class);
+
+        /** @var User $user */
+        $user = $repository->findOneByEmail('customer@mail.com');
+        $this->loginApiUser($user);
+        $today = (new DateTimeImmutable())->format('Y-m-d');
+
+        $this->apiGet('/slots/fly-location-from-fixture/freestyle/' . $today);
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+
+        $response = $this->getApiResponse();
+        $this->assertEquals(
+            count(SlotFixtures::SLOTS_FREESTYLE),
+            count($response),
+            'number of slots in database dont match fixture (did you reset the database?)'
+        );
+    }
+
+    public function testShouldHaveSameNumberOfDiscoverySlotForTheMonitorAsFixtureWithCleanDatabase(): void
     {
         /** @var EntityManagerInterface $manager */
         $manager = self::getContainer()
@@ -58,18 +84,18 @@ class SlotControllerTest extends ApiTestCase
         $this->loginApiUser($user);
         $today = (new DateTimeImmutable())->format('Y-m-d');
 
-        $this->apiGet('/slots/' . $monitor->getUuid() . '/' . $today);
+        $this->apiGet('/slots/' . $monitor->getUuid() . '/fly-location-from-fixture/discovery/' . $today);
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
         $response = $this->getApiResponse();
         $this->assertEquals(
-            count(SlotFixtures::SLOTS),
+            count(SlotFixtures::SLOTS_DISCOVERY),
             count($response),
             'number of slots in database dont match fixture (did you reset the database?)'
         );
     }
 
-    public function testShouldHaveNoSlotForTheCustomerWithCleanDatabase(): void
+    public function testShouldHaveSameNumberOfFreestyleSlotForTheMonitorAsFixtureWithCleanDatabase(): void
     {
         /** @var EntityManagerInterface $manager */
         $manager = self::getContainer()
@@ -81,16 +107,17 @@ class SlotControllerTest extends ApiTestCase
 
         /** @var User $user */
         $user = $repository->findOneByEmail('customer@mail.com');
+        $monitor = $repository->findOneByEmail('monitor@mail.com');
 
         $this->loginApiUser($user);
         $today = (new DateTimeImmutable())->format('Y-m-d');
 
-        $this->apiGet('/slots/' . $user->getUuid() . '/' . $today);
+        $this->apiGet('/slots/' . $monitor->getUuid() . '/fly-location-from-fixture/freestyle/' . $today);
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
         $response = $this->getApiResponse();
         $this->assertEquals(
-            0,
+            count(SlotFixtures::SLOTS_FREESTYLE),
             count($response),
             'number of slots in database dont match fixture (did you reset the database?)'
         );
@@ -133,12 +160,12 @@ class SlotControllerTest extends ApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
 
         // check if the slot is in the database
-        $this->apiGet('/slots/' . $monitor->getUuid() . '/' . $today);
+        $this->apiGet('/slots/' . $monitor->getUuid() . '/fly-location-from-fixture/discovery/' . $today);
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
         $response = $this->getApiResponse();
         $this->assertEquals(
-            count(SlotFixtures::SLOTS) + 1,
+            count(SlotFixtures::SLOTS_DISCOVERY) + 1,
             count($response),
             'number of slots in database not updated (did you flush?)'
         );

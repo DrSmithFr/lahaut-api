@@ -2,8 +2,10 @@
 
 namespace App\Repository\Fly;
 
+use App\Entity\Fly\FlyLocation;
 use App\Entity\Fly\Slot;
 use App\Entity\User;
+use App\Enum\FlyTypeEnum;
 use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\Collection;
@@ -25,22 +27,30 @@ class SlotRepository extends ServiceEntityRepository
     /**
      * @param DateTimeImmutable $start
      * @param DateTimeImmutable $end
+     * @param FlyLocation       $location
+     * @param FlyTypeEnum       $type
      * @param User|null         $monitor
      * @return array<Slot>
      */
     public function findUnlockedBetween(
         DateTimeImmutable $start,
         DateTimeImmutable $end,
+        FlyLocation $location,
+        FlyTypeEnum $type,
         ?User $monitor = null
     ): array {
         $qb = $this
             ->createQueryBuilder('slot')
             ->andWhere('slot.startAt >= :start')
             ->andWhere('slot.endAt <= :end')
+            ->andWhere('slot.flyLocation = :location')
+            ->andWhere('slot.type = :type')
             ->setParameters(
                 [
-                    'start' => $start,
-                    'end'   => $end,
+                    'start'    => $start,
+                    'end'      => $end,
+                    'location' => $location,
+                    'type'     => $type->value,
                 ]
             );
 
@@ -51,6 +61,8 @@ class SlotRepository extends ServiceEntityRepository
         }
 
         return $qb
+            ->orderBy('slot.startAt', 'ASC')
+            ->addOrderBy('slot.endAt', 'ASC')
             ->getQuery()
             ->getResult();
     }
