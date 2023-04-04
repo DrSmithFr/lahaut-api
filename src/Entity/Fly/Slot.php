@@ -21,6 +21,7 @@ class Slot implements Serializable
 {
     use IdTrait;
 
+    #[JMS\Expose]
     #[ORM\JoinColumn(name: 'monitor_uuid', referencedColumnName: 'uuid', nullable: false)]
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'slots')]
     private User $monitor;
@@ -75,6 +76,7 @@ class Slot implements Serializable
     )]
     private FlyTypeEnum $type;
 
+    #[JMS\Exclude]
     #[ORM\OneToMany(
         mappedBy: 'slot',
         targetEntity: SlotLock::class,
@@ -82,23 +84,6 @@ class Slot implements Serializable
         fetch: 'EXTRA_LAZY'
     )]
     private Collection $locks;
-
-    #[ORM\OneToOne(mappedBy: 'slot', targetEntity: Booking::class)]
-    private Booking $booking;
-
-    #[JMS\Expose]
-    #[JMS\VirtualProperty]
-    #[JMS\Type('string')]
-    #[JMS\SerializedName("monitor")]
-    #[OA\Property(
-        description: 'Monitor Uuid',
-        type: 'string',
-        example: '1ed82229-3199-6552-afb9-5752dd505444'
-    )]
-    public function getMonitorUuid(): ?string
-    {
-        return $this->getMonitor()?->getUuid();
-    }
 
     public function getMonitor(): User
     {
@@ -174,17 +159,6 @@ class Slot implements Serializable
     public function setLocks(Collection $locks): self
     {
         $this->locks = $locks;
-        return $this;
-    }
-
-    public function getBooking(): Booking
-    {
-        return $this->booking;
-    }
-
-    public function setBooking(Booking $booking): self
-    {
-        $this->booking = $booking;
         return $this;
     }
 }

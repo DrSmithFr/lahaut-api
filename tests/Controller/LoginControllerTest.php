@@ -10,7 +10,7 @@ class LoginControllerTest extends ApiTestCase
     public function testLoginWithUserNotFound(): void
     {
         $this->apiPost(
-            '/login',
+            '/public/login',
             [
                 'username' => 'bad_user',
                 'password' => 'bad_password',
@@ -23,7 +23,7 @@ class LoginControllerTest extends ApiTestCase
     public function testLoginBadCredencial(): void
     {
         $this->apiPost(
-            '/login',
+            '/public/login',
             [
                 'username' => 'admin@mail.com',
                 'password' => 'bad_password',
@@ -36,7 +36,7 @@ class LoginControllerTest extends ApiTestCase
     public function testLoginAdmin(): void
     {
         $this->apiPost(
-            '/login',
+            '/public/login',
             [
                 'username' => 'admin@mail.com',
                 'password' => 'admin-password',
@@ -49,7 +49,7 @@ class LoginControllerTest extends ApiTestCase
     public function testLoginCustomer(): void
     {
         $this->apiPost(
-            '/login',
+            '/public/login',
             [
                 'username' => 'customer@mail.com',
                 'password' => 'customer-password',
@@ -62,7 +62,7 @@ class LoginControllerTest extends ApiTestCase
     public function testLoginUserDisable(): void
     {
         $this->apiPost(
-            '/login',
+            '/public/login',
             [
                 'username' => 'disable@mail.com',
                 'password' => 'disable-password',

@@ -53,7 +53,7 @@ class UserControllerTest extends ApiTestCase
     public function testPasswordUpdateWithTooSmallNewPassword(): void
     {
         $this->apiPost(
-            '/register/customer',
+            '/public/register/customer',
             [
                 'username' => 'password-update-too-short@mail.com',
                 'password' => 'password',
@@ -91,7 +91,7 @@ class UserControllerTest extends ApiTestCase
     public function testPasswordUpdateValid(): void
     {
         $this->apiPost(
-            '/register/customer',
+            '/public/register/customer',
             [
                 'username' => 'update-password-valid@mail.com',
                 'password' => 'password',

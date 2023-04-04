@@ -30,7 +30,7 @@ class SlotControllerTest extends ApiTestCase
         $this->loginApiUser($user);
         $today = (new DateTimeImmutable())->format('Y-m-d');
 
-        $this->apiGet('/slots/fly-location-from-fixture/discovery/' . $today);
+        $this->apiGet('/public/slots/fly-location-from-fixture/discovery/' . $today);
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
         $response = $this->getApiResponse();
@@ -56,7 +56,7 @@ class SlotControllerTest extends ApiTestCase
         $this->loginApiUser($user);
         $today = (new DateTimeImmutable())->format('Y-m-d');
 
-        $this->apiGet('/slots/fly-location-from-fixture/freestyle/' . $today);
+        $this->apiGet('/public/slots/fly-location-from-fixture/freestyle/' . $today);
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
         $response = $this->getApiResponse();
@@ -84,7 +84,7 @@ class SlotControllerTest extends ApiTestCase
         $this->loginApiUser($user);
         $today = (new DateTimeImmutable())->format('Y-m-d');
 
-        $this->apiGet('/slots/' . $monitor->getUuid() . '/fly-location-from-fixture/discovery/' . $today);
+        $this->apiGet('/public/slots/' . $monitor->getUuid() . '/fly-location-from-fixture/discovery/' . $today);
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
         $response = $this->getApiResponse();
@@ -112,7 +112,7 @@ class SlotControllerTest extends ApiTestCase
         $this->loginApiUser($user);
         $today = (new DateTimeImmutable())->format('Y-m-d');
 
-        $this->apiGet('/slots/' . $monitor->getUuid() . '/fly-location-from-fixture/freestyle/' . $today);
+        $this->apiGet('/public/slots/' . $monitor->getUuid() . '/fly-location-from-fixture/freestyle/' . $today);
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
         $response = $this->getApiResponse();
@@ -160,7 +160,7 @@ class SlotControllerTest extends ApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
 
         // check if the slot is in the database
-        $this->apiGet('/slots/' . $monitor->getUuid() . '/fly-location-from-fixture/discovery/' . $today);
+        $this->apiGet('/public/slots/' . $monitor->getUuid() . '/fly-location-from-fixture/discovery/' . $today);
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
         $response = $this->getApiResponse();

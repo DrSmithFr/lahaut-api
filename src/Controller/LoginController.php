@@ -30,7 +30,7 @@ class LoginController extends AbstractApiController
      * )
      * @OA\Response(response="401", description="Cannot connect user")
      */
-    #[Route(path: '/login', name: 'app_login', methods: ['post'])]
+    #[Route(path: '/public/login', name: 'app_login', methods: ['post'])]
     final public function login(): never
     {
         throw new RuntimeException(
@@ -56,7 +56,7 @@ class LoginController extends AbstractApiController
      * )
      * @OA\Response(response="401", description="Cannot connect user")
      */
-    #[Route(path: '/login/refresh', name: 'app_login_refresh', methods: ['post'])]
+    #[Route(path: '/public/login/refresh', name: 'app_login_refresh', methods: ['post'])]
     final public function loginRefresh(): never
     {
         throw new RuntimeException(

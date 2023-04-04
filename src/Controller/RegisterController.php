@@ -38,7 +38,7 @@ class RegisterController extends AbstractApiController
      * @OA\Response(response=200, description="Email can be used")
      * @OA\Response(response="406", description="Email already used")
      */
-    #[Route(path: '/register/available', name: 'app_register_available', methods: ['post'])]
+    #[Route(path: '/public/register/available', name: 'app_register_available', methods: ['post'])]
     final public function registerAvailable(
         Request $request,
         UserRepository $userRepository,
@@ -63,7 +63,7 @@ class RegisterController extends AbstractApiController
      *     @Model(type=FormErrorModel::class)
      * )
      */
-    #[Route(path: '/register/customer', name: 'app_register_user', methods: ['post'])]
+    #[Route(path: '/public/register/customer', name: 'app_register_user', methods: ['post'])]
     final public function registerUser(
         Request $request,
         EntityManagerInterface $entityManager,
@@ -89,7 +89,7 @@ class RegisterController extends AbstractApiController
      *     @Model(type=FormErrorModel::class)
      * )
      */
-    #[Route(path: '/register/monitor', name: 'app_register_monitor', methods: ['post'])]
+    #[Route(path: '/public/register/monitor', name: 'app_register_monitor', methods: ['post'])]
     final public function registerMonitor(
         Request $request,
         EntityManagerInterface $entityManager,

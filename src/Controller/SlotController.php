@@ -92,11 +92,10 @@ class SlotController extends AbstractApiController
      * )
      */
     #[Route(
-        path: '/slots/{location}/{type<(discovery|freestyle|xl)>}/{date<\d{4}-\d{2}-\d{2}>}',
+        path: '/public/slots/{location}/{type<(discovery|freestyle|xl)>}/{date<\d{4}-\d{2}-\d{2}>}',
         name: 'app_slots_list',
         methods: ['get']
     )]
-    #[IsGranted('ROLE_USER')]
     public function listAllSlots(
         Request $request,
         FlyLocationRepository $flyLocationRepository,
@@ -145,18 +144,18 @@ class SlotController extends AbstractApiController
      *        @OA\Items(ref=@Model(type=Slot::class))
      *     )
      * )
-     * @param Request        $request
-     * @param User           $monitor
-     * @param SlotRepository $slotRepository
+     * @param User                  $monitor
+     * @param Request               $request
+     * @param FlyLocationRepository $flyLocationRepository
+     * @param SlotRepository        $slotRepository
      * @return JsonResponse
      */
     #[Route(
-        path: '/slots/{uuid}/{location}/{type<(discovery|freestyle|xl)>}/{date<\d{4}-\d{2}-\d{2}>}',
+        path: '/public/slots/{uuid}/{location}/{type<(discovery|freestyle|xl)>}/{date<\d{4}-\d{2}-\d{2}>}',
         name: 'app_conversation_messages',
         requirements: ['date' => '\d{4}-\d{2}-\d{2}'],
         methods: ['GET']
     )]
-    #[IsGranted('ROLE_USER')]
     public function listMonitorSlots(
         #[MapEntity(class: User::class)] User $monitor,
         Request $request,

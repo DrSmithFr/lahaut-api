@@ -41,6 +41,8 @@ class SlotRepository extends ServiceEntityRepository
     ): array {
         $qb = $this
             ->createQueryBuilder('slot')
+            ->addSelect('monitor')
+            ->join('slot.monitor', 'monitor')
             ->andWhere('slot.startAt >= :start')
             ->andWhere('slot.endAt <= :end')
             ->andWhere('slot.flyLocation = :location')
@@ -56,7 +58,7 @@ class SlotRepository extends ServiceEntityRepository
 
         if ($monitor) {
             $qb
-                ->andWhere('slot.monitor = :monitor')
+                ->andWhere('monitor = :monitor')
                 ->setParameter('monitor', $monitor);
         }
 
@@ -79,7 +81,7 @@ class SlotRepository extends ServiceEntityRepository
             ->where('slot.monitor = :monitor')
             ->andWhere(
                 $qb->expr()->orX(
-                // slots contained in the slot duration
+                    // slots contained in the slot duration
                     'slot.startAt >= :start AND slot.endAt <= :end',
                     // slots starting before the slot and overlapping
                     'slot.startAt <= :start AND slot.endAt > :start AND slot.endAt <= :end',

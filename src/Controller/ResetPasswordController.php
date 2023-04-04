@@ -44,7 +44,7 @@ class ResetPasswordController extends AbstractApiController
      * @throws NonUniqueResultException
      * @throws TransportExceptionInterface
      */
-    #[Route(path: '/reset_password', name: 'request', methods: ['post'])]
+    #[Route(path: '/public/reset_password', name: 'request', methods: ['post'])]
     public function passwordResetRequestAction(
         Request $request,
         UserRepository $userRepository,
@@ -75,7 +75,7 @@ class ResetPasswordController extends AbstractApiController
      * @OA\Response(response=404, description="Token not found")
      * @OA\Response(response=406, description="Token expired")
      */
-    #[Route(path: '/reset_password', name: 'app_reset_password', methods: ['patch'])]
+    #[Route(path: '/public/reset_password', name: 'app_reset_password', methods: ['patch'])]
     public function passwordResetAction(
         Request $request,
         UserRepository $userRepository,
@@ -126,7 +126,7 @@ class ResetPasswordController extends AbstractApiController
      * @OA\Response(response=202, description="Reset password token still valid")
      * @OA\Response(response=404, description="Reset password token outdated or invalid")
      */
-    #[Route(path: '/reset_password/validity', name: 'app_reset_password_token_validity', methods: ['post'])]
+    #[Route(path: '/public/reset_password/validity', name: 'app_reset_password_token_validity', methods: ['post'])]
     public function isPasswordResetTokenValidAction(
         Request $request,
         UserRepository $userRepository

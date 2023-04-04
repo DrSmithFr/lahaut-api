@@ -15,7 +15,7 @@ class ResetPasswordControllerTest extends ApiTestCase
     public function testRequestPasswordResetWithUnknownUser(): void
     {
         $this->apiPost(
-            '/reset_password',
+            '/public/reset_password',
             [
                 'username' => 'unknown@mail.com'
             ]
@@ -28,7 +28,7 @@ class ResetPasswordControllerTest extends ApiTestCase
     public function testRequestPasswordResetWithNewPasswordTooShort(): void
     {
         $this->apiPost(
-            '/reset_password',
+            '/public/reset_password',
             [
                 'username' => 'customer@mail.com'
             ]
@@ -47,7 +47,7 @@ class ResetPasswordControllerTest extends ApiTestCase
         $this->assertNotNull($user->getPasswordResetToken());
 
         $this->apiPatch(
-            '/reset_password',
+            '/public/reset_password',
             [
                 'token'    => $user->getPasswordResetToken(),
                 'password' => '...'
@@ -60,7 +60,7 @@ class ResetPasswordControllerTest extends ApiTestCase
     public function testRequestPasswordResetWithBadToken(): void
     {
         $this->apiPost(
-            '/reset_password',
+            '/public/reset_password',
             [
                 'username' => 'customer@mail.com'
             ]
@@ -79,7 +79,7 @@ class ResetPasswordControllerTest extends ApiTestCase
         $this->assertNotNull($user->getPasswordResetToken(), 'Password reset token is null');
 
         $this->apiPatch(
-            '/reset_password',
+            '/public/reset_password',
             [
                 'token'    => 'bad_token',
                 'password' => 'new_password'
@@ -92,7 +92,7 @@ class ResetPasswordControllerTest extends ApiTestCase
     public function testRequestPasswordResetWithExpireToken(): void
     {
         $this->apiPost(
-            '/reset_password',
+            '/public/reset_password',
             [
                 'username' => 'customer@mail.com'
             ]
@@ -114,7 +114,7 @@ class ResetPasswordControllerTest extends ApiTestCase
         $doctrine->getManager()->flush();
 
         $this->apiPatch(
-            '/reset_password',
+            '/public/reset_password',
             [
                 'token'    => $user->getPasswordResetToken(),
                 'password' => 'new_password'
@@ -127,7 +127,7 @@ class ResetPasswordControllerTest extends ApiTestCase
     public function testRequestPasswordResetValid(): void
     {
         $this->apiPost(
-            '/reset_password',
+            '/public/reset_password',
             [
                 'username' => 'customer@mail.com'
             ]
@@ -150,7 +150,7 @@ class ResetPasswordControllerTest extends ApiTestCase
         $this->assertNotNull($user->getPasswordResetToken(), 'Password reset token is null');
 
         $this->apiPatch(
-            '/reset_password',
+            '/public/reset_password',
             [
                 'token'    => $user->getPasswordResetToken(),
                 'password' => 'new-password'
@@ -191,7 +191,7 @@ class ResetPasswordControllerTest extends ApiTestCase
     public function testIsPasswordResetTokenValidWithBadToken(): void
     {
         $this->apiPost(
-            '/reset_password/validity',
+            '/public/reset_password/validity',
             [
                 'token' => 'bad_token'
             ]
@@ -203,7 +203,7 @@ class ResetPasswordControllerTest extends ApiTestCase
     public function testIsPasswordResetTokenValid(): void
     {
         $this->apiPost(
-            '/reset_password',
+            '/public/reset_password',
             [
                 'username' => 'customer@mail.com'
             ]
@@ -220,7 +220,7 @@ class ResetPasswordControllerTest extends ApiTestCase
         $user = $repository->findOneByEmail('customer@mail.com');
 
         $this->apiPost(
-            '/reset_password/validity',
+            '/public/reset_password/validity',
             [
                 'token' => $user->getPasswordResetToken()
             ]

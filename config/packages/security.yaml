@@ -13,10 +13,10 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         login:
-            pattern: ^/login$
+            pattern: ^/public/login$
             stateless: true
             json_login:
-                check_path: /login
+                check_path: /public/login
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
         documentation:
@@ -25,14 +25,8 @@ security:
         documentation_json:
             pattern:  ^/documentation.json$
             security: false
-        register:
-            pattern: ^/register/
-            security: false
-        reset_password:
-            pattern:  ^/reset_password
-            security: false
-        public_media:
-            pattern: ^/media/
+        public:
+            pattern: ^/public/
             security: false
         main:
             stateless: true
@@ -40,13 +34,14 @@ security:
             provider: users
             jwt: ~
             refresh_jwt:
-                check_path: /login/refresh
+                check_path: /public/login/refresh
 
     access_control:
         - { path: ^/login$, roles: PUBLIC_ACCESS }
         - { path: ^/login/refresh$, roles: PUBLIC_ACCESS }
         - { path: ^/reset_password$, roles: PUBLIC_ACCESS }
         - { path: ^/medias/, roles: PUBLIC_ACCESS }
+        - { path: ^/public/, roles: PUBLIC_ACCESS }
         - { path: ^/,       roles: [ IS_AUTHENTICATED_FULLY, ROLE_USER ] }
 
     role_hierarchy:

@@ -87,6 +87,7 @@ class User implements
     #[Embedded(class: Address::class, columnPrefix: "billing_")]
     private Address $billing;
 
+    #[JMS\Exclude]
     #[ORM\OrderBy(['createdAt' => 'DESC'])]
     #[ORM\OneToMany(
         mappedBy: 'user',
@@ -96,6 +97,7 @@ class User implements
     )]
     private Collection $messages;
 
+    #[JMS\Exclude]
     #[ORM\OneToMany(
         mappedBy: 'monitor',
         targetEntity: Slot::class,
@@ -104,6 +106,7 @@ class User implements
     )]
     private Collection $slots;
 
+    #[JMS\Exclude]
     #[ORM\OneToMany(
         mappedBy: 'customer',
         targetEntity: Booking::class,
