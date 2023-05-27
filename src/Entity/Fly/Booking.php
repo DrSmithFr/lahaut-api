@@ -8,7 +8,6 @@ use App\Enum\BookingStatusEnum;
 use App\Repository\Fly\SlotRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use InvalidArgumentException;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -32,7 +31,7 @@ class Booking
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'bookings')]
     private User $customer;
 
-    #[JMS\Expose]
+    #[JMS\Groups(groups: ['slot'])]
     #[ORM\JoinColumn(name: 'slot_id', referencedColumnName: 'id', nullable: false)]
     #[ORM\OneToOne(inversedBy: 'booking', targetEntity: Slot::class)]
     private Slot $slot;
@@ -44,6 +43,14 @@ class Booking
     public function __construct()
     {
         $this->setStatus(BookingStatusEnum::DRAFT);
+    }
+
+    #[JMS\VirtualProperty]
+    #[JMS\SerializedName('id')]
+    #[JMS\Expose]
+    public function serializedId(): ?int
+    {
+        return $this->getId();
     }
 
     public function getCustomer(): User

@@ -70,6 +70,38 @@ class SlotRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param DateTimeImmutable $start
+     * @param DateTimeImmutable $end
+     * @param User              $monitor
+     * @return array<Slot>
+     */
+    public function findAllBetween(
+        DateTimeImmutable $start,
+        DateTimeImmutable $end,
+        User $monitor
+    ): array {
+        return $this
+            ->createQueryBuilder('slot')
+            ->addSelect('booking')
+            ->join('slot.monitor', 'monitor')
+            ->leftJoin('slot.booking', 'booking')
+            ->andWhere('slot.startAt >= :start')
+            ->andWhere('slot.endAt <= :end')
+            ->andWhere('monitor = :monitor')
+            ->setParameters(
+                [
+                    'start'    => $start,
+                    'end'      => $end,
+                    'monitor'  => $monitor,
+                ]
+            )
+            ->orderBy('slot.startAt', 'ASC')
+            ->addOrderBy('slot.endAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @param Slot $slot
      * @return Collection<Slot>
      */
@@ -81,7 +113,7 @@ class SlotRepository extends ServiceEntityRepository
             ->where('slot.monitor = :monitor')
             ->andWhere(
                 $qb->expr()->orX(
-                    // slots contained in the slot duration
+                // slots contained in the slot duration
                     'slot.startAt >= :start AND slot.endAt <= :end',
                     // slots starting before the slot and overlapping
                     'slot.startAt <= :start AND slot.endAt > :start AND slot.endAt <= :end',

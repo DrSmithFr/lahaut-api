@@ -35,7 +35,7 @@ class SlotController extends AbstractApiController
      *     description="Returns all fly slots created",
      *     @OA\JsonContent(
      *        type="array",
-     *        @OA\Items(ref=@Model(type=Slot::class))
+     *        @OA\Items(ref=@Model(type=Slot::class, groups={"Default", "monitor"}))
      *     )
      * )
      * @OA\Response(response="401", description="Cannot connect user")
@@ -75,7 +75,7 @@ class SlotController extends AbstractApiController
 
         $entityManager->flush();
 
-        return $this->serializeResponse($slots, ['Default'], Response::HTTP_CREATED);
+        return $this->serializeResponse($slots, ['Default', 'monitor'], Response::HTTP_CREATED);
     }
 
 
@@ -86,7 +86,7 @@ class SlotController extends AbstractApiController
      *     description="Returns all fly slots for the given day",
      *     @OA\JsonContent(
      *        type="array",
-     *        @OA\Items(ref=@Model(type=Slot::class))
+     *        @OA\Items(ref=@Model(type=Slot::class, groups={"Default", "monitor"}))
      *     )
      * )
      */
@@ -130,7 +130,7 @@ class SlotController extends AbstractApiController
                 $type
             );
 
-        return $this->serializeResponse($slots);
+        return $this->serializeResponse($slots, ['Default', 'monitor']);
     }
 
     /**
@@ -140,7 +140,7 @@ class SlotController extends AbstractApiController
      *     description="Returns all fly slots of a monitor for the given day",
      *     @OA\JsonContent(
      *        type="array",
-     *        @OA\Items(ref=@Model(type=Slot::class))
+     *        @OA\Items(ref=@Model(type=Slot::class, groups={"Default", "monitor"}))
      *     )
      * )
      * @param User                  $monitor
@@ -192,7 +192,7 @@ class SlotController extends AbstractApiController
                 $monitor
             );
 
-        return $this->serializeResponse($slots);
+        return $this->serializeResponse($slots, ['Default', 'monitor']);
     }
 
     /**
@@ -200,7 +200,7 @@ class SlotController extends AbstractApiController
      * @OA\Response(
      *     response=200,
      *     description="Returns the slot data",
-     *     @Model(type=Slot::class, groups={"Default", "flyLocation"={"Default", "details"}})
+     *     @Model(type=Slot::class, groups={"Default", "monitor", "flyLocation"={"Default", "details"}})
      * )
      * @param Slot $slot
      * @return JsonResponse
@@ -214,6 +214,6 @@ class SlotController extends AbstractApiController
     public function getSlot(
         #[MapEntity(class: Slot::class)] Slot $slot,
     ): JsonResponse {
-        return $this->serializeResponse($slot, ['Default', 'flyLocation' => ['Default', 'details']]);
+        return $this->serializeResponse($slot, ['Default', 'monitor', 'flyLocation' => ['Default', 'details']]);
     }
 }

@@ -22,6 +22,7 @@ class Slot implements Serializable
     use IdTrait;
 
     #[JMS\Expose]
+    #[JMS\Groups(groups: ['monitor'])]
     #[ORM\JoinColumn(name: 'monitor_uuid', referencedColumnName: 'uuid', nullable: false)]
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'slots')]
     private User $monitor;
@@ -93,6 +94,11 @@ class Slot implements Serializable
         fetch: 'EXTRA_LAZY'
     )]
     private Collection $locks;
+
+    #[JMS\Expose]
+    #[JMS\Groups(['booking'])]
+    #[ORM\OneToOne(mappedBy: 'slot', targetEntity: Booking::class)]
+    private Booking|null $booking;
 
     #[JMS\VirtualProperty]
     #[JMS\SerializedName('id')]
@@ -187,6 +193,17 @@ class Slot implements Serializable
     public function setLocks(Collection $locks): self
     {
         $this->locks = $locks;
+        return $this;
+    }
+
+    public function getBooking(): Booking|null
+    {
+        return $this->booking;
+    }
+
+    public function setBooking(Booking|null $booking): self
+    {
+        $this->booking = $booking;
         return $this;
     }
 }
