@@ -12,6 +12,14 @@ use OpenApi\Attributes as OA;
 #[JMS\ExclusionPolicy('all')]
 class SlotModel
 {
+    #[JMS\Expose]
+    #[OA\Property(
+        description: 'fly price',
+        type: 'string',
+        example: '130.00'
+    )]
+    private float $price;
+
     #[OA\Property(
         description: 'Fly Location Uuid',
         type: 'string',
@@ -62,6 +70,17 @@ class SlotModel
     public function getFlyLocationUuid(): string
     {
         return $this->getFlyLocation()->getUuid();
+    }
+
+    public function getPrice(): float
+    {
+        return $this->price;
+    }
+
+    public function setPrice(float $price): self
+    {
+        $this->price = $price;
+        return $this;
     }
 
     public function getFlyLocation(): FlyLocation

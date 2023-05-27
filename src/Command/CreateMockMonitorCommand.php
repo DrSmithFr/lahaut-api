@@ -39,11 +39,6 @@ class CreateMockMonitorCommand extends Command
                 'name',
                 InputArgument::REQUIRED,
                 'name of the monitor'
-            )
-            ->addArgument(
-                'location',
-                InputArgument::REQUIRED,
-                'FlyLocation identifier'
             );
     }
 
@@ -55,7 +50,7 @@ class CreateMockMonitorCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $io->title('Slot mock generator');
 
-        $name = $input->getArgument('name');
+        $name = strtolower($input->getArgument('name'));
         $email = $name . '@monitor.mock';
 
         $errors = $this->validator->validate($email, new Email());
@@ -70,7 +65,18 @@ class CreateMockMonitorCommand extends Command
         if ($user === null) {
             $io->info('Creating monitor ' . $email);
             $user = $this->userService->createUser($email, 'passwd');
-            $user->addRole(RoleEnum::MONITOR);
+
+            $user
+                ->addRole(RoleEnum::MONITOR)
+                ->setIdentity(
+                    (new User\Identity())
+                        ->setFirstName($name)
+                        ->setLastName('mock')
+                        ->setAnniversary(new DateTimeImmutable())
+                        ->setNationality('FR')
+                        ->setPhone('+33600000000')
+                );
+
 
             $this->entityManager->persist($user);
             $this->entityManager->flush();
@@ -94,7 +100,9 @@ class CreateMockMonitorCommand extends Command
         $io->success('Monitor created');
 
         $io->title('Generating monitor slots');
+
         $date = new DateTimeImmutable();
+        $date = $date->modify('-1 day');
 
         $flyLocation = $this
             ->entityManager
@@ -138,7 +146,8 @@ class CreateMockMonitorCommand extends Command
                 ->setStartAt($day->setTime(...explode(':', $data[0])))
                 ->setEndAt($day->setTime(...explode(':', $data[1])))
                 ->setAverageFlyDuration(new DateInterval($data[2]))
-                ->setType($data[3]);
+                ->setType($data[3])
+                ->setPrice($data[4]);
 
             $slots[] = $slot;
         }

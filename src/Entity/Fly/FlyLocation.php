@@ -24,6 +24,8 @@ class FlyLocation implements Serializable
     #[ORM\Column(nullable: false)]
     private ?string $name;
 
+    #[JMS\Expose]
+    #[JMS\Groups(['details'])]
     #[ORM\JoinColumn(name: 'take_off_uuid', referencedColumnName: 'uuid', nullable: false)]
     #[ORM\ManyToOne(targetEntity: TakeOffPoint::class)]
     #[OA\Property(
@@ -33,6 +35,8 @@ class FlyLocation implements Serializable
     )]
     private ?TakeOffPoint $takeOffPoint = null;
 
+    #[JMS\Expose]
+    #[JMS\Groups(['details'])]
     #[ORM\JoinColumn(name: 'meeting_uuid', referencedColumnName: 'uuid', nullable: false)]
     #[ORM\ManyToOne(targetEntity: MeetingPoint::class)]
     #[OA\Property(
@@ -42,6 +46,8 @@ class FlyLocation implements Serializable
     )]
     private ?MeetingPoint $meetingPoint = null;
 
+    #[JMS\Expose]
+    #[JMS\Groups(['details'])]
     #[ORM\JoinColumn(name: 'landing_uuid', referencedColumnName: 'uuid', nullable: false)]
     #[ORM\ManyToOne(targetEntity: LandingPoint::class)]
     #[OA\Property(

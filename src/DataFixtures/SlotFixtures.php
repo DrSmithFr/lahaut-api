@@ -16,21 +16,21 @@ use Doctrine\Persistence\ObjectManager;
 class SlotFixtures extends Fixture implements DependentFixtureInterface
 {
     public const SLOTS_DISCOVERY = [
-        ['09:00:00', '10:00:00', 'PT20M', FlyTypeEnum::DISCOVERY],
-        ['10:00:00', '11:00:00', 'PT20M', FlyTypeEnum::DISCOVERY],
-        ['11:00:00', '12:00:00', 'PT20M', FlyTypeEnum::DISCOVERY],
-        ['14:00:00', '15:00:00', 'PT20M', FlyTypeEnum::DISCOVERY],
-        ['15:00:00', '16:00:00', 'PT20M', FlyTypeEnum::DISCOVERY],
-        ['16:00:00', '17:00:00', 'PT20M', FlyTypeEnum::DISCOVERY],
-        ['17:00:00', '18:00:00', 'PT20M', FlyTypeEnum::DISCOVERY],
+        ['09:00:00', '10:00:00', 'PT20M', FlyTypeEnum::DISCOVERY, 130.00],
+        ['10:00:00', '11:00:00', 'PT20M', FlyTypeEnum::DISCOVERY, 130.00],
+        ['11:00:00', '12:00:00', 'PT20M', FlyTypeEnum::DISCOVERY, 130.00],
+        ['14:00:00', '15:00:00', 'PT20M', FlyTypeEnum::DISCOVERY, 130.00],
+        ['15:00:00', '16:00:00', 'PT20M', FlyTypeEnum::DISCOVERY, 130.00],
+        ['16:00:00', '17:00:00', 'PT20M', FlyTypeEnum::DISCOVERY, 130.00],
+        ['17:00:00', '18:00:00', 'PT20M', FlyTypeEnum::DISCOVERY, 130.00],
     ];
 
     public const SLOTS_FREESTYLE = [
-        ['09:00:00', '11:00:00', 'PT40M', FlyTypeEnum::FREESTYLE],
-        ['10:00:00', '12:00:00', 'PT40M', FlyTypeEnum::FREESTYLE],
-        ['14:00:00', '16:00:00', 'PT40M', FlyTypeEnum::FREESTYLE],
-        ['15:00:00', '17:00:00', 'PT40M', FlyTypeEnum::FREESTYLE],
-        ['16:00:00', '18:00:00', 'PT40M', FlyTypeEnum::FREESTYLE],
+        ['09:00:00', '11:00:00', 'PT40M', FlyTypeEnum::FREESTYLE, 75.50],
+        ['10:00:00', '12:00:00', 'PT40M', FlyTypeEnum::FREESTYLE, 75.50],
+        ['14:00:00', '16:00:00', 'PT40M', FlyTypeEnum::FREESTYLE, 75.50],
+        ['15:00:00', '17:00:00', 'PT40M', FlyTypeEnum::FREESTYLE, 75.50],
+        ['16:00:00', '18:00:00', 'PT40M', FlyTypeEnum::FREESTYLE, 75.50],
     ];
 
     public const SLOTS = [...self::SLOTS_DISCOVERY, ...self::SLOTS_FREESTYLE];
@@ -55,6 +55,7 @@ class SlotFixtures extends Fixture implements DependentFixtureInterface
                 ->setEndAt($endAt)
                 ->setAverageFlyDuration(new DateInterval($slot[2]))
                 ->setType($slot[3])
+                ->setPrice($slot[4])
                 ->setMonitor($monitor);
 
             $manager->persist($slot);

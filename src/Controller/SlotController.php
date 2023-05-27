@@ -2,9 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Fly\FlyLocation;
 use App\Entity\Fly\Slot;
-use App\Entity\Media;
 use App\Entity\User;
 use App\Enum\FlyTypeEnum;
 use App\Form\Fly\AddSlotsType;
@@ -70,6 +68,7 @@ class SlotController extends AbstractApiController
                     ->setEndAt($slot->getEndAt())
                     ->setAverageFlyDuration($slot->getAverageFlyDuration())
                     ->setType($slot->getType())
+                    ->setPrice($slot->getPrice())
             );
 
         $slots->forAll(fn(int $key, Slot $slot) => $entityManager->persist($slot));
@@ -152,7 +151,7 @@ class SlotController extends AbstractApiController
      */
     #[Route(
         path: '/public/slots/{uuid}/{location}/{type<(discovery|freestyle|xl)>}/{date<\d{4}-\d{2}-\d{2}>}',
-        name: 'app_conversation_messages',
+        name: 'app_slots_list_by_monitor',
         requirements: ['date' => '\d{4}-\d{2}-\d{2}'],
         methods: ['GET']
     )]
@@ -194,5 +193,27 @@ class SlotController extends AbstractApiController
             );
 
         return $this->serializeResponse($slots);
+    }
+
+    /**
+     * Retrieve slot by id
+     * @OA\Response(
+     *     response=200,
+     *     description="Returns the slot data",
+     *     @Model(type=Slot::class, groups={"Default", "flyLocation"={"Default", "details"}})
+     * )
+     * @param Slot $slot
+     * @return JsonResponse
+     */
+    #[Route(
+        path: '/public/slots/{id}',
+        name: 'app_slot_by_id',
+        requirements: ['id' => '\d+'],
+        methods: ['GET']
+    )]
+    public function getSlot(
+        #[MapEntity(class: Slot::class)] Slot $slot,
+    ): JsonResponse {
+        return $this->serializeResponse($slot, ['Default', 'flyLocation' => ['Default', 'details']]);
     }
 }

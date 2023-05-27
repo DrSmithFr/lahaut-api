@@ -27,6 +27,15 @@ class Slot implements Serializable
     private User $monitor;
 
     #[JMS\Expose]
+    #[ORM\Column(type: Types::FLOAT)]
+    #[OA\Property(
+        description: 'fly price',
+        type: 'string',
+        example: '130.00'
+    )]
+    private float $price;
+
+    #[JMS\Expose]
     #[ORM\JoinColumn(name: 'fly_location_uuid', referencedColumnName: 'uuid', nullable: false)]
     #[ORM\ManyToOne(targetEntity: FlyLocation::class)]
     #[OA\Property(
@@ -84,6 +93,25 @@ class Slot implements Serializable
         fetch: 'EXTRA_LAZY'
     )]
     private Collection $locks;
+
+    #[JMS\VirtualProperty]
+    #[JMS\SerializedName('id')]
+    #[JMS\Expose]
+    public function serializedId(): ?int
+    {
+        return $this->getId();
+    }
+
+    public function getPrice(): float
+    {
+        return $this->price;
+    }
+
+    public function setPrice(float $price): self
+    {
+        $this->price = $price;
+        return $this;
+    }
 
     public function getMonitor(): User
     {

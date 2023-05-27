@@ -153,6 +153,7 @@ class SlotControllerTest extends ApiTestCase
                         'startAt'            => sprintf('%s 10:00:00', $today),
                         'endAt'              => sprintf('%s 11:00:00', $today),
                         'averageFlyDuration' => 'PT40M',
+                        'price'              => 130.00
                     ]
                 ],
             ]

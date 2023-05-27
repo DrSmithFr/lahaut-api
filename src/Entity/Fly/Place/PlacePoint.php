@@ -29,18 +29,25 @@ abstract class PlacePoint implements Serializable
     #[ORM\Column(nullable: false)]
     private ?string $identifier;
 
+    #[JMS\Expose]
     #[ORM\Column(nullable: false)]
     private ?string $name;
 
+    #[JMS\Expose]
+    #[JMS\Type('float')]
     #[ORM\Column(nullable: false)]
     private ?string $latitude;
 
+    #[JMS\Expose]
+    #[JMS\Type('float')]
     #[ORM\Column(nullable: false)]
     private ?string $longitude;
 
+    #[JMS\Expose]
     #[Embedded(class: Address::class, columnPrefix: "address_")]
     private Address $address;
 
+    #[JMS\Expose]
     #[ORM\Column(type: Types::TEXT)]
     private string $description = '';
 
