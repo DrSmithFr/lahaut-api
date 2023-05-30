@@ -56,11 +56,11 @@ class LoginController extends AbstractApiController
      * )
      * @OA\Response(response="401", description="Cannot connect user")
      */
-    #[Route(path: '/public/login/refresh', name: 'app_login_refresh', methods: ['post'])]
-    final public function loginRefresh(): never
-    {
-        throw new RuntimeException(
-            'You may have screwed the firewall configuration, this function should not have been called.'
-        );
-    }
+//    #[Route(path: '/public/login/refresh', name: 'app_login_refresh', methods: ['post'])]
+//    final public function loginRefresh(): never
+//    {
+//        throw new RuntimeException(
+//            'You may have screwed the firewall configuration, this function should not have been called.'
+//        );
+//    }
 }

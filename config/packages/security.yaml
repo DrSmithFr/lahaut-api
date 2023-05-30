@@ -12,6 +12,11 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+        refresh:
+            pattern:   ^/public/login/refresh
+            stateless: true
+            refresh_jwt:
+                check_path: /public/login/refresh
         login:
             pattern: ^/public/login$
             stateless: true
@@ -33,8 +38,6 @@ security:
             entry_point: jwt
             provider: users
             jwt: ~
-            refresh_jwt:
-                check_path: /public/login/refresh
 
     access_control:
         - { path: ^/login$, roles: PUBLIC_ACCESS }
