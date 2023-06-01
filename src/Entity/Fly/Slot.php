@@ -108,17 +108,6 @@ class Slot implements Serializable
         return $this->getId();
     }
 
-    public function getPrice(): float
-    {
-        return $this->price;
-    }
-
-    public function setPrice(float $price): self
-    {
-        $this->price = $price;
-        return $this;
-    }
-
     public function getMonitor(): User
     {
         return $this->monitor;
@@ -127,6 +116,17 @@ class Slot implements Serializable
     public function setMonitor(User $monitor): self
     {
         $this->monitor = $monitor;
+        return $this;
+    }
+
+    public function getPrice(): float
+    {
+        return $this->price;
+    }
+
+    public function setPrice(float $price): self
+    {
+        $this->price = $price;
         return $this;
     }
 

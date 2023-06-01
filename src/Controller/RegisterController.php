@@ -6,13 +6,14 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Enum\RoleEnum;
-use App\Form\RegisterType;
+use App\Form\RegisterCustomerType;
+use App\Form\RegisterMonitorType;
 use App\Model\FormErrorModel;
-use App\Model\RegisterModel;
+use App\Model\RegisterCustomerModel;
+use App\Model\RegisterMonitorModel;
 use App\Repository\UserRepository;
 use App\Service\UserService;
 use Doctrine\ORM\EntityManagerInterface;
-use InvalidArgumentException;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Annotations as OA;
@@ -55,7 +56,7 @@ class RegisterController extends AbstractApiController
 
     /**
      * Create a new customer account
-     * @OA\RequestBody(@Model(type=RegisterModel::class))
+     * @OA\RequestBody(@Model(type=RegisterCustomerModel::class))
      * @OA\Response(response=201, description="User created")
      * @OA\Response(
      *     response="400",
@@ -70,53 +71,11 @@ class RegisterController extends AbstractApiController
         UserRepository $userRepository,
         UserService $userService
     ): JsonResponse {
-        return $this->registerAnUserWithRoles(
-            [RoleEnum::CUSTOMER->value],
-            $request,
-            $entityManager,
-            $userRepository,
-            $userService,
-        );
-    }
-
-    /**
-     * Create a new monitor account
-     * @OA\RequestBody(@Model(type=RegisterModel::class))
-     * @OA\Response(response=201, description="User created")
-     * @OA\Response(
-     *     response="400",
-     *     description="Bad request",
-     *     @Model(type=FormErrorModel::class)
-     * )
-     */
-    #[Route(path: '/public/register/monitor', name: 'app_register_monitor', methods: ['post'])]
-    final public function registerMonitor(
-        Request $request,
-        EntityManagerInterface $entityManager,
-        UserRepository $userRepository,
-        UserService $userService
-    ): JsonResponse {
-        return $this->registerAnUserWithRoles(
-            [RoleEnum::MONITOR->value],
-            $request,
-            $entityManager,
-            $userRepository,
-            $userService,
-        );
-    }
-
-    private function registerAnUserWithRoles(
-        array $roles,
-        Request $request,
-        EntityManagerInterface $entityManager,
-        UserRepository $userRepository,
-        UserService $userService
-    ): JsonResponse {
-        $data = new RegisterModel();
+        $data = new RegisterCustomerModel();
 
         $form = $this->handleJsonFormRequest(
             $request,
-            RegisterType::class,
+            RegisterCustomerType::class,
             $data
         );
 
@@ -135,17 +94,62 @@ class RegisterController extends AbstractApiController
             $data->getPassword()
         );
 
-        foreach ($roles as $role) {
-            if (!RoleEnum::tryFrom($role)) {
-                throw new InvalidArgumentException('Invalid role');
-            }
+        $user->setRoles([RoleEnum::CUSTOMER]);
 
-            if ($role === RoleEnum::ADMIN->value || $role === RoleEnum::SUPER_ADMIN->value) {
-                throw new InvalidArgumentException('cannot create admin user');
-            }
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        return $this->json($user, Response::HTTP_CREATED);
+    }
+
+    /**
+     * Create a new monitor account
+     * @OA\RequestBody(@Model(type=RegisterMonitorModel::class))
+     * @OA\Response(response=201, description="User created")
+     * @OA\Response(
+     *     response="400",
+     *     description="Bad request",
+     *     @Model(type=FormErrorModel::class)
+     * )
+     */
+    #[Route(path: '/public/register/monitor', name: 'app_register_monitor', methods: ['post'])]
+    final public function registerMonitor(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UserRepository $userRepository,
+        UserService $userService
+    ): JsonResponse {
+        $data = new RegisterMonitorModel();
+
+        $form = $this->handleJsonFormRequest(
+            $request,
+            RegisterMonitorType::class,
+            $data
+        );
+
+        if (!$form->isValid()) {
+            return $this->formErrorResponse($form, Response::HTTP_BAD_REQUEST);
         }
 
-        $user->setRoles($roles);
+        $user = $userRepository->findOneBy(['email' => strtolower($data->getUsername())]);
+
+        if ($user) {
+            return $this->messageResponse('Email already exit', Response::HTTP_FORBIDDEN);
+        }
+
+        $user = $userService->createUser(
+            $data->getUsername(),
+            $data->getPassword()
+        );
+
+        $user->setRoles([RoleEnum::MONITOR]);
+
+        $user->setIdentity(
+            (new User\Identity())
+                ->setFirstName($data->getFirstName())
+                ->setLastName($data->getLastName())
+                ->setPhone($data->getPhone())
+        );
 
         $entityManager->persist($user);
         $entityManager->flush();

@@ -79,8 +79,11 @@ class RegisterControllerTest extends ApiTestCase
         $this->apiPost(
             '/public/register/monitor',
             [
-                'username' => 'test-monitor@mail.com',
-                'password' => 'password',
+                'username'  => 'test-monitor@mail.com',
+                'password'  => 'password',
+                'firstname' => 'John',
+                'lastname'  => 'Doe',
+                'phone'     => '+33612345678',
             ]
         );
 

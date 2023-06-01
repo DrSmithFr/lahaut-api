@@ -6,7 +6,9 @@ use App\Entity\Fly\Slot;
 use App\Entity\User;
 use App\Enum\FlyTypeEnum;
 use App\Form\Fly\AddSlotsType;
+use App\Form\Fly\RemoveSlotsType;
 use App\Model\Fly\AddSlotsModel;
+use App\Model\Fly\RemoveSlotsModel;
 use App\Model\Fly\SlotModel;
 use App\Repository\Fly\FlyLocationRepository;
 use App\Repository\Fly\SlotRepository;
@@ -76,6 +78,54 @@ class SlotController extends AbstractApiController
         $entityManager->flush();
 
         return $this->serializeResponse($slots, ['Default', 'monitor'], Response::HTTP_CREATED);
+    }
+
+    /**
+     * Remove slots of the current user
+     * @OA\RequestBody(@Model(type=RemoveSlotsModel::class))
+     * @OA\Response(response="202", description="Slots removed")
+     * @OA\Response(response="400", description="Cannot remove slots that are not yours")
+     * @OA\Response(response="406", description="Cannot remove slots that are already booked")
+     */
+    #[Route(path: '/slots', name: 'app_slots_remove', methods: ['delete'])]
+    #[IsGranted('ROLE_MONITOR')]
+    public function removeSlots(
+        Request $request,
+        EntityManagerInterface $entityManager,
+    ): JsonResponse {
+        $data = new RemoveSlotsModel();
+
+        $form = $this->handleJsonFormRequest(
+            $request,
+            RemoveSlotsType::class,
+            $data
+        );
+
+        if (!$form->isValid()) {
+            return $this->formErrorResponse($form, Response::HTTP_BAD_REQUEST);
+        }
+
+        foreach ($data->getSlots() as $slot) {
+            if ($slot->getMonitor() !== $this->getUser()) {
+                return $this->messageResponse(
+                    'cannot remove slots that are not yours',
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+
+            if ($slot->getBooking() !== null) {
+                return $this->messageResponse(
+                    'cannot remove slots that are already booked',
+                    Response::HTTP_NOT_ACCEPTABLE
+                );
+            }
+
+            $entityManager->remove($slot);
+        }
+
+        $entityManager->flush();
+
+        return $this->messageResponse('slots removed', Response::HTTP_ACCEPTED);
     }
 
 

@@ -7,7 +7,7 @@ namespace App\Model;
 use OpenApi\Attributes as OA;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class RegisterModel
+class RegisterCustomerModel
 {
     #[Assert\Email]
     #[OA\Property(description: 'Email of user', type: 'string', example: 'john.doe@mail.com')]
