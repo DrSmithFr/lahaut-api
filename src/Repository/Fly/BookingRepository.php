@@ -5,11 +5,11 @@ namespace App\Repository\Fly;
 use App\Entity\Fly\Booking;
 use App\Entity\User;
 use DateTime;
+use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Persistence\ManagerRegistry;
-use InvalidArgumentException;
 
 /**
  * @method Booking|null find($id, $lockMode = null, $lockVersion = null)
@@ -55,6 +55,31 @@ class BookingRepository extends ServiceEntityRepository
                     'end'     => $endAt,
                 ]
             )
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findAllBetween(DateTimeImmutable $start, DateTimeImmutable $end, ?User $monitor)
+    {
+        $qb = $this
+            ->createQueryBuilder('booking')
+            ->join('booking.slot', 'slot')
+            ->where('slot.startAt >= :start')
+            ->andWhere('slot.endAt <= :end')
+            ->setParameters(
+                [
+                    'start' => $start,
+                    'end'   => $end,
+                ]
+            );
+
+        if ($monitor) {
+            $qb
+                ->andWhere('slot.monitor = :monitor')
+                ->setParameter('monitor', $monitor);
+        }
+
+        return $qb
             ->getQuery()
             ->getResult();
     }
