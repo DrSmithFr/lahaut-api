@@ -8,6 +8,7 @@ use App\Entity\Chat\Conversation;
 use App\Entity\Chat\Message;
 use App\Entity\Chat\Participant;
 use App\Entity\User;
+use DateTimeImmutable;
 
 class ChatService
 {
@@ -28,7 +29,8 @@ class ChatService
     {
         $message = (new Message())
             ->setContent($content)
-            ->setUser($user);
+            ->setUser($user)
+            ->setSentAt(new DateTimeImmutable());
 
         $conversation->addMessage($message);
         $conversation->setLastMessage($message);

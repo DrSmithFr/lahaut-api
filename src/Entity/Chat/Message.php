@@ -6,6 +6,7 @@ use App\Entity\Interfaces\Serializable;
 use App\Entity\Traits\IdTrait;
 use App\Entity\User;
 use App\Repository\Chat\MessageRepository;
+use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
@@ -28,6 +29,7 @@ class Message implements Serializable
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content;
 
+    #[JMS\Expose]
     #[ORM\JoinColumn(name: 'user_uuid', referencedColumnName: 'uuid')]
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'messages')]
     private User $user;
@@ -37,18 +39,14 @@ class Message implements Serializable
     private Conversation $conversation;
 
     #[JMS\Expose]
-    #[JMS\VirtualProperty]
-    #[JMS\Type('string')]
-    #[JMS\SerializedName("user")]
+    #[JMS\Type("DateTimeImmutable<'Y-m-d H:i'>")]
+    #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
     #[OA\Property(
-        description: 'User Uuid',
+        description: 'Start at',
         type: 'string',
-        example: '1ed82229-3199-6552-afb9-5752dd505444'
+        example: '2021-01-01 00:00'
     )]
-    public function getUserUuid(): ?string
-    {
-        return $this->getUser()?->getUuid();
-    }
+    private DateTimeImmutable $sentAt;
 
     public function getContent(): ?string
     {
@@ -80,6 +78,17 @@ class Message implements Serializable
     public function setConversation(?Conversation $conversation): self
     {
         $this->conversation = $conversation;
+        return $this;
+    }
+
+    public function getSentAt(): DateTimeImmutable
+    {
+        return $this->sentAt;
+    }
+
+    public function setSentAt(DateTimeImmutable $sentAt): self
+    {
+        $this->sentAt = $sentAt;
         return $this;
     }
 }

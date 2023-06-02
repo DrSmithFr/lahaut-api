@@ -155,13 +155,13 @@ class ChatController extends AbstractApiController
         Request $request
     ): JsonResponse {
         $user = $this->getUser();
-        $content = $request->get('content', '');
+        $content = $request->get('content');
 
         $message = $chatService->addMessageToConversation($conversation, $user, $content);
 
         $entityManager->persist($message);
         $entityManager->flush();
 
-        return $this->messageResponse('Message sent', Response::HTTP_CREATED);
+        return $this->serializeResponse($message, ['Default'], Response::HTTP_CREATED);
     }
 }

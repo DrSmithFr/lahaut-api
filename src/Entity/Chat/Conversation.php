@@ -10,6 +10,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ReadableCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
+use OpenApi\Attributes as OA;
 
 #[JMS\ExclusionPolicy('all')]
 #[ORM\Entity(repositoryClass: ConversationRepository::class)]
@@ -18,10 +19,7 @@ class Conversation implements Serializable
     use UuidTrait;
 
     #[JMS\Expose]
-    #[ORM\OneToOne(
-        targetEntity: Message::class,
-        orphanRemoval: true
-    )]
+    #[ORM\OneToOne(targetEntity: Message::class)]
     #[ORM\JoinColumn(name: 'last_message_id', referencedColumnName: 'id')]
     private ?Message $lastMessage;
 
@@ -41,6 +39,20 @@ class Conversation implements Serializable
         fetch: 'EXTRA_LAZY'
     )]
     private Collection $messages;
+
+    #[JMS\Expose]
+    #[JMS\VirtualProperty]
+    #[JMS\Type('string')]
+    #[JMS\SerializedName("id")]
+    #[OA\Property(
+        description: 'Conversation Uuid',
+        type: 'string',
+        example: '1ed82229-3199-6552-afb9-5752dd505444'
+    )]
+    public function getConversationUuid(): ?string
+    {
+        return $this->getUuid();
+    }
 
     #[JMS\Expose]
     #[JMS\VirtualProperty]
