@@ -102,6 +102,39 @@ class SlotRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param DateTimeImmutable $start
+     * @param DateTimeImmutable $end
+     * @param User              $monitor
+     * @return array<Slot>
+     */
+    public function findAllUnbookedBetween(
+        DateTimeImmutable $start,
+        DateTimeImmutable $end,
+        User $monitor
+    ): array {
+        return $this
+            ->createQueryBuilder('slot')
+            ->addSelect('booking')
+            ->join('slot.monitor', 'monitor')
+            ->leftJoin('slot.booking', 'booking')
+            ->andWhere('slot.startAt >= :start')
+            ->andWhere('slot.endAt <= :end')
+            ->andWhere('monitor = :monitor')
+            ->andWhere('booking IS NULL')
+            ->setParameters(
+                [
+                    'start'    => $start,
+                    'end'      => $end,
+                    'monitor'  => $monitor,
+                ]
+            )
+            ->orderBy('slot.startAt', 'ASC')
+            ->addOrderBy('slot.endAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @param Slot $slot
      * @return Collection<Slot>
      */
