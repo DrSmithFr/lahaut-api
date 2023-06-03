@@ -27,11 +27,19 @@ database:
 	symfony console doctrine:database:create
 	symfony console doctrine:migration:migrate -n
 
+fixtures:
+	symfony console doctrine:fixtures:load -n
+
 migration:
 	symfony console doctrine:migration:diff
 
 test:
 	symfony php bin/phpunit --stop-on-failure
+
+mock: database fixtures
+	symfony console app:monitor:mock boby
+	symfony console app:monitor:mock lola
+	symfony console app:monitor:mock fred
 
 hooks:
 	chmod +x hooks/pre-commit.sh

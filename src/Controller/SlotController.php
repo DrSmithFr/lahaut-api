@@ -25,7 +25,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * @OA\Tag(name="Fly Slots")
+ * @OA\Tag(name="Fly - Slots")
  */
 class SlotController extends AbstractApiController
 {
