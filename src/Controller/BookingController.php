@@ -3,22 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Fly\Slot;
-use App\Entity\User;
-use App\Enum\FlyTypeEnum;
-use App\Form\Fly\AddSlotsType;
-use App\Form\Fly\RemoveSlotsType;
-use App\Model\Fly\AddSlotsModel;
-use App\Model\Fly\RemoveSlotsModel;
-use App\Model\Fly\SlotModel;
 use App\Repository\Fly\BookingRepository;
-use App\Repository\Fly\FlyLocationRepository;
-use App\Repository\Fly\SlotRepository;
-use DateTimeImmutable;
-use DateTimeInterface;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\DateService;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
-use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -50,17 +38,10 @@ class BookingController extends AbstractApiController
     public function listAllSlots(
         Request $request,
         BookingRepository $bookingRepository,
+        DateService $dateService,
     ): JsonResponse {
-        // resetting the time to 00:00:00 but keeping current timezone
-        $start = DateTimeImmutable::createFromFormat(
-            DateTimeInterface::ATOM,
-            sprintf('%sT00:00:00P', $request->get('start'))
-        );
-
-        $end = DateTimeImmutable::createFromFormat(
-            DateTimeInterface::ATOM,
-            sprintf('%sT00:00:00P', $request->get('end'))
-        );
+        $start = $dateService->createFromDateString($request->get('start'));
+        $end = $dateService->createFromDateString($request->get('end'));
 
         if (!$start || !$end) {
             return $this->messageResponse('Invalid date', Response::HTTP_BAD_REQUEST);

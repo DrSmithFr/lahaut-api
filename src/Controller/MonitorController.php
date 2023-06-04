@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Entity\Fly\Slot;
+use App\Entity\User;
 use App\Enum\RoleEnum;
 use App\Repository\Fly\SlotRepository;
-use DateTimeImmutable;
-use DateTimeInterface;
+use App\Service\DateService;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Annotations as OA;
@@ -59,8 +58,8 @@ class MonitorController extends AbstractApiController
      *        @OA\Items(ref=@Model(type=Slot::class, groups={"Default", "booking"}))
      *     )
      * )
-     * @param Request               $request
-     * @param SlotRepository        $slotRepository
+     * @param Request        $request
+     * @param SlotRepository $slotRepository
      * @return JsonResponse
      */
     #[Route(
@@ -74,12 +73,9 @@ class MonitorController extends AbstractApiController
     public function listMonitorSlots(
         Request $request,
         SlotRepository $slotRepository,
+        DateService $dateService
     ): JsonResponse {
-        // resetting the time to 00:00:00 but keeping current timezone
-        $date = DateTimeImmutable::createFromFormat(
-            DateTimeInterface::ATOM,
-            sprintf('%sT00:00:00P', $request->get('date'))
-        );
+        $date = $dateService->createFromDateString($request->get('date'));
 
         if (!$date) {
             return $this->messageResponse('Invalid start date', Response::HTTP_BAD_REQUEST);

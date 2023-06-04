@@ -28,7 +28,7 @@ class SlotModel
     private FlyLocation $flyLocation;
 
     #[JMS\Expose]
-    #[JMS\Type("DateTimeImmutable<'Y-m-d H:i'>")]
+    #[JMS\Type("DateTimeImmutable<'H:i'>")]
     #[OA\Property(
         description: 'Start at',
         type: 'string',
@@ -37,7 +37,7 @@ class SlotModel
     private DateTimeImmutable $startAt;
 
     #[JMS\Expose]
-    #[JMS\Type("DateTimeImmutable<'Y-m-d H:i'>")]
+    #[JMS\Type("DateTimeImmutable<'H:i'>")]
     #[OA\Property(
         description: 'End at',
         type: 'string',

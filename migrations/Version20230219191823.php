@@ -38,8 +38,8 @@ final class Version20230219191823 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN app_slot.meeting_point_uuid IS \'(DC2Type:uuid)\'');
         $this->addSql('COMMENT ON COLUMN app_slot.take_off_uuid IS \'(DC2Type:uuid)\'');
         $this->addSql('COMMENT ON COLUMN app_slot.landing_uuid IS \'(DC2Type:uuid)\'');
-        $this->addSql('COMMENT ON COLUMN app_slot.start_at IS \'(DC2Type:datetimetz_immutable)\'');
-        $this->addSql('COMMENT ON COLUMN app_slot.end_at IS \'(DC2Type:datetimetz_immutable)\'');
+        $this->addSql('COMMENT ON COLUMN app_slot.start_at IS \'(DC2Type:datetime_immutable)\'');
+        $this->addSql('COMMENT ON COLUMN app_slot.end_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('COMMENT ON COLUMN app_slot.average_fly_duration IS \'(DC2Type:dateinterval)\'');
         $this->addSql('CREATE TABLE app_slot_lock (id INT NOT NULL, customer_uuid UUID NOT NULL, slot_id INT NOT NULL, until TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_F1C96EAC85EEF4D1 ON app_slot_lock (customer_uuid)');

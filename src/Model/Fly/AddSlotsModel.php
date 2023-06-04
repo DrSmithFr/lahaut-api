@@ -16,6 +16,12 @@ class AddSlotsModel
     #[JMS\Type('ArrayCollection<App\Model\Fly\SlotModel>')]
     private Collection $slots;
 
+    #[JMS\Expose]
+    private bool $overwrite = false;
+
+    #[JMS\Expose]
+    private bool $wipe = false;
+
     public function __construct()
     {
         $this->slots = new ArrayCollection();
@@ -48,6 +54,28 @@ class AddSlotsModel
     public function removeSlot(mixed $slot): self
     {
         $this->slots->removeElement($slot);
+        return $this;
+    }
+
+    public function isOverwrite(): bool
+    {
+        return $this->overwrite;
+    }
+
+    public function setOverwrite(bool $overwrite): self
+    {
+        $this->overwrite = $overwrite;
+        return $this;
+    }
+
+    public function isWipe(): bool
+    {
+        return $this->wipe;
+    }
+
+    public function setWipe(bool $wipe): self
+    {
+        $this->wipe = $wipe;
         return $this;
     }
 }

@@ -40,7 +40,7 @@ class Message implements Serializable
 
     #[JMS\Expose]
     #[JMS\Type("DateTimeImmutable<'Y-m-d H:i'>")]
-    #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[OA\Property(
         description: 'Start at',
         type: 'string',

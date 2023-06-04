@@ -9,11 +9,11 @@ use App\Form\Fly\AddSlotsType;
 use App\Form\Fly\RemoveSlotsType;
 use App\Model\Fly\AddSlotsModel;
 use App\Model\Fly\RemoveSlotsModel;
-use App\Model\Fly\SlotModel;
 use App\Repository\Fly\FlyLocationRepository;
 use App\Repository\Fly\SlotRepository;
+use App\Service\DateService;
 use DateTimeImmutable;
-use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
@@ -30,7 +30,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class SlotController extends AbstractApiController
 {
     /**
-     * Add a new slot to the current user slot list
+     * Add a slot to the current user slot list for the current period
      * @OA\RequestBody(@Model(type=AddSlotsModel::class))
      * @OA\Response(
      *     response=200,
@@ -42,12 +42,29 @@ class SlotController extends AbstractApiController
      * )
      * @OA\Response(response="401", description="Cannot connect user")
      */
-    #[Route(path: '/slots', name: 'app_slots_new', methods: ['put'])]
+    #[Route(
+        path: '/slots/{start<\d{4}-\d{2}-\d{2}>}-{end<\d{4}-\d{2}-\d{2}>}',
+        name: 'app_slots_add',
+        methods: ['put']
+    )]
     #[IsGranted('ROLE_MONITOR')]
     public function createSlot(
         Request $request,
         EntityManagerInterface $entityManager,
+        DateService $dateService,
+        SlotRepository $slotRepository,
     ): JsonResponse {
+        $start = $dateService->createFromDateString($request->get('start'));
+        $end = $dateService->createFromDateString($request->get('end'));
+
+        if (!$start || !$end) {
+            return $this->messageResponse('Invalid date', Response::HTTP_BAD_REQUEST);
+        }
+
+        if ($start > $end) {
+            return $this->messageResponse('Invalid period', Response::HTTP_BAD_REQUEST);
+        }
+
         $data = new AddSlotsModel();
 
         $form = $this->handleJsonFormRequest(
@@ -60,24 +77,132 @@ class SlotController extends AbstractApiController
             return $this->formErrorResponse($form, Response::HTTP_BAD_REQUEST);
         }
 
-        $slots = $data
-            ->getSlots()
-            ->map(
-                fn(SlotModel $slot) => (new Slot())
-                    ->setMonitor($this->getUser())
-                    ->setFlyLocation($slot->getFlyLocation())
-                    ->setStartAt($slot->getStartAt())
-                    ->setEndAt($slot->getEndAt())
-                    ->setAverageFlyDuration($slot->getAverageFlyDuration())
-                    ->setType($slot->getType())
-                    ->setPrice($slot->getPrice())
-            );
+        $monitor = $this->getUser();
 
-        $slots->forAll(fn(int $key, Slot $slot) => $entityManager->persist($slot));
+        // Remove all slots in period if wipe is true
+        if ($data->isWipe()) {
+            $this->removeSlotsByPeriod(
+                $slotRepository,
+                $entityManager,
+                $start,
+                $end,
+                $this->getUser()
+            );
+        }
+
+        $slots = new ArrayCollection();
+
+        for ($date = $start; $date <= $end; $date = $date->modify('+1 day')) {
+            foreach ($data->getSlots() as $slotData) {
+                $startAt = $dateService->createFromTimeString(
+                    $slotData->getStartAt()->format('H:i'),
+                    $date
+                );
+
+                $endAt = $dateService->createFromTimeString(
+                    $slotData->getEndAt()->format('H:i'),
+                    $date
+                );
+
+                $slot = $slotRepository->findMatch(
+                    $monitor,
+                    $slotData->getFlyLocation(),
+                    $slotData->getType(),
+                    $startAt,
+                    $endAt
+                );
+
+                if ($data->isOverwrite() === false && $slot !== null) {
+                    // If overwrite is false, we prevent any slot creation if one already exists
+                    return $this->messageResponse(
+                        'Slot already exists',
+                        Response::HTTP_CONFLICT
+                    );
+                }
+
+                if ($slot === null) {
+                    $slot = (new Slot())
+                        ->setMonitor($monitor)
+                        ->setType($slotData->getType())
+                        ->setFlyLocation($slotData->getFlyLocation())
+                        ->setStartAt($startAt)
+                        ->setEndAt($endAt);
+                }
+
+                $slot
+                    ->setAverageFlyDuration($slotData->getAverageFlyDuration())
+                    ->setPrice($slotData->getPrice());
+
+                $entityManager->persist($slot);
+                $slots->add($slot);
+            }
+        }
 
         $entityManager->flush();
 
-        return $this->serializeResponse($slots, ['Default', 'monitor'], Response::HTTP_CREATED);
+        return $this->serializeResponse(
+            $slots,
+            ['Default', 'monitor'],
+            Response::HTTP_CREATED
+        );
+    }
+
+    /**
+     * Remove slots of the current user
+     * @OA\RequestBody(@Model(type=RemoveSlotsModel::class))
+     * @OA\Response(response="202", description="Slots removed")
+     * @OA\Response(response="400", description="Cannot remove slots that are not yours")
+     * @OA\Response(response="406", description="Cannot remove slots that are already booked")
+     */
+    #[Route(
+        path: '/slots/{start<\d{4}-\d{2}-\d{2}>}-{end<\d{4}-\d{2}-\d{2}>}',
+        name: 'app_slots_remove_period',
+        methods: ['delete']
+    )]
+    #[IsGranted('ROLE_MONITOR')]
+    public function removeSlotsByPeriodAction(
+        Request $request,
+        SlotRepository $slotRepository,
+        EntityManagerInterface $entityManager,
+        DateService $dateService,
+    ): JsonResponse {
+        $start = $dateService->createFromDateString($request->get('start'));
+        $end = $dateService->createFromDateString($request->get('end'));
+
+        if (!$start || !$end) {
+            return $this->messageResponse('Invalid date', Response::HTTP_BAD_REQUEST);
+        }
+
+        $this->removeSlotsByPeriod(
+            $slotRepository,
+            $entityManager,
+            $start,
+            $end,
+            $this->getUser()
+        );
+
+        return $this->messageResponse('slots removed', Response::HTTP_ACCEPTED);
+    }
+
+    private function removeSlotsByPeriod(
+        SlotRepository $slotRepository,
+        EntityManagerInterface $entityManager,
+        DateTimeImmutable $start,
+        DateTimeImmutable $end,
+        User $monitor,
+    ) {
+        $slots = $slotRepository
+            ->findAllUnbookedBetween(
+                $start,
+                $end,
+                $monitor,
+            );
+
+        foreach ($slots as $slot) {
+            $entityManager->remove($slot);
+        }
+
+        $entityManager->flush();
     }
 
     /**
@@ -129,58 +254,6 @@ class SlotController extends AbstractApiController
     }
 
     /**
-     * Remove slots of the current user
-     * @OA\RequestBody(@Model(type=RemoveSlotsModel::class))
-     * @OA\Response(response="202", description="Slots removed")
-     * @OA\Response(response="400", description="Cannot remove slots that are not yours")
-     * @OA\Response(response="406", description="Cannot remove slots that are already booked")
-     */
-    #[Route(
-        path: '/slots/{start<\d{4}-\d{2}-\d{2}>}-{end<\d{4}-\d{2}-\d{2}>}',
-        name: 'app_slots_remove_period',
-        methods: ['delete']
-    )]
-    #[IsGranted('ROLE_MONITOR')]
-    public function removeSlotsByPeriod(
-        Request $request,
-        SlotRepository $slotRepository,
-        EntityManagerInterface $entityManager,
-    ): JsonResponse {
-        // resetting the time to 00:00:00 but keeping current timezone
-        $start = DateTimeImmutable::createFromFormat(
-            DateTimeInterface::ATOM,
-            sprintf('%sT00:00:00P', $request->get('start'))
-        );
-
-        $end = DateTimeImmutable::createFromFormat(
-            DateTimeInterface::ATOM,
-            sprintf('%sT00:00:00P', $request->get('end'))
-        );
-
-        if (!$start || !$end) {
-            return $this->messageResponse('Invalid date', Response::HTTP_BAD_REQUEST);
-        }
-
-        $monitor = $this->getUser();
-
-        $slots = $slotRepository
-            ->findAllUnbookedBetween(
-                $start,
-                $end,
-                $monitor,
-            );
-
-        foreach ($slots as $slot) {
-            $entityManager->remove($slot);
-        }
-
-        $entityManager->flush();
-
-        return $this->messageResponse('slots removed', Response::HTTP_ACCEPTED);
-    }
-
-
-    /**
      * Retrieve all fly slots for the given day
      * @OA\Response(
      *     response=200,
@@ -200,6 +273,7 @@ class SlotController extends AbstractApiController
         Request $request,
         FlyLocationRepository $flyLocationRepository,
         SlotRepository $slotRepository,
+        DateService $dateService,
     ): JsonResponse {
         $type = FlyTypeEnum::tryFrom($request->get('type'));
 
@@ -207,11 +281,7 @@ class SlotController extends AbstractApiController
             return $this->messageResponse('Invalid type', Response::HTTP_BAD_REQUEST);
         }
 
-        // resetting the time to 00:00:00 but keeping current timezone
-        $date = DateTimeImmutable::createFromFormat(
-            DateTimeInterface::ATOM,
-            sprintf('%sT00:00:00P', $request->get('date'))
-        );
+        $date = $dateService->createFromDateString($request->get('date'));
 
         if (!$date) {
             return $this->messageResponse('Invalid date', Response::HTTP_BAD_REQUEST);
@@ -261,6 +331,7 @@ class SlotController extends AbstractApiController
         Request $request,
         FlyLocationRepository $flyLocationRepository,
         SlotRepository $slotRepository,
+        DateService $dateService,
     ): JsonResponse {
         $type = FlyTypeEnum::tryFrom($request->get('type'));
 
@@ -268,11 +339,7 @@ class SlotController extends AbstractApiController
             return $this->messageResponse('Invalid type', Response::HTTP_BAD_REQUEST);
         }
 
-        // resetting the time to 00:00:00 but keeping current timezone
-        $date = DateTimeImmutable::createFromFormat(
-            DateTimeInterface::ATOM,
-            sprintf('%sT00:00:00P', $request->get('date'))
-        );
+        $date = $dateService->createFromDateString($request->get('date'));
 
         if (!$date) {
             return $this->messageResponse('Invalid date', Response::HTTP_BAD_REQUEST);

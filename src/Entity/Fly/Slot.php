@@ -17,6 +17,10 @@ use OpenApi\Attributes as OA;
 
 #[JMS\ExclusionPolicy('all')]
 #[ORM\Entity(repositoryClass: SlotRepository::class)]
+#[ORM\UniqueConstraint(
+    name: 'slot_unique_idx',
+    columns: ['monitor_uuid', 'fly_location_uuid', 'type', 'start_at', 'end_at']
+)]
 class Slot implements Serializable
 {
     use IdTrait;
@@ -48,7 +52,7 @@ class Slot implements Serializable
 
     #[JMS\Expose]
     #[JMS\Type("DateTimeImmutable<'Y-m-d H:i'>")]
-    #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[OA\Property(
         description: 'Start at',
         type: 'string',
@@ -58,7 +62,7 @@ class Slot implements Serializable
 
     #[JMS\Expose]
     #[JMS\Type("DateTimeImmutable<'Y-m-d H:i'>")]
-    #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[OA\Property(
         description: 'End at',
         type: 'string',

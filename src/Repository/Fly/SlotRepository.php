@@ -90,9 +90,9 @@ class SlotRepository extends ServiceEntityRepository
             ->andWhere('monitor = :monitor')
             ->setParameters(
                 [
-                    'start'    => $start,
-                    'end'      => $end,
-                    'monitor'  => $monitor,
+                    'start'   => $start,
+                    'end'     => $end,
+                    'monitor' => $monitor,
                 ]
             )
             ->orderBy('slot.startAt', 'ASC')
@@ -123,9 +123,9 @@ class SlotRepository extends ServiceEntityRepository
             ->andWhere('booking IS NULL')
             ->setParameters(
                 [
-                    'start'    => $start,
-                    'end'      => $end,
-                    'monitor'  => $monitor,
+                    'start'   => $start,
+                    'end'     => $end,
+                    'monitor' => $monitor,
                 ]
             )
             ->orderBy('slot.startAt', 'ASC')
@@ -164,5 +164,32 @@ class SlotRepository extends ServiceEntityRepository
             ->distinct()
             ->getQuery()
             ->getResult();
+    }
+
+    public function findMatch(
+        User $getUser,
+        FlyLocation $getFlyLocation,
+        FlyTypeEnum $getFlyType,
+        DateTimeImmutable $startAt,
+        DateTimeImmutable $endAt
+    ): Slot|null {
+        return $this
+            ->createQueryBuilder('slot')
+            ->andWhere('slot.monitor = :monitor')
+            ->andWhere('slot.flyLocation = :flyLocation')
+            ->andWhere('slot.type = :flyType')
+            ->andWhere('slot.startAt = :startAt')
+            ->andWhere('slot.endAt = :endAt')
+            ->setParameters(
+                [
+                    'monitor'    => $getUser,
+                    'flyLocation' => $getFlyLocation,
+                    'flyType'    => $getFlyType->value,
+                    'startAt'    => $startAt,
+                    'endAt'      => $endAt,
+                ]
+            )
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

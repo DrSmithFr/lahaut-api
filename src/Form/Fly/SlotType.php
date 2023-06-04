@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -35,20 +36,20 @@ class SlotType extends AbstractType
             )
             ->add(
                 'startAt',
-                DateTimeType::class,
+                TimeType::class,
                 [
                     'widget'       => 'single_text',
                     'input'        => 'datetime_immutable',
-                    'input_format' => 'yyyy-MM-dd HH:mm',
+                    'input_format' => 'HH:mm',
                 ]
             )
             ->add(
                 'endAt',
-                DateTimeType::class,
+                TimeType::class,
                 [
                     'widget'       => 'single_text',
                     'input'        => 'datetime_immutable',
-                    'input_format' => 'yyyy-MM-dd HH:mm',
+                    'input_format' => 'HH:mm',
                 ]
             )
             ->add(
