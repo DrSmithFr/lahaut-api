@@ -24,8 +24,8 @@ class LandingPointFixtures extends Fixture
                     ->setZipCode('75001')
                     ->setCountry('France')
             )
-            ->setLatitude(0)
-            ->setLongitude(0);
+            ->setLatitude("46.023576")
+            ->setLongitude("6.84999928");
 
         $this->setReference(self::REFERENCE, $landingPoint);
 

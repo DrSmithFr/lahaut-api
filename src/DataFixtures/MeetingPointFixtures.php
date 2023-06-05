@@ -24,8 +24,8 @@ class MeetingPointFixtures extends Fixture
                     ->setZipCode('75001')
                     ->setCountry('France')
             )
-            ->setLatitude(0)
-            ->setLongitude(0);
+            ->setLatitude("45.9399268")
+            ->setLongitude("6.885664");
 
         $this->setReference(self::REFERENCE, $meetingPoint);
 

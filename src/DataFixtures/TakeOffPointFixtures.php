@@ -24,8 +24,8 @@ class TakeOffPointFixtures extends Fixture
                     ->setZipCode('75001')
                     ->setCountry('France')
             )
-            ->setLatitude(0)
-            ->setLongitude(0);
+            ->setLatitude("45.952215")
+            ->setLongitude("6.856061");
 
         $this->setReference(self::REFERENCE, $takeOffPoint);
 
