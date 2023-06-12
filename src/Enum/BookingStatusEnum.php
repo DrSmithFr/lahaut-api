@@ -11,4 +11,7 @@ enum BookingStatusEnum: string
     case PAID = 'paid';
     case CONFIRMED = 'confirmed';
     case CANCELLED = 'cancelled';
+    case REFUND_REQUESTED = 'refund_requested';
+    case REFUND = 'refund';
+    case TERMINATED = 'terminated';
 }
