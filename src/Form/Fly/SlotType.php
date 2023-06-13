@@ -2,14 +2,11 @@
 
 namespace App\Form\Fly;
 
-use App\Entity\Fly\FlyLocation;
-use App\Enum\FlyTypeEnum;
+use App\Entity\Fly\FlyType;
 use App\Model\Fly\SlotModel;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -28,10 +25,13 @@ class SlotType extends AbstractType
                 ]
             )
             ->add(
-                'flyLocation',
+                'flyType',
                 EntityType::class,
                 [
-                    'class' => FlyLocation::class,
+                    'class' => FlyType::class,
+                    'choice_value' => 'identifier',
+                    'choice_label' => 'name',
+
                 ]
             )
             ->add(
@@ -65,13 +65,6 @@ class SlotType extends AbstractType
                     'with_days'    => false,
                     'with_weeks'   => false,
                     'with_seconds' => false,
-                ]
-            )
-            ->add(
-                'type',
-                EnumType::class,
-                [
-                    'class' => FlyTypeEnum::class,
                 ]
             );
     }

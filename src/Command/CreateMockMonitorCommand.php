@@ -2,9 +2,8 @@
 
 namespace App\Command;
 
-use App\DataFixtures\FlyLocationFixtures;
 use App\DataFixtures\SlotFixtures;
-use App\Entity\Fly\FlyLocation;
+use App\Entity\Fly\FlyType;
 use App\Entity\Fly\Slot;
 use App\Entity\User;
 use App\Enum\RoleEnum;
@@ -104,15 +103,10 @@ class CreateMockMonitorCommand extends Command
         $date = new DateTimeImmutable();
         $date = $date->modify('-1 day');
 
-        $flyLocation = $this
-            ->entityManager
-            ->getRepository(FlyLocation::class)
-            ->findOneByIdentifier(FlyLocationFixtures::ORM_IDENTIFIER);
-
         $io->progressStart(90);
         for ($day = 0; $day < 90; $day++) {
             $date = $date->modify('+1 day');
-            $slots = $this->generateSlotsForDay($user, $flyLocation, $date);
+            $slots = $this->generateSlotsForDay($user, $date);
 
             foreach ($slots as $slot) {
                 $this->entityManager->persist($slot);
@@ -129,24 +123,27 @@ class CreateMockMonitorCommand extends Command
     }
 
     /**
-     * @param User              $monitor
-     * @param FlyLocation       $location
+     * @param User $monitor
      * @param DateTimeImmutable $day
      * @return Slot[]
      * @throws Exception
      */
-    private function generateSlotsForDay(User $monitor, FlyLocation $location, DateTimeImmutable $day): array
+    private function generateSlotsForDay(User $monitor, DateTimeImmutable $day): array
     {
         $slots = [];
 
         foreach (SlotFixtures::SLOTS as $data) {
+            $flyType = $this
+                ->entityManager
+                ->getRepository(FlyType::class)
+                ->findOneByIdentifier($data[3]);
+
             $slot = (new Slot())
                 ->setMonitor($monitor)
-                ->setFlyLocation($location)
+                ->setFlyType($flyType)
                 ->setStartAt($day->setTime(...explode(':', $data[0])))
                 ->setEndAt($day->setTime(...explode(':', $data[1])))
                 ->setAverageFlyDuration(new DateInterval($data[2]))
-                ->setType($data[3])
                 ->setPrice($data[4]);
 
             $slots[] = $slot;

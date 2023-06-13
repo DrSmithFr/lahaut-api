@@ -2,8 +2,7 @@
 
 namespace App\Model\Fly;
 
-use App\Entity\Fly\FlyLocation;
-use App\Enum\FlyTypeEnum;
+use App\Entity\Fly\FlyType;
 use DateInterval;
 use DateTimeImmutable;
 use JMS\Serializer\Annotation as JMS;
@@ -21,11 +20,11 @@ class SlotModel
     private float $price;
 
     #[OA\Property(
-        description: 'Fly Location Uuid',
+        description: 'Fly Type Identifier',
         type: 'string',
-        example: '123e4567-e89b-12d3-a456-426614174000'
+        example: 'chamonix-discovery'
     )]
-    private FlyLocation $flyLocation;
+    private FlyType $flyType;
 
     #[JMS\Expose]
     #[JMS\Type("DateTimeImmutable<'H:i'>")]
@@ -55,21 +54,12 @@ class SlotModel
     private DateInterval $averageFlyDuration;
 
     #[JMS\Expose]
-    #[JMS\Type(FlyTypeEnum::class)]
-    #[OA\Property(
-        description: 'Fly type',
-        type: 'string',
-        example: 'discovery|freestyle|kid'
-    )]
-    private FlyTypeEnum $type;
-
-    #[JMS\Expose]
     #[JMS\VirtualProperty]
     #[JMS\Type('string')]
-    #[JMS\SerializedName("flyLocation")]
-    public function getFlyLocationUuid(): string
+    #[JMS\SerializedName("flyType")]
+    public function getFlyLocationIdentifier(): string
     {
-        return $this->getFlyLocation()->getUuid();
+        return $this->getFlyType()->getIdentifier();
     }
 
     public function getPrice(): float
@@ -83,14 +73,14 @@ class SlotModel
         return $this;
     }
 
-    public function getFlyLocation(): FlyLocation
+    public function getFlyType(): FlyType
     {
-        return $this->flyLocation;
+        return $this->flyType;
     }
 
-    public function setFlyLocation(FlyLocation $flyLocation): self
+    public function setFlyType(FlyType $flyType): self
     {
-        $this->flyLocation = $flyLocation;
+        $this->flyType = $flyType;
         return $this;
     }
 
@@ -124,17 +114,6 @@ class SlotModel
     public function setAverageFlyDuration(DateInterval $averageFlyDuration): self
     {
         $this->averageFlyDuration = $averageFlyDuration;
-        return $this;
-    }
-
-    public function getType(): FlyTypeEnum
-    {
-        return $this->type;
-    }
-
-    public function setType(FlyTypeEnum $type): self
-    {
-        $this->type = $type;
         return $this;
     }
 }

@@ -30,7 +30,8 @@ class SlotProposedRepository extends ServiceEntityRepository
     ): array {
         return $this
             ->createQueryBuilder('slot')
-            ->andWhere('slot.flyLocation = :location')
+            ->join('slot.flyType', 'type')
+            ->andWhere('type.flyLocation = :location')
             ->setParameter('location', $location)
             ->orderBy('slot.startAt', 'ASC')
             ->addOrderBy('slot.endAt', 'ASC')

@@ -2,11 +2,9 @@
 
 namespace App\Tests\Controller;
 
-use App\DataFixtures\FlyLocationFixtures;
+use App\DataFixtures\FlyTypeFixtures;
 use App\DataFixtures\SlotFixtures;
-use App\Entity\Fly\FlyLocation;
 use App\Entity\User;
-use App\Enum\FlyTypeEnum;
 use App\Repository\UserRepository;
 use App\Tests\ApiTestCase;
 use DateTimeImmutable;
@@ -30,7 +28,7 @@ class SlotControllerTest extends ApiTestCase
         $this->loginApiUser($user);
         $today = (new DateTimeImmutable())->format('Y-m-d');
 
-        $this->apiGet('/public/slots/fly-location-from-fixture/discovery/' . $today);
+        $this->apiGet('/public/slots/' . FlyTypeFixtures::REFERENCE_DISCOVERY . '/' . $today);
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
         $response = $this->getApiResponse();
@@ -56,7 +54,7 @@ class SlotControllerTest extends ApiTestCase
         $this->loginApiUser($user);
         $today = (new DateTimeImmutable())->format('Y-m-d');
 
-        $this->apiGet('/public/slots/fly-location-from-fixture/freestyle/' . $today);
+        $this->apiGet('/public/slots/' . FlyTypeFixtures::REFERENCE_FREESTYLE . '/' . $today);
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
         $response = $this->getApiResponse();
@@ -84,7 +82,10 @@ class SlotControllerTest extends ApiTestCase
         $this->loginApiUser($user);
         $today = (new DateTimeImmutable())->format('Y-m-d');
 
-        $this->apiGet('/public/slots/' . $monitor->getUuid() . '/fly-location-from-fixture/discovery/' . $today);
+        $this->apiGet(
+            '/public/slots/' . $monitor->getUuid() . '/' . FlyTypeFixtures::REFERENCE_DISCOVERY . '/' . $today
+        );
+
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
         $response = $this->getApiResponse();
@@ -112,7 +113,10 @@ class SlotControllerTest extends ApiTestCase
         $this->loginApiUser($user);
         $today = (new DateTimeImmutable())->format('Y-m-d');
 
-        $this->apiGet('/public/slots/' . $monitor->getUuid() . '/fly-location-from-fixture/freestyle/' . $today);
+        $this->apiGet(
+            '/public/slots/' . $monitor->getUuid() . '/' . FlyTypeFixtures::REFERENCE_FREESTYLE . '/' . $today
+        );
+
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
         $response = $this->getApiResponse();

@@ -2,10 +2,9 @@
 
 namespace App\Repository\Fly;
 
-use App\Entity\Fly\FlyLocation;
+use App\Entity\Fly\FlyType;
 use App\Entity\Fly\Slot;
 use App\Entity\User;
-use App\Enum\FlyTypeEnum;
 use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\Collection;
@@ -27,17 +26,15 @@ class SlotRepository extends ServiceEntityRepository
     /**
      * @param DateTimeImmutable $start
      * @param DateTimeImmutable $end
-     * @param FlyLocation       $location
-     * @param FlyTypeEnum       $type
-     * @param User|null         $monitor
+     * @param FlyType|null $type
+     * @param User|null $monitor
      * @return array<Slot>
      */
     public function findUnlockedBetween(
         DateTimeImmutable $start,
         DateTimeImmutable $end,
-        FlyLocation $location,
-        FlyTypeEnum $type,
-        ?User $monitor = null
+        FlyType $type = null,
+        User $monitor = null
     ): array {
         $qb = $this
             ->createQueryBuilder('slot')
@@ -45,16 +42,18 @@ class SlotRepository extends ServiceEntityRepository
             ->join('slot.monitor', 'monitor')
             ->andWhere('slot.startAt >= :start')
             ->andWhere('slot.endAt <= :end')
-            ->andWhere('slot.flyLocation = :location')
-            ->andWhere('slot.type = :type')
             ->setParameters(
                 [
-                    'start'    => $start,
-                    'end'      => $end,
-                    'location' => $location,
-                    'type'     => $type->value,
+                    'start' => $start,
+                    'end' => $end,
                 ]
             );
+
+        if ($type) {
+            $qb
+                ->andWhere('slot.flyType = :type')
+                ->setParameter('type', $type);
+        }
 
         if ($monitor) {
             $qb
@@ -72,7 +71,7 @@ class SlotRepository extends ServiceEntityRepository
     /**
      * @param DateTimeImmutable $start
      * @param DateTimeImmutable $end
-     * @param User              $monitor
+     * @param User $monitor
      * @return array<Slot>
      */
     public function findAllBetween(
@@ -90,8 +89,8 @@ class SlotRepository extends ServiceEntityRepository
             ->andWhere('monitor = :monitor')
             ->setParameters(
                 [
-                    'start'   => $start,
-                    'end'     => $end,
+                    'start' => $start,
+                    'end' => $end,
                     'monitor' => $monitor,
                 ]
             )
@@ -104,7 +103,7 @@ class SlotRepository extends ServiceEntityRepository
     /**
      * @param DateTimeImmutable $start
      * @param DateTimeImmutable $end
-     * @param User              $monitor
+     * @param User $monitor
      * @return array<Slot>
      */
     public function findAllUnbookedBetween(
@@ -123,8 +122,8 @@ class SlotRepository extends ServiceEntityRepository
             ->andWhere('booking IS NULL')
             ->setParameters(
                 [
-                    'start'   => $start,
-                    'end'     => $end,
+                    'start' => $start,
+                    'end' => $end,
                     'monitor' => $monitor,
                 ]
             )
@@ -157,8 +156,8 @@ class SlotRepository extends ServiceEntityRepository
             ->setParameters(
                 [
                     'monitor' => $slot->getMonitor(),
-                    'start'   => $slot->getStartAt(),
-                    'end'     => $slot->getEndAt(),
+                    'start' => $slot->getStartAt(),
+                    'end' => $slot->getEndAt(),
                 ]
             )
             ->distinct()
@@ -167,26 +166,23 @@ class SlotRepository extends ServiceEntityRepository
     }
 
     public function findMatch(
-        User $getUser,
-        FlyLocation $getFlyLocation,
-        FlyTypeEnum $getFlyType,
+        User $user,
+        FlyType $flyType,
         DateTimeImmutable $startAt,
         DateTimeImmutable $endAt
     ): Slot|null {
         return $this
             ->createQueryBuilder('slot')
             ->andWhere('slot.monitor = :monitor')
-            ->andWhere('slot.flyLocation = :flyLocation')
-            ->andWhere('slot.type = :flyType')
+            ->andWhere('slot.flyType = :flyType')
             ->andWhere('slot.startAt = :startAt')
             ->andWhere('slot.endAt = :endAt')
             ->setParameters(
                 [
-                    'monitor'    => $getUser,
-                    'flyLocation' => $getFlyLocation,
-                    'flyType'    => $getFlyType->value,
-                    'startAt'    => $startAt,
-                    'endAt'      => $endAt,
+                    'monitor' => $user,
+                    'flyType' => $flyType,
+                    'startAt' => $startAt,
+                    'endAt' => $endAt,
                 ]
             )
             ->getQuery()

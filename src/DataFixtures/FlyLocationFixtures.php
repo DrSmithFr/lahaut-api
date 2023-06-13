@@ -12,8 +12,7 @@ use Doctrine\Persistence\ObjectManager;
 
 class FlyLocationFixtures extends Fixture implements DependentFixtureInterface
 {
-    public const ORM_IDENTIFIER = 'fly-location-from-fixture';
-    public const REFERENCE = 'fly-location';
+    public const REFERENCE = 'chamonix-default';
 
     public function load(ObjectManager $manager): void
     {
@@ -27,8 +26,8 @@ class FlyLocationFixtures extends Fixture implements DependentFixtureInterface
         $landingPoint = $this->getReference(LandingPointFixtures::REFERENCE);
 
         $flyLocation = (new FlyLocation())
-            ->setIdentifier(self::ORM_IDENTIFIER)
-            ->setName('Default Fly Location')
+            ->setIdentifier(self::REFERENCE)
+            ->setName('Chamonix')
             ->setTakeOffPoint($takeOffPoint)
             ->setMeetingPoint($meetingPoint)
             ->setLandingPoint($landingPoint);

@@ -26,7 +26,7 @@ abstract class PlacePoint implements Serializable
 {
     use UuidTrait;
 
-    #[ORM\Column(nullable: false)]
+    #[ORM\Column(unique: true, nullable: false)]
     private ?string $identifier;
 
     #[JMS\Expose]

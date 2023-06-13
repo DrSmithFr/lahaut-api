@@ -5,7 +5,6 @@ namespace App\Entity\Fly;
 use App\Entity\Interfaces\Serializable;
 use App\Entity\Traits\IdTrait;
 use App\Entity\User;
-use App\Enum\FlyTypeEnum;
 use App\Repository\Fly\SlotRepository;
 use DateInterval;
 use DateTimeImmutable;
@@ -19,7 +18,7 @@ use OpenApi\Attributes as OA;
 #[ORM\Entity(repositoryClass: SlotRepository::class)]
 #[ORM\UniqueConstraint(
     name: 'slot_unique_idx',
-    columns: ['monitor_uuid', 'fly_location_uuid', 'type', 'start_at', 'end_at']
+    columns: ['monitor_uuid', 'fly_type', 'start_at', 'end_at']
 )]
 class Slot implements Serializable
 {
@@ -41,14 +40,14 @@ class Slot implements Serializable
     private float $price;
 
     #[JMS\Expose]
-    #[ORM\JoinColumn(name: 'fly_location_uuid', referencedColumnName: 'uuid', nullable: false)]
-    #[ORM\ManyToOne(targetEntity: FlyLocation::class)]
+    #[ORM\JoinColumn(name: 'fly_type', referencedColumnName: 'uuid', nullable: false)]
+    #[ORM\ManyToOne(targetEntity: FlyType::class)]
     #[OA\Property(
-        description: 'Fly Location Uuid',
+        description: 'Fly Type Identifier',
         type: 'string',
         example: '123e4567-e89b-12d3-a456-426614174000'
     )]
-    private FlyLocation $flyLocation;
+    private FlyType $flyType;
 
     #[JMS\Expose]
     #[JMS\Type("DateTimeImmutable<'Y-m-d H:i'>")]
@@ -80,16 +79,6 @@ class Slot implements Serializable
     )]
     private DateInterval $averageFlyDuration;
 
-    #[JMS\Expose]
-    #[JMS\Type(FlyTypeEnum::class)]
-    #[ORM\Column(type: Types::STRING, enumType: FlyTypeEnum::class)]
-    #[OA\Property(
-        description: 'Fly type',
-        type: 'string',
-        example: 'discovery|freestyle|kid'
-    )]
-    private FlyTypeEnum $type;
-
     #[JMS\Exclude]
     #[ORM\OneToMany(
         mappedBy: 'slot',
@@ -110,6 +99,14 @@ class Slot implements Serializable
     public function serializedId(): ?int
     {
         return $this->getId();
+    }
+
+    #[JMS\Expose]
+    #[JMS\VirtualProperty]
+    #[JMS\SerializedName('flyLocation')]
+    public function getFlyLocation(): ?FlyLocation
+    {
+        return $this->getFlyType()->getFlyLocation();
     }
 
     public function getMonitor(): User
@@ -134,14 +131,14 @@ class Slot implements Serializable
         return $this;
     }
 
-    public function getFlyLocation(): FlyLocation
+    public function getFlyType(): FlyType
     {
-        return $this->flyLocation;
+        return $this->flyType;
     }
 
-    public function setFlyLocation(FlyLocation $flyLocation): self
+    public function setFlyType(FlyType $flyType): self
     {
-        $this->flyLocation = $flyLocation;
+        $this->flyType = $flyType;
         return $this;
     }
 
@@ -175,17 +172,6 @@ class Slot implements Serializable
     public function setAverageFlyDuration(DateInterval $averageFlyDuration): self
     {
         $this->averageFlyDuration = $averageFlyDuration;
-        return $this;
-    }
-
-    public function getType(): FlyTypeEnum
-    {
-        return $this->type;
-    }
-
-    public function setType(FlyTypeEnum $type): self
-    {
-        $this->type = $type;
         return $this;
     }
 

@@ -2,9 +2,8 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Fly\FlyLocation;
+use App\Entity\Fly\FlyType;
 use App\Entity\Fly\SlotProposed;
-use App\Enum\FlyTypeEnum;
 use DateInterval;
 use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -14,57 +13,56 @@ use Doctrine\Persistence\ObjectManager;
 class ProposedSlotFixtures extends Fixture implements DependentFixtureInterface
 {
     public const SLOTS_DISCOVERY = [
-        ['08:00', '09:00', 'PT20M', FlyTypeEnum::DISCOVERY],
-        ['09:00', '10:00', 'PT20M', FlyTypeEnum::DISCOVERY],
-        ['10:00', '11:00', 'PT20M', FlyTypeEnum::DISCOVERY],
-        ['11:00', '12:00', 'PT20M', FlyTypeEnum::DISCOVERY],
-        ['12:00', '13:00', 'PT20M', FlyTypeEnum::DISCOVERY],
-        ['13:00', '14:00', 'PT20M', FlyTypeEnum::DISCOVERY],
-        ['14:00', '15:00', 'PT20M', FlyTypeEnum::DISCOVERY],
-        ['15:00', '16:00', 'PT20M', FlyTypeEnum::DISCOVERY],
-        ['16:00', '17:00', 'PT20M', FlyTypeEnum::DISCOVERY],
-        ['17:00', '18:00', 'PT20M', FlyTypeEnum::DISCOVERY],
+        ['08:00', '09:00', 'PT20M', FlyTypeFixtures::REFERENCE_DISCOVERY],
+        ['09:00', '10:00', 'PT20M', FlyTypeFixtures::REFERENCE_DISCOVERY],
+        ['10:00', '11:00', 'PT20M', FlyTypeFixtures::REFERENCE_DISCOVERY],
+        ['11:00', '12:00', 'PT20M', FlyTypeFixtures::REFERENCE_DISCOVERY],
+        ['12:00', '13:00', 'PT20M', FlyTypeFixtures::REFERENCE_DISCOVERY],
+        ['13:00', '14:00', 'PT20M', FlyTypeFixtures::REFERENCE_DISCOVERY],
+        ['14:00', '15:00', 'PT20M', FlyTypeFixtures::REFERENCE_DISCOVERY],
+        ['15:00', '16:00', 'PT20M', FlyTypeFixtures::REFERENCE_DISCOVERY],
+        ['16:00', '17:00', 'PT20M', FlyTypeFixtures::REFERENCE_DISCOVERY],
+        ['17:00', '18:00', 'PT20M', FlyTypeFixtures::REFERENCE_DISCOVERY],
     ];
 
     public const SLOTS_FREESTYLE = [
-        ['08:00', '09:00', 'PT20M', FlyTypeEnum::FREESTYLE],
-        ['09:00', '10:00', 'PT20M', FlyTypeEnum::FREESTYLE],
-        ['10:00', '11:00', 'PT20M', FlyTypeEnum::FREESTYLE],
-        ['11:00', '12:00', 'PT20M', FlyTypeEnum::FREESTYLE],
-        ['12:00', '13:00', 'PT20M', FlyTypeEnum::FREESTYLE],
-        ['13:00', '14:00', 'PT20M', FlyTypeEnum::FREESTYLE],
-        ['14:00', '15:00', 'PT20M', FlyTypeEnum::FREESTYLE],
-        ['15:00', '16:00', 'PT20M', FlyTypeEnum::FREESTYLE],
-        ['16:00', '17:00', 'PT20M', FlyTypeEnum::FREESTYLE],
-        ['17:00', '18:00', 'PT20M', FlyTypeEnum::FREESTYLE],
+        ['08:00', '09:00', 'PT20M', FlyTypeFixtures::REFERENCE_FREESTYLE],
+        ['09:00', '10:00', 'PT20M', FlyTypeFixtures::REFERENCE_FREESTYLE],
+        ['10:00', '11:00', 'PT20M', FlyTypeFixtures::REFERENCE_FREESTYLE],
+        ['11:00', '12:00', 'PT20M', FlyTypeFixtures::REFERENCE_FREESTYLE],
+        ['12:00', '13:00', 'PT20M', FlyTypeFixtures::REFERENCE_FREESTYLE],
+        ['13:00', '14:00', 'PT20M', FlyTypeFixtures::REFERENCE_FREESTYLE],
+        ['14:00', '15:00', 'PT20M', FlyTypeFixtures::REFERENCE_FREESTYLE],
+        ['15:00', '16:00', 'PT20M', FlyTypeFixtures::REFERENCE_FREESTYLE],
+        ['16:00', '17:00', 'PT20M', FlyTypeFixtures::REFERENCE_FREESTYLE],
+        ['17:00', '18:00', 'PT20M', FlyTypeFixtures::REFERENCE_FREESTYLE],
     ];
 
     public const SLOTS_XL = [
-        ['08:00', '10:00', 'PT40M', FlyTypeEnum::XL],
-        ['09:00', '11:00', 'PT40M', FlyTypeEnum::XL],
-        ['10:00', '12:00', 'PT40M', FlyTypeEnum::XL],
-        ['11:00', '13:00', 'PT40M', FlyTypeEnum::XL],
-        ['12:00', '14:00', 'PT40M', FlyTypeEnum::XL],
-        ['13:00', '15:00', 'PT40M', FlyTypeEnum::XL],
-        ['14:00', '16:00', 'PT40M', FlyTypeEnum::XL],
-        ['15:00', '17:00', 'PT40M', FlyTypeEnum::XL],
-        ['16:00', '18:00', 'PT40M', FlyTypeEnum::XL],
+        ['08:00', '10:00', 'PT40M', FlyTypeFixtures::REFERENCE_XL],
+        ['09:00', '11:00', 'PT40M', FlyTypeFixtures::REFERENCE_XL],
+        ['10:00', '12:00', 'PT40M', FlyTypeFixtures::REFERENCE_XL],
+        ['11:00', '13:00', 'PT40M', FlyTypeFixtures::REFERENCE_XL],
+        ['12:00', '14:00', 'PT40M', FlyTypeFixtures::REFERENCE_XL],
+        ['13:00', '15:00', 'PT40M', FlyTypeFixtures::REFERENCE_XL],
+        ['14:00', '16:00', 'PT40M', FlyTypeFixtures::REFERENCE_XL],
+        ['15:00', '17:00', 'PT40M', FlyTypeFixtures::REFERENCE_XL],
+        ['16:00', '18:00', 'PT40M', FlyTypeFixtures::REFERENCE_XL],
     ];
 
     public const SLOTS = [...self::SLOTS_DISCOVERY, ...self::SLOTS_FREESTYLE, ...self::SLOTS_XL];
 
     public function load(ObjectManager $manager): void
     {
-        /** @var FlyLocation $flyLocation */
-        $flyLocation = $this->getReference(FlyLocationFixtures::REFERENCE);
-
         foreach (self::SLOTS as $slot) {
+            /** @var FlyType $flyType */
+            $flyType = $this->getReference($slot[3]);
+
             $slot = (new SlotProposed())
-                ->setFlyLocation($flyLocation)
+                ->setFlyType($flyType)
                 ->setStartAt(DateTimeImmutable::createFromFormat('H:i', $slot[0]))
                 ->setEndAt(DateTimeImmutable::createFromFormat('H:i', $slot[1]))
-                ->setAverageFlyDuration(new DateInterval($slot[2]))
-                ->setType($slot[3]);
+                ->setAverageFlyDuration(new DateInterval($slot[2]));
 
             $manager->persist($slot);
         }
@@ -75,7 +73,7 @@ class ProposedSlotFixtures extends Fixture implements DependentFixtureInterface
     public function getDependencies(): array
     {
         return [
-            FlyLocationFixtures::class,
+            FlyTypeFixtures::class,
         ];
     }
 }
