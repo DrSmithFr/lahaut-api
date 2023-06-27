@@ -410,6 +410,6 @@ class SlotController extends AbstractApiController
     public function getSlot(
         #[MapEntity(class: Slot::class)] Slot $slot,
     ): JsonResponse {
-        return $this->serializeResponse($slot, ['Default', 'monitor', 'ActivityLocation' => ['Default', 'details']]);
+        return $this->serializeResponse($slot, ['Default', 'monitor', 'activityLocation' => ['Default', 'details']]);
     }
 }
