@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Model\Fly;
+namespace App\Model\Activity;
 
-use App\Entity\Fly\FlyType;
+use App\Entity\Activity\ActivityType;
 use DateInterval;
 use DateTimeImmutable;
 use JMS\Serializer\Annotation as JMS;
@@ -13,18 +13,18 @@ class SlotModel
 {
     #[JMS\Expose]
     #[OA\Property(
-        description: 'fly price',
+        description: 'activity price',
         type: 'string',
         example: '130.00'
     )]
     private float $price;
 
     #[OA\Property(
-        description: 'Fly Type Identifier',
+        description: 'Activity Type Identifier',
         type: 'string',
         example: 'chamonix-discovery'
     )]
-    private FlyType $flyType;
+    private ActivityType $activityType;
 
     #[JMS\Expose]
     #[JMS\Type("DateTimeImmutable<'H:i'>")]
@@ -47,19 +47,19 @@ class SlotModel
     #[JMS\Expose]
     #[JMS\Type("DateInterval<'PT%iM'>")]
     #[OA\Property(
-        description: 'Average fly duration',
+        description: 'Average activity duration',
         type: 'string',
         example: 'PT1M'
     )]
-    private DateInterval $averageFlyDuration;
+    private DateInterval $averageActivityDuration;
 
     #[JMS\Expose]
     #[JMS\VirtualProperty]
     #[JMS\Type('string')]
-    #[JMS\SerializedName("flyType")]
-    public function getFlyLocationIdentifier(): string
+    #[JMS\SerializedName("activityType")]
+    public function getActivityLocationIdentifier(): string
     {
-        return $this->getFlyType()->getIdentifier();
+        return $this->getActivityType()->getIdentifier();
     }
 
     public function getPrice(): float
@@ -73,14 +73,14 @@ class SlotModel
         return $this;
     }
 
-    public function getFlyType(): FlyType
+    public function getActivityType(): ActivityType
     {
-        return $this->flyType;
+        return $this->activityType;
     }
 
-    public function setFlyType(FlyType $flyType): self
+    public function setActivityType(ActivityType $activityType): self
     {
-        $this->flyType = $flyType;
+        $this->activityType = $activityType;
         return $this;
     }
 
@@ -106,14 +106,14 @@ class SlotModel
         return $this;
     }
 
-    public function getAverageFlyDuration(): DateInterval
+    public function getAverageActivityDuration(): DateInterval
     {
-        return $this->averageFlyDuration;
+        return $this->averageActivityDuration;
     }
 
-    public function setAverageFlyDuration(DateInterval $averageFlyDuration): self
+    public function setAverageActivityDuration(DateInterval $averageActivityDuration): self
     {
-        $this->averageFlyDuration = $averageFlyDuration;
+        $this->averageActivityDuration = $averageActivityDuration;
         return $this;
     }
 }

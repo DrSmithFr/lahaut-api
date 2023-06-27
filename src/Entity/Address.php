@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Entity\Interfaces\Serializable;
+use App\Entity\_Interfaces\Serializable;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Embeddable;
 use OpenApi\Attributes as OA;

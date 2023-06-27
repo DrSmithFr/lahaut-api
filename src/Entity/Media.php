@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Entity\Interfaces\Serializable;
+use App\Entity\_Interfaces\Serializable;
 use App\Entity\Traits\UuidTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Blameable\Traits\BlameableEntity;

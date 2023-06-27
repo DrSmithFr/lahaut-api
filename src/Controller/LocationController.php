@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\Fly\FlyLocation;
-use App\Repository\Fly\FlyLocationRepository;
-use App\Repository\Fly\FlyTypeRepository;
+use App\Entity\Activity\ActivityLocation;
+use App\Repository\Activity\ActivityLocationRepository;
+use App\Repository\Activity\ActivityTypeRepository;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -12,18 +12,18 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @OA\Tag(name="Fly - Locations")
+ * @OA\Tag(name="Activity - Locations")
  */
 class LocationController extends AbstractApiController
 {
     /**
-     * Retrieve all fly location
+     * Retrieve all activity location
      * @OA\Response(
      *     response=200,
-     *     description="Returns all fly location",
+     *     description="Returns all activity location",
      *     @OA\JsonContent(
      *        type="array",
-     *        @OA\Items(ref=@Model(type=FlyLocation::class, groups={"Default", "monitor"}))
+     *        @OA\Items(ref=@Model(type=ActivityLocation::class, groups={"Default", "monitor"}))
      *     )
      * )
      */
@@ -33,20 +33,20 @@ class LocationController extends AbstractApiController
         methods: ['get']
     )]
     public function listAllLocations(
-        FlyLocationRepository $flyLocationRepository,
+        ActivityLocationRepository $activityLocationRepository,
     ): JsonResponse {
-        $locations = $flyLocationRepository->findAll();
+        $locations = $activityLocationRepository->findAll();
         return $this->serializeResponse($locations);
     }
 
     /**
-     * Retrieve all fly location
+     * Retrieve all activity location
      * @OA\Response(
      *     response=200,
-     *     description="Returns all fly location",
+     *     description="Returns all activity location",
      *     @OA\JsonContent(
      *        type="array",
-     *        @OA\Items(ref=@Model(type=FlyLocation::class, groups={"Default", "monitor"}))
+     *        @OA\Items(ref=@Model(type=ActivityLocation::class, groups={"Default", "monitor"}))
      *     )
      * )
      */
@@ -55,11 +55,15 @@ class LocationController extends AbstractApiController
         name: 'app_location_types_list',
         methods: ['get']
     )]
-    public function listAllFlyTypes(
-        #[MapEntity(class: FlyLocation::class, mapping: ['identifier' => 'identifier'])] FlyLocation $location,
-        FlyTypeRepository $flyTypeRepository,
+    public function listAllActivityTypes(
+        #[MapEntity(
+            class: ActivityLocation::class,
+            mapping: ['identifier' => 'identifier']
+        )]
+        ActivityLocation $location,
+        ActivityTypeRepository $activityTypeRepository,
     ): JsonResponse {
-        $types = $flyTypeRepository->findAllByFlyLocation($location);
+        $types = $activityTypeRepository->findAllByActivityLocation($location);
         return $this->serializeResponse($types);
     }
 }

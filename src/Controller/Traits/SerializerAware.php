@@ -2,7 +2,7 @@
 
 namespace App\Controller\Traits;
 
-use App\Entity\Interfaces\Serializable;
+use App\Entity\_Interfaces\Serializable;
 use App\Model\FormErrorDetailModel;
 use App\Model\FormErrorModel;
 use Doctrine\Common\Collections\Collection;

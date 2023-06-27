@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Model;
 
-use App\Entity\Interfaces\Serializable;
+use App\Entity\_Interfaces\Serializable;
 use JMS\Serializer\Annotation\Expose;
 use OpenApi\Attributes as OA;
 

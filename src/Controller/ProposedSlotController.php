@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\Fly\SlotProposed;
-use App\Repository\Fly\FlyLocationRepository;
-use App\Repository\Fly\SlotProposedRepository;
+use App\Entity\Activity\SlotProposed;
+use App\Repository\Activity\ActivityLocationRepository;
+use App\Repository\Activity\SlotProposedRepository;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @OA\Tag(name="Fly - Slots")
+ * @OA\Tag(name="Activity - Slots")
  */
 class ProposedSlotController extends AbstractApiController
 {
@@ -35,16 +35,16 @@ class ProposedSlotController extends AbstractApiController
     )]
     public function listAllSlots(
         Request $request,
-        FlyLocationRepository $flyLocationRepository,
+        ActivityLocationRepository $activityLocationLocationRepository,
         SlotProposedRepository $slotRepository,
     ): JsonResponse {
-        $flyLocation = $flyLocationRepository->findOneByIdentifier($request->get('location'));
+        $activityLocationLocation = $activityLocationLocationRepository->findOneByIdentifier($request->get('location'));
 
-        if (!$flyLocation) {
+        if (!$activityLocationLocation) {
             return $this->messageResponse('Invalid location', Response::HTTP_BAD_REQUEST);
         }
 
-        $slots = $slotRepository->findAllByLocation($flyLocation);
+        $slots = $slotRepository->findAllByLocation($activityLocationLocation);
 
         return $this->serializeResponse($slots);
     }

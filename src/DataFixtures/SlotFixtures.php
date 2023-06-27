@@ -2,8 +2,8 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Fly\FlyType;
-use App\Entity\Fly\Slot;
+use App\Entity\Activity\ActivityType;
+use App\Entity\Activity\Slot;
 use App\Entity\User;
 use DateInterval;
 use DateTime;
@@ -15,21 +15,21 @@ use Doctrine\Persistence\ObjectManager;
 class SlotFixtures extends Fixture implements DependentFixtureInterface
 {
     public const SLOTS_DISCOVERY = [
-        ['09:00:00', '10:00:00', 'PT20M', FlyTypeFixtures::REFERENCE_DISCOVERY, 130.00],
-        ['10:00:00', '11:00:00', 'PT20M', FlyTypeFixtures::REFERENCE_DISCOVERY, 130.00],
-        ['11:00:00', '12:00:00', 'PT20M', FlyTypeFixtures::REFERENCE_DISCOVERY, 130.00],
-        ['14:00:00', '15:00:00', 'PT20M', FlyTypeFixtures::REFERENCE_DISCOVERY, 130.00],
-        ['15:00:00', '16:00:00', 'PT20M', FlyTypeFixtures::REFERENCE_DISCOVERY, 130.00],
-        ['16:00:00', '17:00:00', 'PT20M', FlyTypeFixtures::REFERENCE_DISCOVERY, 130.00],
-        ['17:00:00', '18:00:00', 'PT20M', FlyTypeFixtures::REFERENCE_DISCOVERY, 130.00],
+        ['09:00:00', '10:00:00', 'PT20M', ActivityTypeFixtures::REFERENCE_DISCOVERY, 130.00],
+        ['10:00:00', '11:00:00', 'PT20M', ActivityTypeFixtures::REFERENCE_DISCOVERY, 130.00],
+        ['11:00:00', '12:00:00', 'PT20M', ActivityTypeFixtures::REFERENCE_DISCOVERY, 130.00],
+        ['14:00:00', '15:00:00', 'PT20M', ActivityTypeFixtures::REFERENCE_DISCOVERY, 130.00],
+        ['15:00:00', '16:00:00', 'PT20M', ActivityTypeFixtures::REFERENCE_DISCOVERY, 130.00],
+        ['16:00:00', '17:00:00', 'PT20M', ActivityTypeFixtures::REFERENCE_DISCOVERY, 130.00],
+        ['17:00:00', '18:00:00', 'PT20M', ActivityTypeFixtures::REFERENCE_DISCOVERY, 130.00],
     ];
 
     public const SLOTS_FREESTYLE = [
-        ['09:00:00', '11:00:00', 'PT40M', FlyTypeFixtures::REFERENCE_FREESTYLE, 75.50],
-        ['10:00:00', '12:00:00', 'PT40M', FlyTypeFixtures::REFERENCE_FREESTYLE, 75.50],
-        ['14:00:00', '16:00:00', 'PT40M', FlyTypeFixtures::REFERENCE_FREESTYLE, 75.50],
-        ['15:00:00', '17:00:00', 'PT40M', FlyTypeFixtures::REFERENCE_FREESTYLE, 75.50],
-        ['16:00:00', '18:00:00', 'PT40M', FlyTypeFixtures::REFERENCE_FREESTYLE, 75.50],
+        ['09:00:00', '11:00:00', 'PT40M', ActivityTypeFixtures::REFERENCE_FREESTYLE, 75.50],
+        ['10:00:00', '12:00:00', 'PT40M', ActivityTypeFixtures::REFERENCE_FREESTYLE, 75.50],
+        ['14:00:00', '16:00:00', 'PT40M', ActivityTypeFixtures::REFERENCE_FREESTYLE, 75.50],
+        ['15:00:00', '17:00:00', 'PT40M', ActivityTypeFixtures::REFERENCE_FREESTYLE, 75.50],
+        ['16:00:00', '18:00:00', 'PT40M', ActivityTypeFixtures::REFERENCE_FREESTYLE, 75.50],
     ];
 
     public const SLOTS = [...self::SLOTS_DISCOVERY, ...self::SLOTS_FREESTYLE];
@@ -45,14 +45,14 @@ class SlotFixtures extends Fixture implements DependentFixtureInterface
             $startAt = new DateTimeImmutable(sprintf('%s %s', $now, $slot[0]));
             $endAt = new DateTimeImmutable(sprintf('%s %s', $now, $slot[1]));
 
-            /** @var FlyType $flyType */
-            $flyType = $this->getReference($slot[3]);
+            /** @var ActivityType $activityType */
+            $activityType = $this->getReference($slot[3]);
 
             $slot = (new Slot())
-                ->setFlyType($flyType)
+                ->setActivityType($activityType)
                 ->setStartAt($startAt)
                 ->setEndAt($endAt)
-                ->setAverageFlyDuration(new DateInterval($slot[2]))
+                ->setAverageActivityDuration(new DateInterval($slot[2]))
                 ->setPrice($slot[4])
                 ->setMonitor($monitor);
 
@@ -66,7 +66,7 @@ class SlotFixtures extends Fixture implements DependentFixtureInterface
     {
         return [
             UserFixtures::class,
-            FlyTypeFixtures::class,
+            ActivityTypeFixtures::class,
         ];
     }
 }

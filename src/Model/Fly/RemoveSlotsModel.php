@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Model\Fly;
+namespace App\Model\Activity;
 
-use App\Entity\Fly\Slot;
+use App\Entity\Activity\Slot;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use JMS\Serializer\Annotation as JMS;
@@ -14,7 +14,7 @@ class RemoveSlotsModel
      * @var Collection<Slot>
      */
     #[JMS\Expose]
-    #[JMS\Type('ArrayCollection<App\Entity\Fly\Slot>')]
+    #[JMS\Type('ArrayCollection<App\Entity\Activity\Slot>')]
     private Collection $slots;
 
     public function __construct()

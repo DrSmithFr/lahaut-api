@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\Fly\Slot;
-use App\Repository\Fly\BookingRepository;
+use App\Entity\Activity\Slot;
+use App\Repository\Activity\BookingRepository;
 use App\Service\DateService;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
@@ -22,7 +22,7 @@ class BookingController extends AbstractApiController
      * Retrieve all Booking for the given periode
      * @OA\Response(
      *     response=200,
-     *     description="Returns all fly slots for the given day",
+     *     description="Returns all activity slots for the given day",
      *     @OA\JsonContent(
      *        type="array",
      *        @OA\Items(ref=@Model(type=Slot::class, groups={"Default", "monitor"}))

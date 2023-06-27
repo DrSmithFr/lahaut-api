@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\Chat\Conversation;
-use App\Entity\Chat\Message;
+use App\Entity\_Chat\Conversation;
+use App\Entity\_Chat\Message;
 use App\Form\Chat\NewConversationType;
 use App\Model\Chat\NewConversationModel;
 use App\Repository\Chat\ConversationRepository;

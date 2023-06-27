@@ -3,8 +3,8 @@
 namespace App\Command;
 
 use App\DataFixtures\SlotFixtures;
-use App\Entity\Fly\FlyType;
-use App\Entity\Fly\Slot;
+use App\Entity\Activity\ActivityType;
+use App\Entity\Activity\Slot;
 use App\Entity\User;
 use App\Enum\RoleEnum;
 use App\Service\UserService;
@@ -133,17 +133,17 @@ class CreateMockMonitorCommand extends Command
         $slots = [];
 
         foreach (SlotFixtures::SLOTS as $data) {
-            $flyType = $this
+            $activityType = $this
                 ->entityManager
-                ->getRepository(FlyType::class)
+                ->getRepository(ActivityType::class)
                 ->findOneByIdentifier($data[3]);
 
             $slot = (new Slot())
                 ->setMonitor($monitor)
-                ->setFlyType($flyType)
+                ->setActivityType($activityType)
                 ->setStartAt($day->setTime(...explode(':', $data[0])))
                 ->setEndAt($day->setTime(...explode(':', $data[1])))
-                ->setAverageFlyDuration(new DateInterval($data[2]))
+                ->setAverageActivityDuration(new DateInterval($data[2]))
                 ->setPrice($data[4]);
 
             $slots[] = $slot;

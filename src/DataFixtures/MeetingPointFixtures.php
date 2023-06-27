@@ -3,7 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Address;
-use App\Entity\Fly\Place\MeetingPoint;
+use App\Entity\Activity\Place\MeetingPoint;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 

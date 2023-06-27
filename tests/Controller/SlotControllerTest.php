@@ -2,7 +2,7 @@
 
 namespace App\Tests\Controller;
 
-use App\DataFixtures\FlyTypeFixtures;
+use App\DataFixtures\ActivityTypeFixtures;
 use App\DataFixtures\SlotFixtures;
 use App\Entity\User;
 use App\Repository\UserRepository;
@@ -28,7 +28,7 @@ class SlotControllerTest extends ApiTestCase
         $this->loginApiUser($user);
         $today = (new DateTimeImmutable())->format('Y-m-d');
 
-        $this->apiGet('/public/slots/' . FlyTypeFixtures::REFERENCE_DISCOVERY . '/' . $today);
+        $this->apiGet('/public/slots/' . ActivityTypeFixtures::REFERENCE_DISCOVERY . '/' . $today);
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
         $response = $this->getApiResponse();
@@ -54,7 +54,7 @@ class SlotControllerTest extends ApiTestCase
         $this->loginApiUser($user);
         $today = (new DateTimeImmutable())->format('Y-m-d');
 
-        $this->apiGet('/public/slots/' . FlyTypeFixtures::REFERENCE_FREESTYLE . '/' . $today);
+        $this->apiGet('/public/slots/' . ActivityTypeFixtures::REFERENCE_FREESTYLE . '/' . $today);
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
         $response = $this->getApiResponse();
@@ -83,7 +83,7 @@ class SlotControllerTest extends ApiTestCase
         $today = (new DateTimeImmutable())->format('Y-m-d');
 
         $this->apiGet(
-            '/public/slots/' . $monitor->getUuid() . '/' . FlyTypeFixtures::REFERENCE_DISCOVERY . '/' . $today
+            '/public/slots/' . $monitor->getUuid() . '/' . ActivityTypeFixtures::REFERENCE_DISCOVERY . '/' . $today
         );
 
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
@@ -114,7 +114,7 @@ class SlotControllerTest extends ApiTestCase
         $today = (new DateTimeImmutable())->format('Y-m-d');
 
         $this->apiGet(
-            '/public/slots/' . $monitor->getUuid() . '/' . FlyTypeFixtures::REFERENCE_FREESTYLE . '/' . $today
+            '/public/slots/' . $monitor->getUuid() . '/' . ActivityTypeFixtures::REFERENCE_FREESTYLE . '/' . $today
         );
 
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\Fly\Slot;
+use App\Entity\Activity\Slot;
 use App\Entity\User;
 use App\Enum\RoleEnum;
-use App\Repository\Fly\SlotRepository;
+use App\Repository\Activity\SlotRepository;
 use App\Service\DateService;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
@@ -49,10 +49,10 @@ class MonitorController extends AbstractApiController
     }
 
     /**
-     * Retrieve all fly slots of a monitor for the given day
+     * Retrieve all activity slots of a monitor for the given day
      * @OA\Response(
      *     response=200,
-     *     description="Returns all fly slots of a monitor for the given day",
+     *     description="Returns all activity slots of a monitor for the given day",
      *     @OA\JsonContent(
      *        type="array",
      *        @OA\Items(ref=@Model(type=Slot::class, groups={"Default", "booking"}))

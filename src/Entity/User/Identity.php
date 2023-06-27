@@ -2,7 +2,7 @@
 
 namespace App\Entity\User;
 
-use App\Entity\Interfaces\Serializable;
+use App\Entity\_Interfaces\Serializable;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;

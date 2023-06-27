@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Model\Fly;
+namespace App\Model\Activity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -13,7 +13,7 @@ class AddSlotsModel
      * @var Collection<SlotModel>
      */
     #[JMS\Expose]
-    #[JMS\Type('ArrayCollection<App\Model\Fly\SlotModel>')]
+    #[JMS\Type('ArrayCollection<App\Model\Activity\SlotModel>')]
     private Collection $slots;
 
     #[JMS\Expose]

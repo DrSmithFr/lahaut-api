@@ -2,7 +2,7 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\Chat\Conversation;
+use App\Entity\_Chat\Conversation;
 use App\Entity\User;
 use App\Repository\Chat\ConversationRepository;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;

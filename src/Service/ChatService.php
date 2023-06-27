@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Entity\Chat\Conversation;
-use App\Entity\Chat\Message;
-use App\Entity\Chat\Participant;
+use App\Entity\_Chat\Conversation;
+use App\Entity\_Chat\Message;
+use App\Entity\_Chat\Participant;
 use App\Entity\User;
 use DateTimeImmutable;
 

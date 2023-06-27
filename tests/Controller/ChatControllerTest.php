@@ -2,7 +2,7 @@
 
 namespace App\Tests\Controller;
 
-use App\Entity\Chat\Conversation;
+use App\Entity\_Chat\Conversation;
 use App\Entity\User;
 use App\Repository\Chat\ConversationRepository;
 use App\Repository\UserRepository;
