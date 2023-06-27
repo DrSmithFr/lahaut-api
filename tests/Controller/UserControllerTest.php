@@ -3,7 +3,7 @@
 namespace App\Tests\Controller;
 
 use App\Entity\User;
-use App\Service\UserService;
+use App\Service\User\UserService;
 use App\Tests\ApiTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -53,7 +53,7 @@ class UserControllerTest extends ApiTestCase
     public function testPasswordUpdateWithTooSmallNewPassword(): void
     {
         $this->apiPost(
-            '/public/register/customer',
+            '/auth/register/customer',
             [
                 'username' => 'password-update-too-short@mail.com',
                 'password' => 'password',
@@ -91,7 +91,7 @@ class UserControllerTest extends ApiTestCase
     public function testPasswordUpdateValid(): void
     {
         $this->apiPost(
-            '/public/register/customer',
+            '/auth/register/customer',
             [
                 'username' => 'update-password-valid@mail.com',
                 'password' => 'password',

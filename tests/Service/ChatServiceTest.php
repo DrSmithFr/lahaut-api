@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Service;
 
 use App\Entity\User;
-use App\Service\ChatService;
+use App\Service\Chat\ChatService;
 use App\Tests\ApiTestCase;
 
 class ChatServiceTest extends ApiTestCase

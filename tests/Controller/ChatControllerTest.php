@@ -2,11 +2,11 @@
 
 namespace App\Tests\Controller;
 
-use App\Entity\_Chat\Conversation;
+use App\Entity\Chat\Conversation;
 use App\Entity\User;
 use App\Repository\Chat\ConversationRepository;
 use App\Repository\UserRepository;
-use App\Service\ChatService;
+use App\Service\Chat\ChatService;
 use App\Tests\ApiTestCase;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;

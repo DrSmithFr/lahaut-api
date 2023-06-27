@@ -12,7 +12,7 @@ class RegisterControllerTest extends ApiTestCase
     public function testRegisterUserWithBadEmail(): void
     {
         $this->apiPost(
-            '/public/register/customer',
+            '/auth/register/customer',
             [
                 'username' => 'not_an_email',
                 'password' => 'password',
@@ -26,7 +26,7 @@ class RegisterControllerTest extends ApiTestCase
     public function testRegisterUserWithShortPassword(): void
     {
         $this->apiPost(
-            '/public/register/customer',
+            '/auth/register/customer',
             [
                 'username' => 'test-short-password@mail.com',
                 'password' => '...',
@@ -40,7 +40,7 @@ class RegisterControllerTest extends ApiTestCase
     public function testRegisterUserEmailAlreadyUsed(): void
     {
         $this->apiPost(
-            '/public/register/customer',
+            '/auth/register/customer',
             [
                 'username' => 'customer@mail.com',
                 'password' => 'password',
@@ -54,7 +54,7 @@ class RegisterControllerTest extends ApiTestCase
     public function testRegisterCustomerValid(): void
     {
         $this->apiPost(
-            '/public/register/customer',
+            '/auth/register/customer',
             [
                 'username' => 'test-customer@mail.com',
                 'password' => 'password',
@@ -77,7 +77,7 @@ class RegisterControllerTest extends ApiTestCase
     public function testRegisterMonitorValid(): void
     {
         $this->apiPost(
-            '/public/register/monitor',
+            '/auth/register/monitor',
             [
                 'username'  => 'test-monitor@mail.com',
                 'password'  => 'password',

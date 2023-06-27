@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Address;
+use App\Entity\_Utils\Address;
 use App\Entity\Activity\Place\TakeOffPoint;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;

@@ -4,10 +4,10 @@ namespace App\Command;
 
 use App\DataFixtures\SlotFixtures;
 use App\Entity\Activity\ActivityType;
-use App\Entity\Activity\Slot;
+use App\Entity\Slot\Slot;
 use App\Entity\User;
 use App\Enum\RoleEnum;
-use App\Service\UserService;
+use App\Service\User\UserService;
 use DateInterval;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;

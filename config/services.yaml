@@ -50,11 +50,11 @@ services:
         tags:
             - { name: jms_serializer.subscribing_handler }
 
-    App\Service\MediaService:
+    App\Service\Media\MediaService:
         arguments:
             $mediaFolder: '%env(resolve:MEDIA_FOLDER)%'
 
-    App\Service\EncryptionService:
+    App\Service\_Utils\EncryptionService:
         arguments:
             $publicKey: '%env(resolve:JWT_PUBLIC_KEY)%'
             $secretKey: '%env(resolve:JWT_SECRET_KEY)%'

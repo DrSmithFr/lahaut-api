@@ -3,7 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Activity\ActivityType;
-use App\Entity\Activity\Slot;
+use App\Entity\Slot\Slot;
 use App\Entity\User;
 use DateInterval;
 use DateTime;

@@ -2,7 +2,7 @@
 
 namespace App\Model\Activity;
 
-use App\Entity\Activity\Slot;
+use App\Entity\Slot\Slot;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use JMS\Serializer\Annotation as JMS;

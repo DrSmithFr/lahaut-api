@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-use App\Service\UserService;
+use App\Service\User\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Component\Console\Command\Command;

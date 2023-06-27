@@ -3,14 +3,11 @@
 namespace App\Controller\Traits;
 
 use App\Entity\_Interfaces\Serializable;
-use App\Model\FormErrorDetailModel;
-use App\Model\FormErrorModel;
+use App\Model\Form\FormErrorDetailModel;
+use App\Model\Form\FormErrorModel;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ReadableCollection;
-use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
-use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
-use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;

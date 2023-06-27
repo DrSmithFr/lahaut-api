@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Entity\_Chat\Message;
-use App\Entity\Activity\Booking;
-use App\Entity\Activity\Slot;
 use App\Entity\_Interfaces\Serializable;
+use App\Entity\_Utils\Address;
+use App\Entity\Booking\Booking;
+use App\Entity\Chat\Message;
+use App\Entity\Slot\Slot;
 use App\Entity\Traits\EnableTrait;
 use App\Entity\Traits\UuidTrait;
 use App\Entity\User\Identity;

@@ -2,8 +2,8 @@
 
 namespace App\Entity\Activity\Place;
 
-use App\Entity\Address;
 use App\Entity\_Interfaces\Serializable;
+use App\Entity\_Utils\Address;
 use App\Entity\Traits\UuidTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;

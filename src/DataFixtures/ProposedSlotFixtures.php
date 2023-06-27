@@ -3,7 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Activity\ActivityType;
-use App\Entity\Activity\SlotProposed;
+use App\Entity\Slot\SlotProposed;
 use DateInterval;
 use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Service;
 
-use App\Service\EncryptionService;
+use App\Service\_Utils\EncryptionService;
 use App\Tests\ApiTestCase;
 
 class EncryptionServiceTest extends ApiTestCase
