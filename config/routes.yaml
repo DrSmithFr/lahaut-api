@@ -6,4 +6,4 @@ controllers:
 
 # JWT refresh token configuration
 api_refresh_token:
-    path: /public/login/refresh
+    path: /auth/login/refresh
