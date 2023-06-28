@@ -3,7 +3,7 @@
 namespace App\Form\Activity;
 
 use App\Entity\Slot\Slot;
-use App\Model\Activity\RemoveSlotsModel;
+use App\Model\Slot\RemoveSlotsModel;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;

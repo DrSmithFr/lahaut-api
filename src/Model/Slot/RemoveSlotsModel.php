@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Model\Activity;
+namespace App\Model\Slot;
 
 use App\Entity\Slot\Slot;
 use Doctrine\Common\Collections\ArrayCollection;

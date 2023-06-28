@@ -3,7 +3,7 @@
 namespace App\Form\Activity;
 
 use App\Entity\Activity\ActivityType;
-use App\Model\Activity\SlotModel;
+use App\Model\Slot\SlotModel;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
