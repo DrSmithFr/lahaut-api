@@ -10,9 +10,9 @@ class ApiVersionService
 {
     private string $version;
 
-    public function __construct(string $version)
+    public function __construct()
     {
-        $this->version = $version;
+        $this->version = "1.0.0";
     }
 
     public function getVersion(): ApiVersionModel
