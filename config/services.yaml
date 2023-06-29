@@ -58,3 +58,7 @@ services:
         arguments:
             $publicKey: '%env(resolve:JWT_PUBLIC_KEY)%'
             $secretKey: '%env(resolve:JWT_SECRET_KEY)%'
+
+    App\Service\ApiVersionService:
+        arguments:
+            $version: '%env(resolve:API_VERSION)%'
