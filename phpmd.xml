@@ -15,23 +15,7 @@
         <exclude name="StaticAccess" />
         <exclude name="IfStatementAssignment" />
         <exclude name="ElseExpression" />
-    </rule>
-
-    <rule ref="rulesets/cleancode.xml/StaticAccess">
-        <properties>
-            <property name="exceptions">
-                <value>
-                    \DateTime,
-                    \DateTimeImmutable,
-                    \DateInterval,
-                    \DateTimeZone,
-                    \JMS\Serializer\SerializerBuilder,
-                    \JMS\Serializer\SerializationContext,
-                    \Ramsey\Uuid\Uuid,
-                    \App\Enum\RoleEnum,
-                </value>
-            </property>
-        </properties>
+        <exclude name="StaticAccess" />
     </rule>
 
     <rule ref="rulesets/codesize.xml">

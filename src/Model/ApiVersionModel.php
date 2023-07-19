@@ -54,4 +54,9 @@ class ApiVersionModel implements Serializable
     {
         return (int) explode('.', $this->version)[2];
     }
+
+    public function __toString(): string
+    {
+          return $this->version;
+    }
 }

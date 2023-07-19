@@ -24,6 +24,15 @@ security:
                 check_path: /auth/login
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        admin:
+            pattern: ^/admin
+            form_login:
+                login_path: /admin/login
+                check_path: /admin/login
+                default_target_path: /admin
+            logout:
+                path: /admin/logout
+                target: /admin/login
         documentation:
             pattern: ^/documentation$
             security: false
@@ -40,10 +49,12 @@ security:
             jwt: ~
 
     access_control:
-        - { path: ^/auth/, roles: PUBLIC_ACCESS }
-        - { path: ^/medias/, roles: PUBLIC_ACCESS }
-        - { path: ^/public/, roles: PUBLIC_ACCESS }
-        - { path: ^/,       roles: [ IS_AUTHENTICATED_FULLY, ROLE_USER ] }
+        - { path: ^/auth/,        roles: PUBLIC_ACCESS }
+        - { path: ^/medias/,      roles: PUBLIC_ACCESS }
+        - { path: ^/public/,      roles: PUBLIC_ACCESS }
+        - { path: ^/admin/login,  roles: PUBLIC_ACCESS }
+        - { path: ^/admin,        roles: [ IS_AUTHENTICATED_FULLY, ROLE_ADMIN ] }
+        - { path: ^/,             roles: [ IS_AUTHENTICATED_FULLY, ROLE_USER ] }
 
     role_hierarchy:
         ROLE_CUSTOMER: [ ROLE_USER ]
