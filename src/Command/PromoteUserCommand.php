@@ -37,7 +37,7 @@ class PromoteUserCommand extends Command
     /**
      * @throws Exception
      */
-    public function execute(InputInterface $input, OutputInterface $output): void
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         $email = $input->getArgument('email');
         $io = new SymfonyStyle($input, $output);
@@ -77,5 +77,7 @@ class PromoteUserCommand extends Command
                 implode(', ', $user->getRoles())
             )
         );
+
+        return Command::SUCCESS;
     }
 }

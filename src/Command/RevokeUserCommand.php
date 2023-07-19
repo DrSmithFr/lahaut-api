@@ -29,6 +29,7 @@ class RevokeUserCommand extends Command
             ->setName('app:user:revoke')
             ->addArgument('email', InputArgument::REQUIRED, 'Email of user')
             ->addOption('user', 'u', InputOption::VALUE_NONE, 'Add role user')
+            ->addOption('monitor', 'm', InputOption::VALUE_NONE, 'Add role monitor')
             ->addOption('admin', 'a', InputOption::VALUE_NONE, 'Add role admin')
             ->addOption('super-admin', 's', InputOption::VALUE_NONE, 'Add role super-admin');
     }
@@ -36,7 +37,7 @@ class RevokeUserCommand extends Command
     /**
      * @throws Exception
      */
-    public function execute(InputInterface $input, OutputInterface $output): void
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         $email = $input->getArgument('email');
         $io = new SymfonyStyle($input, $output);
@@ -52,15 +53,19 @@ class RevokeUserCommand extends Command
         }
 
         if ($input->getOption('user')) {
-            $user->removeRole(RoleEnum::CUSTOMER->value);
+            $user->removeRole(RoleEnum::CUSTOMER);
+        }
+
+        if ($input->getOption('monitor')) {
+            $user->removeRole(RoleEnum::MONITOR);
         }
 
         if ($input->getOption('admin')) {
-            $user->removeRole(RoleEnum::ADMIN->value);
+            $user->removeRole(RoleEnum::ADMIN);
         }
 
         if ($input->getOption('super-admin')) {
-            $user->removeRole(RoleEnum::SUPER_ADMIN->value);
+            $user->removeRole(RoleEnum::SUPER_ADMIN);
         }
 
         $this->entityManager->flush();
@@ -72,5 +77,7 @@ class RevokeUserCommand extends Command
                 implode(', ', $user->getRoles())
             )
         );
+
+        return Command::SUCCESS;
     }
 }
