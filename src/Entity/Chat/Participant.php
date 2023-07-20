@@ -42,7 +42,11 @@ class Participant
     public function setConversation(?Conversation $conversation): self
     {
         $this->conversation = $conversation;
-        $this->conversation->addParticipant($this);
+
+        if ($conversation !== null) {
+            $this->conversation->addParticipant($this);
+        }
+
         return $this;
     }
 }

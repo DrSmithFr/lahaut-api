@@ -2,15 +2,15 @@
 
 namespace App\Controller\Admin\Place;
 
+use App\Controller\Admin\AdminCrudController;
 use App\Entity\Activity\Place\PlacePoint;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CountryField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
-abstract class PlacePointCrudController extends AbstractCrudController
+abstract class PlacePointCrudController extends AdminCrudController
 {
     public static function getEntityFqcn(): string
     {

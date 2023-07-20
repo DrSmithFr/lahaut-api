@@ -7,6 +7,8 @@ use App\Entity\Activity\ActivityType;
 use App\Entity\Activity\Place\LandingPoint;
 use App\Entity\Activity\Place\MeetingPoint;
 use App\Entity\Activity\Place\TakeOffPoint;
+use App\Entity\Chat\Conversation;
+use App\Entity\Chat\Message;
 use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -28,5 +30,9 @@ abstract class AdminPageController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Meeting', 'fa fa-location-dot', MeetingPoint::class);
         yield MenuItem::linkToCrud('TakeOff', 'fa fa-plane-departure', TakeOffPoint::class);
         yield MenuItem::linkToCrud('Landing', 'fa fa-plane-arrival', LandingPoint::class);
+
+        yield MenuItem::section('Chat');
+        yield MenuItem::linkToCrud('Conversation', 'fa fa-comments', Conversation::class);
+        yield MenuItem::linkToCrud('Message', 'fa fa-comment', Message::class);
     }
 }

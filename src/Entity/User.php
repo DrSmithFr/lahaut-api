@@ -358,4 +358,9 @@ class User implements
         $this->bookings = $bookings;
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return $this->getEmail();
+    }
 }

@@ -1,12 +1,15 @@
 <?php
 
-namespace App\Controller\Admin;
+namespace App\Controller\Admin\User;
 
+use App\Controller\Admin\AdminCrudController;
 use App\Entity\User;
+use App\Enum\RoleEnum;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CountryField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
@@ -56,6 +59,8 @@ class UserCrudController extends AdminCrudController
 
         yield ArrayField::new('roles')
             ->onlyOnDetail();
+
+        yield BooleanField::new('enable');
     }
 
     private function configureIdentityFields(): iterable
@@ -151,7 +156,7 @@ class UserCrudController extends AdminCrudController
         $actions
             ->add(Action::INDEX, Action::DETAIL)
             ->add(Action::EDIT, Action::SAVE_AND_ADD_ANOTHER)
-            ->setPermission(Action::DELETE, 'ROLE_SUPER_ADMIN');
+            ->setPermission(Action::DELETE, RoleEnum::SUPER_ADMIN->value);
         return $actions;
     }
 }

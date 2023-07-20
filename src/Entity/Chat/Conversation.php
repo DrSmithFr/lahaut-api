@@ -27,7 +27,8 @@ class Conversation implements Serializable
         mappedBy: 'conversation',
         targetEntity: Participant::class,
         cascade: ['persist', 'remove'],
-        fetch: 'EAGER'
+        fetch: 'EAGER',
+        orphanRemoval: true
     )]
     private Collection $participants;
 
@@ -141,5 +142,10 @@ class Conversation implements Serializable
     public function setLastMessage(?Message $lastMessage): void
     {
         $this->lastMessage = $lastMessage;
+    }
+
+    public function __toString(): string
+    {
+          return $this->getUuid();
     }
 }

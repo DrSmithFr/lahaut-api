@@ -30,11 +30,11 @@ class Message implements Serializable
     private ?string $content;
 
     #[JMS\Expose]
-    #[ORM\JoinColumn(name: 'user_uuid', referencedColumnName: 'uuid')]
+    #[ORM\JoinColumn(name: 'user_uuid', referencedColumnName: 'uuid', nullable: false)]
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'messages')]
     private User $user;
 
-    #[ORM\JoinColumn(name: 'conversation_uuid', referencedColumnName: 'uuid')]
+    #[ORM\JoinColumn(name: 'conversation_uuid', referencedColumnName: 'uuid', nullable: false)]
     #[ORM\ManyToOne(targetEntity: Conversation::class, inversedBy: 'messages')]
     private Conversation $conversation;
 
