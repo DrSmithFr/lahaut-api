@@ -121,4 +121,9 @@ abstract class PlacePoint implements Serializable
         $this->description = $description;
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return $this->getIdentifier() ?? '';
+    }
 }
