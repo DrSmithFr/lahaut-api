@@ -14,11 +14,9 @@ abstract class AdminCrudController extends AbstractCrudController
             ->setTimeFormat('HH:mm:ss')
             ->setDateIntervalFormat('%%y Year(s) %%m Month(s) %%d Day(s)')
             ->setNumberFormat('%.2d')
-
             ->setAutofocusSearch()
             ->setPaginatorPageSize(10)
             ->setPaginatorRangeSize(5)
-
             ->setPaginatorUseOutputWalkers(true)
             ->setPaginatorFetchJoinCollection(true);
     }

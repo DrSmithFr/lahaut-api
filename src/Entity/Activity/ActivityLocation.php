@@ -114,4 +114,9 @@ class ActivityLocation implements Serializable
         $this->landingPoint = $landingPoint;
         return $this;
     }
+
+    public function __toString(): string
+    {
+          return $this->getIdentifier() ?? '';
+    }
 }

@@ -5,11 +5,16 @@ namespace App\Controller\Admin\User;
 use App\Controller\Admin\AdminCrudController;
 use App\Entity\User;
 use App\Enum\RoleEnum;
+use App\Service\User\UserService;
+use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CountryField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
@@ -18,9 +23,18 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TelephoneField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\ChoiceFilter;
 
 class UserCrudController extends AdminCrudController
 {
+    private UserService $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
     public static function getEntityFqcn(): string
     {
         return User::class;
@@ -55,12 +69,26 @@ class UserCrudController extends AdminCrudController
             ->hideOnForm()
             ->hideOnIndex();
 
+        yield BooleanField::new('enable');
+
         yield EmailField::new('email');
 
-        yield ArrayField::new('roles')
-            ->onlyOnDetail();
+        yield TextField::new('plainPassword')
+            ->onlyWhenCreating();
 
-        yield BooleanField::new('enable');
+        $roles = ChoiceField::new('roles')
+            ->allowMultipleChoices()
+            ->renderExpanded();
+
+        if ($this->getUser()->hasRole(RoleEnum::SUPER_ADMIN)) {
+            $roles->setChoices(RoleEnum::cases());
+        } else {
+            $roles->setChoices(
+                array_filter(RoleEnum::cases(), fn($case) => $case !== RoleEnum::SUPER_ADMIN)
+            );
+        }
+
+        yield $roles;
     }
 
     private function configureIdentityFields(): iterable
@@ -158,5 +186,63 @@ class UserCrudController extends AdminCrudController
             ->add(Action::EDIT, Action::SAVE_AND_ADD_ANOTHER)
             ->setPermission(Action::DELETE, RoleEnum::SUPER_ADMIN->value);
         return $actions;
+    }
+
+    public function configureFilters(Filters $filters): Filters
+    {
+        return $filters
+            ->add(BooleanFilter::new('enable'))
+            ->add(
+                ChoiceFilter::new('roles')
+                    ->setChoices([
+                        'Customer' => RoleEnum::CUSTOMER->value,
+                        'Monitor' => RoleEnum::MONITOR->value,
+                        'Admin' => RoleEnum::ADMIN->value,
+                        'Super Admin' => RoleEnum::SUPER_ADMIN->value,
+                    ])
+                    ->canSelectMultiple()
+            );
+    }
+
+    public function createEntity(string $entityFqcn)
+    {
+        $user = new User();
+
+        $user->setMessages(new ArrayCollection());
+        $user->setSlots(new ArrayCollection());
+        $user->setBookings(new ArrayCollection());
+
+        $user->setCreatedAt(new DateTime());
+        $user->setUpdatedAt(new DateTime());
+
+        $user->setPassword('');
+        $user->setPlainPassword($this->randomPassword());
+
+        return $user;
+    }
+
+    private function randomPassword(): string
+    {
+        $alphabet = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
+        $password = [];
+
+        for ($i = 0; $i < 20; $i++) {
+            $n = rand(0, strlen($alphabet) - 1);
+            $password[$i] = $alphabet[$n];
+        }
+
+        return implode($password);
+    }
+
+    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        if (!$entityInstance instanceof User) {
+            return;
+        }
+
+        $this->userService->updatePassword($entityInstance);
+
+        $entityManager->persist($entityInstance);
+        $entityManager->flush();
     }
 }

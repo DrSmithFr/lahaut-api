@@ -4,6 +4,8 @@ namespace App\Controller\Admin\Chat;
 
 use App\Controller\Admin\AdminCrudController;
 use App\Entity\Chat\Message;
+use DateTime;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
@@ -27,9 +29,19 @@ class MessageCrudController extends AdminCrudController
         yield DateTimeField::new('sentAt');
 
         yield DateTimeField::new('createdAt')
-            ->hideOnIndex();
+            ->onlyOnDetail();
 
         yield DateTimeField::new('updatedAt')
-            ->hideOnIndex();
+            ->onlyOnDetail();
+    }
+
+    public function createEntity(string $entityFqcn)
+    {
+        $product = new Message();
+
+        $product->setCreatedAt(new DateTime());
+        $product->setUpdatedAt(new DateTime());
+
+        return $product;
     }
 }

@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\CountryField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 abstract class PlacePointCrudController extends AdminCrudController
@@ -43,7 +44,7 @@ abstract class PlacePointCrudController extends AdminCrudController
         yield NumberField::new('longitude')
             ->setNumDecimals(8);
 
-        yield TextField::new('description')
+        yield TextareaField::new('description')
             ->hideOnIndex();
     }
 

@@ -23,13 +23,14 @@ abstract class AdminPageController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Users', 'fa fa-user', User::class);
 
         yield MenuItem::section('Activities');
-        yield MenuItem::linkToCrud('Type', 'fa fa-star', ActivityType::class);
-        yield MenuItem::linkToCrud('Location', 'fa fa-map-location', ActivityLocation::class);
+        yield MenuItem::subMenu('Address', 'fa fa-signs-post')->setSubItems([
+            MenuItem::linkToCrud('Meeting', 'fa fa-handshake', MeetingPoint::class),
+            MenuItem::linkToCrud('TakeOff', 'fa fa-play', TakeOffPoint::class),
+            MenuItem::linkToCrud('Landing', 'fa fa-flag-checkered', LandingPoint::class),
+        ]);
 
-        yield MenuItem::section('Places');
-        yield MenuItem::linkToCrud('Meeting', 'fa fa-location-dot', MeetingPoint::class);
-        yield MenuItem::linkToCrud('TakeOff', 'fa fa-plane-departure', TakeOffPoint::class);
-        yield MenuItem::linkToCrud('Landing', 'fa fa-plane-arrival', LandingPoint::class);
+        yield MenuItem::linkToCrud('Location', 'fa fa-map-location', ActivityLocation::class);
+        yield MenuItem::linkToCrud('Type', 'fa fa-star', ActivityType::class);
 
         yield MenuItem::section('Chat');
         yield MenuItem::linkToCrud('Conversation', 'fa fa-comments', Conversation::class);

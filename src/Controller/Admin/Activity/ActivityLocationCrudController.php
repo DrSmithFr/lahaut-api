@@ -31,7 +31,7 @@ class ActivityLocationCrudController extends AdminCrudController
         yield TextField::new('identifier');
         yield TextField::new('name');
 
-        yield FormField::addPanel('Places')
+        yield FormField::addPanel('Address')
             ->setIcon('map-marker-alt');
 
         yield AssociationField::new('meetingPoint')
