@@ -64,6 +64,8 @@ class DashboardController extends AdminPageController
         return Dashboard::new()
             // the name visible to end users
             ->setTitle('Antennae')
+            ->setFaviconPath('favicon.ico')
+            ->setTitle('<img src="images/logo.svg" height="40">ANTENNAE')
 
             // set this option if you prefer the page content to span the entire
             // browser width, instead of the default design which sets a max width
