@@ -14,7 +14,7 @@ final class Version20230721100737 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'store roles as simple_array instead of json';
     }
 
     public function up(Schema $schema): void
