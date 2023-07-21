@@ -9,13 +9,18 @@ use App\Service\Platform\PlatformFeeService;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
+use Symfony\UX\Chartjs\Model\Chart;
 
 class DashboardController extends AdminPageController
 {
+    public final const CHART_DAYS = 15;
+
     public function __construct(
         private readonly UserRepository $userRepository,
         private readonly PlatformFeeService $platformFeeService,
         private readonly BookingRepository $bookingRepository,
+        private readonly ChartBuilderInterface $chartBuilder
     ) {
     }
 
@@ -47,6 +52,9 @@ class DashboardController extends AdminPageController
                 'monitors' => $monitors,
                 'bookings' => $bookingsTotal,
                 'platformFee' => $platformFee,
+                'customerChart' => $this->getCustomerChart(),
+                'monitorChart' => $this->getMonitorChart(),
+                'bookingChart' => $this->getBookingChart(),
             ]
         );
     }
@@ -69,6 +77,72 @@ class DashboardController extends AdminPageController
                 'en' => '🇬🇧 English',
                 'fr' => '🇫🇷 Français',
                 'es' => '🇪🇸 Español',
+            ]);
+    }
+
+    private function getCustomerChart(): Chart
+    {
+        $chartData = $this
+            ->userRepository
+            ->totalPerDay(RoleEnum::CUSTOMER, self::CHART_DAYS);
+
+        return $this
+            ->chartBuilder
+            ->createChart(Chart::TYPE_BAR)
+            ->setData([
+                'labels' => array_keys($chartData),
+                'datasets' => [
+                    [
+                        'label' => 'Customers per day',
+                        'backgroundColor' => '#636767',
+                        'borderColor' => '#495057',
+                        'data' => array_values($chartData),
+                    ],
+                ],
+            ]);
+    }
+
+    private function getMonitorChart(): Chart
+    {
+        $chartData = $this
+            ->userRepository
+            ->totalPerDay(RoleEnum::MONITOR, self::CHART_DAYS);
+
+        return $this
+            ->chartBuilder
+            ->createChart(Chart::TYPE_BAR)
+            ->setData([
+                'labels' => array_keys($chartData),
+                'datasets' => [
+                    [
+                        'label' => 'Monitors per day',
+                        'backgroundColor' => '#886ab5',
+                        'borderColor' => '#65498f',
+                        'data' => array_values($chartData),
+                    ],
+                ],
+            ]);
+    }
+
+    private function getBookingChart(): Chart
+    {
+        $chartData = $this
+            ->bookingRepository
+            ->totalPerDay(self::CHART_DAYS);
+
+        return $this
+            ->chartBuilder
+            ->createChart(Chart::TYPE_LINE)
+            ->setData([
+                'labels' => array_keys($chartData),
+                'datasets' => [
+                    [
+                        'label' => 'Bookings(€) per day',
+                        'backgroundColor' => 'rgba(207,82,82,1)',
+                        'borderColor' => 'rgba(121,9,9,1)',
+                        'data' => array_values($chartData),
+                    ],
+                ],
             ]);
     }
 }

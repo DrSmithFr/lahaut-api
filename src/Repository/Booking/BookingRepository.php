@@ -5,6 +5,7 @@ namespace App\Repository\Booking;
 use App\Entity\Booking\Booking;
 use App\Entity\User;
 use App\Enum\BookingStatusEnum;
+use DateInterval;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -111,5 +112,48 @@ class BookingRepository extends ServiceEntityRepository
             ])
             ->getQuery()
             ->getSingleScalarResult() ?? 0.0;
+    }
+
+    public function totalPerDay(int $days)
+    {
+        $from = (new DateTimeImmutable('now'))
+            ->sub(new DateInterval('P' . $days . 'D'))
+            ->setTime(0, 0);
+
+        $result = $this
+            ->createQueryBuilder('booking')
+            ->select('CAST(booking.createdAt as DATE) as day, SUM(slot.price) as total')
+            ->join('booking.slot', 'slot')
+            ->groupBy('day')
+            ->andWhere('booking.createdAt >= :from')
+            ->setParameter('from', $from)
+            ->getQuery()
+            ->getScalarResult();
+
+        $resultMap = array_reduce(
+            $result,
+            function (array $carry, array $item) {
+                $carry[$item['day']] = $item['total'];
+                return $carry;
+            },
+            []
+        );
+
+        $totals = [];
+
+        // Fill missing days
+        for ($i = $days; $i >= 0; $i--) {
+            $day = $from
+                ->add(new DateInterval('P' . $i . 'D'))
+                ->format('Y-m-d');
+
+            if (isset($resultMap[$day])) {
+                $totals[$day] = $resultMap[$day];
+            } else {
+                $totals[$day] = "0";
+            }
+        }
+
+        return array_reverse($totals);
     }
 }

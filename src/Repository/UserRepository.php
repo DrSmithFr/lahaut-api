@@ -6,6 +6,8 @@ namespace App\Repository;
 
 use App\Entity\User;
 use App\Enum\RoleEnum;
+use DateInterval;
+use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -97,5 +99,49 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
             ->setParameter('role', '%' . $role->value . '%')
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    public function totalPerDay(RoleEnum $role, int $days)
+    {
+        $from = (new DateTimeImmutable('now'))
+            ->sub(new DateInterval('P' . $days . 'D'))
+            ->setTime(0, 0);
+
+        $result = $this
+            ->createQueryBuilder('user')
+            ->select('CAST(user.createdAt as DATE) as day, COUNT(user.uuid) as total')
+            ->groupBy('day')
+            ->where('user.roles LIKE :role')
+            ->andWhere('user.createdAt >= :from')
+            ->setParameter('role', '%' . $role->value . '%')
+            ->setParameter('from', $from)
+            ->getQuery()
+            ->getScalarResult();
+
+        $resultMap = array_reduce(
+            $result,
+            function (array $carry, array $item) {
+                $carry[$item['day']] = $item['total'];
+                return $carry;
+            },
+            []
+        );
+
+        $totals = [];
+
+        // Fill missing days
+        for ($i = $days; $i >= 0; $i--) {
+            $day = $from
+                ->add(new DateInterval('P' . $i . 'D'))
+                ->format('Y-m-d');
+
+            if (isset($resultMap[$day])) {
+                $totals[$day] = $resultMap[$day];
+            } else {
+                $totals[$day] = "0";
+            }
+        }
+
+        return array_reverse($totals);
     }
 }
