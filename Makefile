@@ -1,9 +1,9 @@
 APP_DIR := $(abspath $(lastword $(MAKEFILE_LIST)))
 
-.PHONY: hooks
+.PHONY: hooks nvm assets build install reload dependencies nvm start kill database fixtures migration test mock jwt
 
 build: reload
-install: env hooks dependencies start build start database
+install: env hooks dependencies nvm start build start database
 reload: kill start
 
 env:
@@ -15,13 +15,16 @@ dependencies:
 	symfony composer self-update --2
 	symfony composer install
 
+nvm:
+	. ${NVM_DIR}/nvm.sh && nvm install $(cat .nvmrc)
+
 assets:
 	symfony console assets:install --symlink
-	npm install
+	. ${NVM_DIR}/nvm.sh && nvm use $(cat .nvmrc) && npm install && npm run build
 
 start:
 	docker compose -f docker-compose.yml -f docker-compose.override.yml up -d
-	npm run watch
+	. ${NVM_DIR}/nvm.sh && nvm use $(cat .nvmrc) && npm run watch
 
 kill:
 	docker compose kill
