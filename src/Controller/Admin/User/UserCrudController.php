@@ -25,6 +25,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TelephoneField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\ChoiceFilter;
+use RuntimeException;
 
 class UserCrudController extends AdminCrudController
 {
@@ -70,6 +71,8 @@ class UserCrudController extends AdminCrudController
             ->hideOnIndex();
 
         yield BooleanField::new('enable');
+
+        yield DateTimeField::new('deletedAt');
 
         yield EmailField::new('email');
 
@@ -181,11 +184,9 @@ class UserCrudController extends AdminCrudController
 
     public function configureActions(Actions $actions): Actions
     {
-        $actions
+        return $actions
             ->add(Action::INDEX, Action::DETAIL)
-            ->add(Action::EDIT, Action::SAVE_AND_ADD_ANOTHER)
-            ->setPermission(Action::DELETE, RoleEnum::SUPER_ADMIN->value);
-        return $actions;
+            ->add(Action::EDIT, Action::SAVE_AND_ADD_ANOTHER);
     }
 
     public function configureFilters(Filters $filters): Filters
@@ -243,6 +244,22 @@ class UserCrudController extends AdminCrudController
         $this->userService->updatePassword($entityInstance);
 
         $entityManager->persist($entityInstance);
+        $entityManager->flush();
+    }
+
+    // For soft delete
+    public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        if (!$entityInstance instanceof User) {
+            throw new RuntimeException('UserCrudController::deleteEntity() only accepts User instances.');
+        }
+
+        if ($entityInstance->getDeletedAt() === null) {
+            $entityInstance->setDeletedAt(new DateTime());
+        } else {
+            $entityInstance->setDeletedAt();
+        }
+
         $entityManager->flush();
     }
 }

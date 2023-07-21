@@ -9,6 +9,7 @@ use App\Enum\BookingStatusEnum;
 use App\Repository\Slot\SlotRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -26,6 +27,8 @@ use JMS\Serializer\Annotation as JMS;
 class Booking
 {
     use IdTrait;
+
+    use TimestampableEntity;
 
     #[JMS\Expose]
     #[ORM\JoinColumn(name: 'customer_uuid', referencedColumnName: 'uuid', nullable: false)]

@@ -4,6 +4,7 @@ namespace App\Repository\Booking;
 
 use App\Entity\Booking\Booking;
 use App\Entity\User;
+use App\Enum\BookingStatusEnum;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -25,7 +26,7 @@ class BookingRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param User     $monitor
+     * @param User $monitor
      * @param DateTime $startAt
      * @param DateTime $endAt
      *
@@ -51,8 +52,8 @@ class BookingRepository extends ServiceEntityRepository
             ->setParameters(
                 [
                     'monitor' => $monitor,
-                    'start'   => $startAt,
-                    'end'     => $endAt,
+                    'start' => $startAt,
+                    'end' => $endAt,
                 ]
             )
             ->getQuery()
@@ -69,7 +70,7 @@ class BookingRepository extends ServiceEntityRepository
             ->setParameters(
                 [
                     'start' => $start,
-                    'end'   => $end,
+                    'end' => $end,
                 ]
             );
 
@@ -82,5 +83,33 @@ class BookingRepository extends ServiceEntityRepository
         return $qb
             ->getQuery()
             ->getResult();
+    }
+
+    public function totalAmountThisMonth()
+    {
+        $today = (new DateTimeImmutable('now'))
+            ->setTime(23, 59, 59);
+
+        $firstDayThisMonth = $today
+            ->setDate($today->format('Y'), $today->format('m'), 1)
+            ->setTime(0, 0);
+
+        return $this
+            ->createQueryBuilder('booking')
+            ->select('SUM(slot.price)')
+            ->join('booking.slot', 'slot')
+            ->where('booking.createdAt BETWEEN :start AND :end')
+            ->andWhere('booking.status IN (:status)')
+            ->setParameters([
+                'start' => $firstDayThisMonth,
+                'end' => $today,
+                'status' => [
+                    BookingStatusEnum::PAID,
+                    BookingStatusEnum::CONFIRMED,
+                    BookingStatusEnum::TERMINATED,
+                ]
+            ])
+            ->getQuery()
+            ->getSingleScalarResult() ?? 0.0;
     }
 }

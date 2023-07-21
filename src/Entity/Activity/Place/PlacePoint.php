@@ -48,8 +48,8 @@ abstract class PlacePoint implements Serializable
     private Address $address;
 
     #[JMS\Expose]
-    #[ORM\Column(type: Types::TEXT)]
-    private string $description = '';
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
 
     public function __construct()
     {
@@ -111,12 +111,12 @@ abstract class PlacePoint implements Serializable
         return $this;
     }
 
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    public function setDescription(string $description): self
+    public function setDescription(?string $description): self
     {
         $this->description = $description;
         return $this;

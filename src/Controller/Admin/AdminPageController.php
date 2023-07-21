@@ -7,8 +7,12 @@ use App\Entity\Activity\ActivityType;
 use App\Entity\Activity\Place\LandingPoint;
 use App\Entity\Activity\Place\MeetingPoint;
 use App\Entity\Activity\Place\TakeOffPoint;
+use App\Entity\Booking\Booking;
 use App\Entity\Chat\Conversation;
 use App\Entity\Chat\Message;
+use App\Entity\Slot\Slot;
+use App\Entity\Slot\SlotLock;
+use App\Entity\Slot\SlotProposed;
 use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -31,9 +35,16 @@ abstract class AdminPageController extends AbstractDashboardController
 
         yield MenuItem::linkToCrud('Location', 'fa fa-map-location', ActivityLocation::class);
         yield MenuItem::linkToCrud('Type', 'fa fa-star', ActivityType::class);
-
+        yield MenuItem::linkToCrud('Slots proposed', 'fa fa-comments', SlotProposed::class);
         yield MenuItem::section('Chat');
         yield MenuItem::linkToCrud('Conversation', 'fa fa-comments', Conversation::class);
         yield MenuItem::linkToCrud('Message', 'fa fa-comment', Message::class);
+
+        yield MenuItem::section('Booking');
+        yield MenuItem::subMenu('Slots', 'fa fa-signs-post')->setSubItems([
+            MenuItem::linkToCrud('Available', 'fa fa-comment', Slot::class),
+            MenuItem::linkToCrud('Reserved', 'fa fa-comment', SlotLock::class),
+        ]);
+        yield MenuItem::linkToCrud('Bookings', 'fa fa-comment', Booking::class);
     }
 }

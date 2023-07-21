@@ -66,4 +66,9 @@ class ActivityType implements Serializable
         $this->activityLocation = $activityLocation;
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return $this->getIdentifier();
+    }
 }

@@ -64,7 +64,7 @@ class User implements
 
     #[JMS\Expose]
     #[JMS\MaxDepth(1)]
-    #[ORM\Column(name: 'roles', type: Types::JSON)]
+    #[ORM\Column(name: 'roles', type: Types::SIMPLE_ARRAY)]
     #[JMS\Type('array<string>')]
     #[OA\Property(
         type: 'string[]',

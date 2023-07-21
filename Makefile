@@ -15,6 +15,10 @@ dependencies:
 	symfony composer self-update --2
 	symfony composer install
 
+assets:
+	symfony console assets:install --symlink
+	npm install
+
 start:
 	docker compose -f docker-compose.yml -f docker-compose.override.yml up -d
 

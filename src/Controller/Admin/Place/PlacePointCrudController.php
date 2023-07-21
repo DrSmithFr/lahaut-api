@@ -4,12 +4,14 @@ namespace App\Controller\Admin\Place;
 
 use App\Controller\Admin\AdminCrudController;
 use App\Entity\Activity\Place\PlacePoint;
+use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CountryField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use RuntimeException;
 
 abstract class PlacePointCrudController extends AdminCrudController
 {
@@ -45,7 +47,8 @@ abstract class PlacePointCrudController extends AdminCrudController
             ->setNumDecimals(8);
 
         yield TextareaField::new('description')
-            ->hideOnIndex();
+            ->hideOnIndex()
+            ->setRequired(false);
     }
 
     private function configureAddressFields(): iterable

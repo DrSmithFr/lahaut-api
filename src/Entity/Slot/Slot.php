@@ -199,4 +199,9 @@ class Slot implements Serializable
         $this->booking = $booking;
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return $this->getId();
+    }
 }

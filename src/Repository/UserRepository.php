@@ -7,7 +7,6 @@ namespace App\Repository;
 use App\Entity\User;
 use App\Enum\RoleEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
@@ -85,5 +84,18 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
             ->setParameter('token', $resetToken)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    public function countWithRole(RoleEnum $role): int
+    {
+        return $this
+            ->getEntityManager()
+            ->createQueryBuilder()
+            ->select('count(u)')
+            ->from(User::class, 'u')
+            ->where('u.roles LIKE :role')
+            ->setParameter('role', '%' . $role->value . '%')
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 }
