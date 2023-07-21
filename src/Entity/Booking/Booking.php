@@ -6,7 +6,7 @@ use App\Entity\Slot\Slot;
 use App\Entity\Traits\IdTrait;
 use App\Entity\User;
 use App\Enum\BookingStatusEnum;
-use App\Repository\Slot\SlotRepository;
+use App\Repository\Booking\BookingRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
@@ -23,7 +23,7 @@ use JMS\Serializer\Annotation as JMS;
  * )
  */
 #[JMS\ExclusionPolicy('all')]
-#[ORM\Entity(repositoryClass: SlotRepository::class)]
+#[ORM\Entity(repositoryClass: BookingRepository::class)]
 class Booking
 {
     use IdTrait;
