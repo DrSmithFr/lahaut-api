@@ -3,7 +3,7 @@ APP_DIR := $(abspath $(lastword $(MAKEFILE_LIST)))
 .PHONY: hooks nvm assets build install reload dependencies nvm start kill database fixtures migration test mock jwt
 
 build: reload
-install: env hooks dependencies nvm start build start database
+install: env hooks dependencies assets nvm start build start database
 reload: kill start
 
 env:
